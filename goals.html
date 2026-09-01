@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Goal Studio | General Disability Support</title>
+<meta name="description" content="Goal setting, activity breakdown, estimation, timeline and calendar in one place." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --charcoal:#121619; --charcoal-2:#1b2023; --cream:#f5f1e9; --paper:#fbf8f2;
+  --bronze:#b98a51; --bronze-2:#d6ad74; --muted:#80796f; --line:rgba(185,138,81,.28);
+  --white:#fffaf2; --ink:#121619; --ink-2:#3d4448;
+  --ok:#4b7f5b; --warn:#b3762a; --stop:#a3453b; --sky:#4a6d8c;
+  --radius:14px; --shadow:0 18px 50px rgba(18,22,25,.10);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,system-ui,-apple-system,sans-serif;font-size:14px;line-height:1.5}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3{margin:0}
+::selection{background:var(--bronze);color:#fff}
+
+/* ---------- top bar ---------- */
+.topbar{position:sticky;top:0;z-index:60;background:var(--charcoal);color:var(--cream);border-bottom:1px solid rgba(214,173,116,.25)}
+.topbar-in{display:flex;align-items:center;gap:22px;padding:12px 20px;flex-wrap:wrap}
+.brand{display:flex;gap:12px;align-items:center;min-width:0}
+.mark{width:32px;height:32px;border:1px solid var(--bronze);border-radius:50%;display:grid;place-items:center;flex:0 0 auto}
+.mark:before{content:"";width:12px;height:21px;border:1.5px solid var(--bronze-2);border-left:0;border-radius:0 18px 18px 0;transform:rotate(28deg)}
+.brand-title{display:flex;flex-direction:column;line-height:1.15}
+.brand-title strong{font-family:'Cormorant Garamond',serif;font-size:22px;letter-spacing:.22em;font-weight:600}
+.brand-title span{font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--bronze-2);margin-top:3px}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+.tab{background:transparent;border:1px solid transparent;color:var(--cream);opacity:.72;padding:9px 15px;border-radius:999px;cursor:pointer;font-size:12.5px;letter-spacing:.07em;text-transform:uppercase;font-weight:600}
+.tab:hover{opacity:1;background:rgba(255,255,255,.06)}
+.tab.on{opacity:1;background:var(--bronze);border-color:var(--bronze);color:#fff}
+.savechip{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--bronze-2);opacity:.85;white-space:nowrap}
+
+/* ---------- layout ---------- */
+.wrap{max-width:1400px;margin:0 auto;padding:26px 20px 90px}
+.pagehead{display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap;margin-bottom:18px}
+.pagehead h1{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:600;letter-spacing:.01em}
+.pagehead p{margin:6px 0 0;color:var(--muted);max-width:70ch}
+.spacer{flex:1}
+
+.card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.pad{padding:20px}
+.grid2{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:20px;align-items:start}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+
+/* ---------- flow strip ---------- */
+.flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:20px;padding:14px 16px;border:1px dashed var(--line);border-radius:var(--radius);background:rgba(185,138,81,.05)}
+.flow b{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--bronze);font-weight:700}
+.flow-step{font-size:12px;color:var(--ink-2);background:var(--white);border:1px solid var(--line);padding:5px 11px;border-radius:999px;white-space:nowrap}
+.flow-arrow{color:var(--bronze);opacity:.6;font-size:12px}
+
+/* ---------- buttons ---------- */
+.btn{background:var(--charcoal);color:var(--cream);border:1px solid var(--charcoal);padding:10px 17px;border-radius:999px;cursor:pointer;font-size:12.5px;font-weight:600;letter-spacing:.05em;white-space:nowrap}
+.btn:hover{background:var(--charcoal-2)}
+.btn.primary{background:var(--bronze);border-color:var(--bronze);color:#fff}
+.btn.primary:hover{background:#a87b46}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.ghost:hover{background:rgba(185,138,81,.09)}
+.btn.sm{padding:6px 12px;font-size:11.5px}
+.btn.danger{background:transparent;color:var(--stop);border-color:rgba(163,69,59,.4)}
+.btn.danger:hover{background:rgba(163,69,59,.08)}
+.iconbtn{background:transparent;border:1px solid transparent;color:var(--muted);cursor:pointer;padding:4px 7px;border-radius:8px;font-size:13px;line-height:1}
+.iconbtn:hover{background:rgba(185,138,81,.12);color:var(--ink)}
+.iconbtn.del:hover{background:rgba(163,69,59,.1);color:var(--stop)}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;max-width:100%}
+.btnrow > *{max-width:100%}
+
+/* ---------- fields ---------- */
+.field{margin-bottom:15px}
+.field label{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--bronze);font-weight:700;margin-bottom:6px}
+.field .hint{font-size:12px;color:var(--muted);margin:-2px 0 7px;line-height:1.45}
+input[type=text],input[type=date],input[type=number],input[type=time],select,textarea{
+  width:100%;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:9px 12px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--bronze);background:#fff;box-shadow:0 0 0 3px rgba(185,138,81,.13)}
+textarea{resize:vertical;min-height:74px;line-height:1.5}
+.inline{display:flex;gap:10px;flex-wrap:wrap}
+.inline > *{flex:1;min-width:130px}
+
+/* ---------- goal cards ---------- */
+.goal-list{display:flex;flex-direction:column;gap:12px}
+.goal-card{background:var(--white);border:1px solid var(--line);border-left:5px solid var(--bronze);border-radius:12px;padding:14px 16px;cursor:pointer;transition:.18s}
+.goal-card:hover{box-shadow:var(--shadow);transform:translateY(-1px)}
+.goal-card.on{border-color:var(--bronze);background:#fff;box-shadow:var(--shadow)}
+.goal-card h3{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;margin-bottom:3px}
+.goal-meta{display:flex;gap:8px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin-top:8px}
+.bar{height:7px;background:rgba(18,22,25,.08);border-radius:99px;overflow:hidden;margin-top:10px}
+.bar > i{display:block;height:100%;background:var(--bronze);border-radius:99px;transition:width .3s}
+
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);background:var(--paper);color:var(--ink-2);white-space:nowrap}
+.chip.ok{color:var(--ok);border-color:rgba(75,127,91,.35);background:rgba(75,127,91,.08)}
+.chip.warn{color:var(--warn);border-color:rgba(179,118,42,.35);background:rgba(179,118,42,.08)}
+.chip.stop{color:var(--stop);border-color:rgba(163,69,59,.35);background:rgba(163,69,59,.08)}
+.chip.sky{color:var(--sky);border-color:rgba(74,109,140,.35);background:rgba(74,109,140,.08)}
+
+.section-title{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--bronze);font-weight:700;margin:0 0 12px}
+.divider{height:1px;background:var(--line);margin:20px 0}
+.empty{text-align:center;padding:48px 20px;color:var(--muted)}
+.empty h3{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--ink);margin-bottom:8px}
+
+/* ---------- SMART block ---------- */
+.smart-row{display:grid;grid-template-columns:34px 1fr;gap:12px;margin-bottom:14px;align-items:start}
+.smart-key{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;background:rgba(185,138,81,.12);color:var(--bronze);border:1px solid var(--line)}
+.smart-row.filled .smart-key{background:var(--bronze);color:#fff;border-color:var(--bronze)}
+.smart-row label{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--bronze);font-weight:700;margin-bottom:4px}
+.smart-row .hint{font-size:12px;color:var(--muted);margin:0 0 6px}
+.smart-score{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:10px;background:rgba(185,138,81,.07);border:1px solid var(--line);margin-bottom:16px;font-size:12.5px}
+
+/* ---------- activity tree ---------- */
+.tree{display:flex;flex-direction:column;gap:6px}
+.node{border:1px solid var(--line);border-radius:11px;background:var(--white)}
+.node.done{opacity:.62}
+.node.blocked{border-color:rgba(163,69,59,.4)}
+.node-main{display:flex;align-items:center;gap:9px;padding:9px 11px}
+.node-title{flex:1;min-width:120px;border:1px solid transparent;background:transparent;padding:5px 7px;border-radius:7px;font-weight:500}
+.node-title:hover{background:var(--paper)}
+.node.done .node-title{text-decoration:line-through;color:var(--muted)}
+.wave-tag{font-size:9.5px;letter-spacing:.1em;font-weight:700;color:var(--bronze);background:rgba(185,138,81,.12);border:1px solid var(--line);border-radius:5px;padding:2px 5px;white-space:nowrap}
+.est{width:70px!important;flex:0 0 auto;text-align:right;font-variant-numeric:tabular-nums;padding:6px 8px}
+.unit{font-size:10.5px;color:var(--muted);flex:0 0 auto;margin-left:-4px;letter-spacing:.04em}
+.dt.empty{color:var(--muted);opacity:.45}
+.dt.empty:focus,.dt.empty:hover{opacity:1}
+.dt{width:138px!important;flex:0 0 auto;padding:6px 8px;font-size:12.5px}
+.node-status{width:104px!important;flex:0 0 auto;padding:6px 8px;font-size:12px}
+.kids{margin:0 0 8px 26px;padding-left:14px;border-left:2px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.node-extra{padding:0 11px 11px 40px;display:none}
+.node.open .node-extra{display:block}
+.tick{width:19px;height:19px;flex:0 0 auto;border:1.5px solid var(--line);border-radius:5px;background:var(--white);cursor:pointer;display:grid;place-items:center;color:transparent;font-size:12px;line-height:1;padding:0}
+.tick.on{background:var(--bronze);border-color:var(--bronze);color:#fff}
+.rollup{font-size:11px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+@media(max-width:760px){
+  .g-left{flex-basis:148px;max-width:148px}
+  .node-main{flex-wrap:wrap}
+  .dt,.node-status,.est{width:auto!important;flex:1 1 110px}
+}
+
+/* ---------- gantt ---------- */
+.gantt{display:flex;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--white)}
+.g-left{flex:0 0 268px;max-width:268px;min-width:0;border-right:1px solid var(--line);background:var(--white);z-index:2}
+.g-right{flex:1;min-width:0;overflow-x:auto;overflow-y:hidden}
+.g-head{height:46px;border-bottom:1px solid var(--line);display:flex;align-items:flex-end;background:rgba(185,138,81,.06);position:relative}
+.g-row{height:34px;display:flex;align-items:center;border-bottom:1px solid rgba(185,138,81,.14);position:relative}
+.g-left .g-row{padding:0 12px;gap:7px;font-size:12.5px;overflow:hidden}
+.g-left .g-row span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.g-row.goalrow{background:rgba(185,138,81,.07);font-weight:600}
+.g-canvas{position:relative}
+.g-tick{position:absolute;top:0;bottom:0;border-left:1px solid rgba(185,138,81,.16)}
+.g-tick.strong{border-left-color:rgba(185,138,81,.4)}
+.g-weekend{position:absolute;top:0;bottom:0;background:rgba(18,22,25,.035)}
+.g-lbl{position:absolute;bottom:5px;font-size:10.5px;color:var(--muted);letter-spacing:.06em;white-space:nowrap;padding-left:5px}
+.g-mon{position:absolute;top:5px;font-size:11px;font-weight:700;color:var(--bronze);letter-spacing:.1em;text-transform:uppercase;padding-left:5px;white-space:nowrap}
+.g-bar{position:absolute;height:17px;top:8px;border-radius:5px;background:var(--bronze);color:#fff;font-size:10.5px;line-height:17px;padding:0 7px;overflow:hidden;white-space:nowrap;cursor:default}
+.g-bar.summary{height:11px;top:11px;border-radius:3px;background:var(--charcoal);opacity:.85}
+.g-bar.done{background:var(--ok)}
+.g-bar.late{background:var(--stop)}
+.g-bar.sched{opacity:.55;background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.25) 0 5px,transparent 5px 10px)}
+.g-today{position:absolute;top:0;bottom:0;width:2px;background:var(--stop);opacity:.55;z-index:3}
+.g-fill{position:absolute;left:0;top:0;bottom:0;background:rgba(18,22,25,.45);border-right:1px solid rgba(255,255,255,.6);border-radius:5px 0 0 5px}
+.g-name{position:absolute;top:0;height:34px;line-height:34px;font-size:11.5px;color:var(--ink-2);white-space:nowrap;pointer-events:none}
+.g-none{position:absolute;left:6px;top:0;height:34px;line-height:34px;font-size:11px;color:var(--muted);font-style:italic}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin-top:12px}
+.legend i{display:inline-block;width:14px;height:9px;border-radius:3px;margin-right:5px;vertical-align:middle}
+
+/* ---------- stats ---------- */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+.stat{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.stat b{display:block;font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;line-height:1.1}
+.stat span{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+/* ---------- agenda ---------- */
+.day{border:1px solid var(--line);border-radius:12px;background:var(--white);margin-bottom:12px;overflow:hidden}
+.day-h{display:flex;align-items:center;gap:10px;padding:10px 15px;background:rgba(185,138,81,.07);border-bottom:1px solid var(--line)}
+.day-h b{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600}
+.day-h .today-flag{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:var(--stop);padding:2px 8px;border-radius:99px}
+.slot{display:flex;align-items:center;gap:11px;padding:9px 15px;border-bottom:1px solid rgba(185,138,81,.13)}
+.slot:last-child{border-bottom:0}
+.slot .time{font-variant-numeric:tabular-nums;font-size:12px;color:var(--muted);white-space:nowrap;min-width:112px}
+.slot .what{flex:1;min-width:120px}
+.slot .what small{display:block;color:var(--muted);font-size:11px}
+.slot.done .what{text-decoration:line-through;color:var(--muted)}
+
+/* ---------- misc ---------- */
+.note{font-size:12.5px;color:var(--muted);line-height:1.6}
+.kbd{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:var(--paper);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+#toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:var(--charcoal);color:var(--cream);padding:12px 22px;border-radius:999px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:200;box-shadow:var(--shadow)}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+.modal-bg{position:fixed;inset:0;background:rgba(18,22,25,.55);display:none;place-items:center;z-index:150;padding:20px}
+.modal-bg.on{display:grid}
+.modal{background:var(--white);border-radius:var(--radius);max-width:520px;width:100%;padding:24px;box-shadow:var(--shadow)}
+.modal h3{font-family:'Cormorant Garamond',serif;font-size:24px;margin-bottom:6px}
+ul.tight{margin:8px 0 0;padding-left:18px}
+ul.tight li{margin-bottom:5px;color:var(--ink-2)}
+@media print{
+  .topbar,.tabs,.btnrow,.flow,.no-print{display:none!important}
+  body{background:#fff}
+  .card,.node,.day,.gantt{box-shadow:none;break-inside:avoid}
+  .wrap{padding:0;max-width:none}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <div class="mark"></div>
+      <div class="brand-title"><strong>GOAL STUDIO</strong><span>General Disability Support</span></div>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button class="tab" data-tab="goals">Goals</button>
+      <button class="tab" data-tab="activities">Activities</button>
+      <button class="tab" data-tab="timeline">Timeline</button>
+      <button class="tab" data-tab="schedule">Schedule</button>
+      <button class="tab" data-tab="data">Data</button>
+    </nav>
+    <div class="savechip" id="savechip">&nbsp;</div>
+  </div>
+</header>
+
+<main class="wrap" id="app"></main>
+
+<div id="toast"></div>
+<div class="modal-bg" id="modalbg">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+"use strict";
+
+/* =====================================================================
+   Goal Studio — one connected chain:
+   Goal → SMART framing → Activities → Wave breakdown → Estimates
+        → Auto-schedule → Timeline (Gantt) → Calendar (.ics)
+   All data lives in this browser (localStorage). No server, no account.
+   ===================================================================== */
+
+const KEY = "gds.goalstudio.v1";
+const $  = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+const uid = () => Math.random().toString(36).slice(2, 10);
+const h = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, c =>
+  ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+
+/* ---------- dates (all ISO yyyy-mm-dd, parsed local to dodge UTC drift) -- */
+const pad = n => String(n).padStart(2, "0");
+function iso(d){ return d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate()); }
+function parseISO(s){
+  if(!s) return null;
+  const p = String(s).split("-").map(Number);
+  if(p.length < 3 || !p[0]) return null;
+  const d = new Date(p[0], p[1]-1, p[2]);
+  return isNaN(d) ? null : d;
+}
+function today(){ const d = new Date(); d.setHours(0,0,0,0); return d; }
+function todayISO(){ return iso(today()); }
+function addDays(s, n){ const d = parseISO(s) || today(); d.setDate(d.getDate()+n); return iso(d); }
+function daysBetween(a, b){
+  const x = parseISO(a), y = parseISO(b);
+  if(!x || !y) return 0;
+  return Math.round((y - x) / 86400000);
+}
+function dow(s){ const d = parseISO(s); return d ? d.getDay() : 0; }  // 0 Sun … 6 Sat
+const DAYNAME = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const MONNAME = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function prettyDate(s){
+  const d = parseISO(s);
+  if(!d) return "—";
+  return DAYNAME[d.getDay()] + " " + d.getDate() + " " + MONNAME[d.getMonth()] +
+         (d.getFullYear() !== today().getFullYear() ? " " + d.getFullYear() : "");
+}
+function shortDate(s){ const d = parseISO(s); return d ? d.getDate() + " " + MONNAME[d.getMonth()] : "—"; }
+function minsToText(m){
+  m = Math.round(m || 0);
+  if(!m) return "0h";
+  const hh = Math.floor(m/60), mm = m%60;
+  return (hh ? hh + "h" : "") + (mm ? (hh ? " " : "") + mm + "m" : "");
+}
+function timeOfDay(mins){
+  const hh = Math.floor(mins/60) % 24, mm = Math.round(mins) % 60;
+  const ap = hh < 12 ? "am" : "pm";
+  const h12 = hh % 12 === 0 ? 12 : hh % 12;
+  return h12 + (mm ? ":" + pad(mm) : "") + ap;
+}
+
+/* ---------- state ---------- */
+const DEFAULT_SETTINGS = {
+  workDays: [1,2,3,4,5],   // Mon–Fri
+  hoursPerDay: 4,
+  dayStartMin: 9 * 60,     // 9:00am
+  defaultEstimate: 60,     // minutes, used when a task has no estimate
+  scheduleFrom: ""         // blank = start from today
+};
+
+let S = load();
+let saveTimer = null;
+
+function blank(){
+  return { version: 1, goals: [], settings: Object.assign({}, DEFAULT_SETTINGS),
+           ui: { tab: "goals", goalId: null, scale: "week" } };
+}
+function load(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(!raw) return blank();
+    const d = JSON.parse(raw);
+    const s = blank();
+    s.goals    = Array.isArray(d.goals) ? d.goals : [];
+    s.settings = Object.assign({}, DEFAULT_SETTINGS, d.settings || {});
+    s.ui       = Object.assign(s.ui, d.ui || {});
+    s.goals.forEach(normaliseGoal);
+    return s;
+  }catch(e){
+    console.warn("Could not read saved data:", e);
+    return blank();
+  }
+}
+function normaliseGoal(g){
+  g.id ||= uid();
+  g.title ||= "Untitled goal";
+  g.smart = Object.assign({ s:"", m:"", a:"", r:"", t:"" }, g.smart || {});
+  g.tasks = Array.isArray(g.tasks) ? g.tasks : [];
+  g.status ||= "active";
+  g.why ||= ""; g.start ||= ""; g.due ||= "";
+  (function walk(list){
+    list.forEach(t => {
+      t.id ||= uid();
+      t.title ||= "Untitled activity";
+      t.status ||= "todo";
+      t.notes ||= "";
+      t.est = Number(t.est) || 0;
+      t.start ||= ""; t.due ||= "";
+      t.sched = Array.isArray(t.sched) ? t.sched : [];
+      t.kids = Array.isArray(t.kids) ? t.kids : [];
+      walk(t.kids);
+    });
+  })(g.tasks);
+}
+function save(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    try{
+      localStorage.setItem(KEY, JSON.stringify(S));
+      const n = new Date();
+      $("#savechip").textContent = "Saved " + pad(n.getHours()) + ":" + pad(n.getMinutes());
+    }catch(e){
+      $("#savechip").textContent = "Save failed";
+      toast("Could not save — browser storage may be full or blocked.");
+    }
+  }, 250);
+}
+
+function toast(msg){
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.add("on");
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove("on"), 2600);
+}
+
+/* ---------- tree helpers ---------- */
+function eachTask(list, fn, depth, parent){
+  depth = depth || 0;
+  (list || []).forEach(t => { fn(t, depth, parent || null); eachTask(t.kids, fn, depth+1, t); });
+}
+function allTasks(g){ const out = []; eachTask(g.tasks, (t,d,p) => out.push({ t, depth:d, parent:p })); return out; }
+function findTask(id){
+  for(const g of S.goals){
+    let hit = null;
+    eachTask(g.tasks, (t, d, p) => { if(t.id === id) hit = { goal:g, task:t, parent:p, depth:d }; });
+    if(hit) return hit;
+  }
+  return null;
+}
+function siblingsOf(goal, task){
+  const hit = findTask(task.id);
+  return hit && hit.parent ? hit.parent.kids : goal.tasks;
+}
+function isLeaf(t){ return !t.kids || !t.kids.length; }
+/* A container activity is done when its wave is done — never on its own. */
+function isDone(t){ return isLeaf(t) ? t.status === "done" : t.kids.every(isDone); }
+
+/* Effort rolls up: a parent's estimate is the sum of its wave, never its own. */
+function effort(t){
+  if(isLeaf(t)) return Number(t.est) || 0;
+  return t.kids.reduce((n, k) => n + effort(k), 0);
+}
+function doneEffort(t){
+  if(isLeaf(t)) return t.status === "done" ? (Number(t.est) || 0) : 0;
+  return t.kids.reduce((n, k) => n + doneEffort(k), 0);
+}
+/* Progress is weighted by effort; unestimated leaves still count as 1 unit. */
+function weight(t){ return isLeaf(t) ? Math.max(Number(t.est) || 0, 1) : t.kids.reduce((n,k) => n + weight(k), 0); }
+function doneWeight(t){
+  if(isLeaf(t)) return t.status === "done" ? Math.max(Number(t.est) || 0, 1) : 0;
+  return t.kids.reduce((n,k) => n + doneWeight(k), 0);
+}
+function goalProgress(g){
+  if(!g.tasks.length) return 0;
+  const w = g.tasks.reduce((n,t) => n + weight(t), 0);
+  const d = g.tasks.reduce((n,t) => n + doneWeight(t), 0);
+  return w ? Math.round(d / w * 100) : 0;
+}
+function goalEffort(g){ return g.tasks.reduce((n,t) => n + effort(t), 0); }
+function taskProgress(t){
+  const w = weight(t), d = doneWeight(t);
+  return w ? Math.round(d / w * 100) : 0;
+}
+function countLeaves(g){ let n = 0; eachTask(g.tasks, t => { if(isLeaf(t)) n++; }); return n; }
+function smartScore(g){ return ["s","m","a","r","t"].filter(k => (g.smart[k] || "").trim().length > 2).length; }
+
+/* A task's effective window: explicit dates first, else the auto-schedule. */
+function taskWindow(t){
+  let start = t.start || "", end = t.due || "";
+  if(t.sched && t.sched.length){
+    const sd = t.sched[0].date, ed = t.sched[t.sched.length-1].date;
+    if(!start) start = sd;
+    if(!end) end = ed;
+  }
+  if(!isLeaf(t)){
+    // Summary rows span everything underneath them.
+    let lo = start, hi = end;
+    t.kids.forEach(k => {
+      const w = taskWindow(k);
+      if(w.start && (!lo || w.start < lo)) lo = w.start;
+      if(w.end   && (!hi || w.end   > hi)) hi = w.end;
+    });
+    start = lo; end = hi;
+  }
+  if(start && !end) end = start;
+  if(end && !start) start = end;
+  return { start, end };
+}
+function isOverdue(t){
+  const w = taskWindow(t);
+  return t.status !== "done" && w.end && w.end < todayISO();
+}
+
+/* =====================================================================
+   RENDER
+   ===================================================================== */
+function currentGoal(){
+  return S.goals.find(g => g.id === S.ui.goalId) || S.goals[0] || null;
+}
+function render(){
+  $$("#tabs .tab").forEach(b => b.classList.toggle("on", b.dataset.tab === S.ui.tab));
+  const views = { goals:viewGoals, activities:viewActivities, timeline:viewTimeline, schedule:viewSchedule, data:viewData };
+  $("#app").innerHTML = (views[S.ui.tab] || viewGoals)();
+}
+function flowStrip(active){
+  const steps = ["Goal", "SMART", "Activities", "Waves", "Estimate", "Timeline", "Calendar"];
+  return '<div class="flow no-print"><b>The chain</b>' + steps.map((s,i) =>
+    (i ? '<span class="flow-arrow">→</span>' : "") +
+    '<span class="flow-step"' + (s.toLowerCase() === active ? ' style="background:var(--bronze);color:#fff;border-color:var(--bronze)"' : "") +
+    '>' + s + '</span>').join("") + '</div>';
+}
+
+/* ---------------------------------------------------------------- GOALS */
+const SMART_FIELDS = [
+  ["s","Specific","What exactly will be achieved, by whom, and where? Write it so someone else could tell whether it happened."],
+  ["m","Measurable","What number or evidence proves it is done — and what will you check along the way?"],
+  ["a","Achievable","What makes this realistic: time, money, skills, support? Name the biggest constraint."],
+  ["r","Relevant","Why this, why now? What bigger thing does it serve, and what is the cost of not doing it?"],
+  ["t","Time-bound","The deadline, plus any checkpoints. Set the target date on the right so it reaches the timeline."]
+];
+
+function viewGoals(){
+  const g = currentGoal();
+  return flowStrip("goal") +
+  '<div class="pagehead"><div><h1>Goals</h1>' +
+    '<p>Set the goal, frame it as SMART, then push it down into activities. Everything you enter here flows through to the timeline and the calendar.</p></div>' +
+    '<div class="spacer"></div><div class="btnrow no-print"><button class="btn primary" data-act="goal-new">＋ New goal</button></div></div>' +
+  '<div class="grid2"><div>' +
+    '<h2 class="section-title">Your goals (' + S.goals.length + ')</h2>' +
+    (S.goals.length ? '<div class="goal-list">' + S.goals.map(goalCard).join("") + '</div>'
+                    : '<div class="card pad note">No goals yet. Hit <b>New goal</b>, or load the worked example from the <b>Data</b> tab to see the whole chain filled in.</div>') +
+  '</div><div>' + (g ? goalEditor(g) : '<div class="card empty"><h3>Nothing selected</h3><p>Create a goal to start.</p></div>') + '</div></div>';
+}
+
+function goalCard(g){
+  const p = goalProgress(g), sc = smartScore(g), on = currentGoal() && currentGoal().id === g.id;
+  const late = g.due && g.due < todayISO() && p < 100;
+  return '<div class="goal-card' + (on ? " on" : "") + '" data-act="goal-select" data-id="' + g.id + '">' +
+    '<h3>' + h(g.title) + '</h3>' +
+    (g.why ? '<div class="note" style="font-size:12px">' + h(g.why.slice(0,110)) + (g.why.length > 110 ? "…" : "") + '</div>' : "") +
+    '<div class="bar"><i style="width:' + p + '%"></i></div>' +
+    '<div class="goal-meta">' +
+      '<span class="chip' + (sc === 5 ? " ok" : sc >= 3 ? " warn" : " stop") + '">SMART ' + sc + '/5</span>' +
+      '<span class="chip">' + p + '% done</span>' +
+      '<span class="chip">' + countLeaves(g) + ' tasks</span>' +
+      '<span class="chip">' + minsToText(goalEffort(g)) + '</span>' +
+      (g.due ? '<span class="chip' + (late ? " stop" : "") + '">due ' + shortDate(g.due) + '</span>' : "") +
+      (g.status !== "active" ? '<span class="chip sky">' + h(g.status) + '</span>' : "") +
+    '</div></div>';
+}
+
+function goalEditor(g){
+  const sc = smartScore(g);
+  const statement = draftStatement(g);
+  return '<div class="card pad">' +
+    '<div class="btnrow no-print" style="float:right"><button class="btn ghost sm" data-act="goto-activities" data-id="' + g.id + '">Break into activities →</button>' +
+      '<button class="iconbtn del" data-act="goal-del" data-id="' + g.id + '" title="Delete goal">✕</button></div>' +
+    '<h2 class="section-title">Goal</h2>' +
+    '<div class="field"><label>Goal title</label>' +
+      '<input type="text" value="' + h(g.title) + '" data-act="goal-field" data-k="title" data-id="' + g.id + '" placeholder="e.g. Build a steady base of regular participants"></div>' +
+    '<div class="field"><label>Why it matters</label>' +
+      '<textarea data-act="goal-field" data-k="why" data-id="' + g.id + '" placeholder="The reason behind it — what changes for you or the people you support when this is done.">' + h(g.why) + '</textarea></div>' +
+    '<div class="inline">' +
+      '<div class="field"><label>Start</label><input type="date" value="' + h(g.start) + '" data-act="goal-field" data-k="start" data-id="' + g.id + '"></div>' +
+      '<div class="field"><label>Target date</label><input type="date" value="' + h(g.due) + '" data-act="goal-field" data-k="due" data-id="' + g.id + '"></div>' +
+      '<div class="field"><label>Status</label><select data-act="goal-field" data-k="status" data-id="' + g.id + '">' +
+        ["active","parked","done"].map(s => '<option value="' + s + '"' + (g.status === s ? " selected" : "") + '>' + s + '</option>').join("") +
+      '</select></div>' +
+    '</div>' +
+    '<div class="divider"></div>' +
+    '<h2 class="section-title">SMART framing</h2>' +
+    '<div class="smart-score"><b>' + sc + '/5</b><span>' +
+      (sc === 5 ? "Fully framed — this goal is testable."
+       : sc >= 3 ? "Nearly there. The blank rows are where goals usually go soft."
+       : "Fill these in before breaking the goal down — vague goals produce vague tasks.") +
+    '</span></div>' +
+    SMART_FIELDS.map(([k, name, hint]) => {
+      const val = g.smart[k] || "";
+      return '<div class="smart-row' + (val.trim().length > 2 ? " filled" : "") + '">' +
+        '<div class="smart-key">' + k.toUpperCase() + '</div><div>' +
+        '<label>' + name + '</label><p class="hint">' + hint + '</p>' +
+        '<textarea data-act="smart-field" data-k="' + k + '" data-id="' + g.id + '" placeholder="…">' + h(val) + '</textarea>' +
+      '</div></div>';
+    }).join("") +
+    (statement ? '<div class="field" style="margin-top:4px"><label>Goal statement (auto-drafted)</label>' +
+      '<div class="card pad note" style="box-shadow:none;background:var(--paper)">' + h(statement) + '</div></div>' : "") +
+  '</div>';
+}
+
+/* Stitches S + M + T into one sentence you can read back to yourself. */
+function draftStatement(g){
+  const s = (g.smart.s || "").trim(), m = (g.smart.m || "").trim(), t = (g.smart.t || "").trim();
+  if(!s && !m) return "";
+  let out = s || g.title;
+  if(m) out += " — measured by: " + m.replace(/\.$/, "");
+  if(t) out += ". By " + t.replace(/\.$/, "") + ".";
+  else if(g.due) out += ". By " + prettyDate(g.due) + ".";
+  else out += ".";
+  return out;
+}
+
+/* ----------------------------------------------------------- ACTIVITIES */
+function viewActivities(){
+  const g = currentGoal();
+  if(!g) return flowStrip("activities") + '<div class="card empty"><h3>No goal yet</h3><p>Create a goal on the Goals tab first — activities always hang off a goal.</p></div>';
+  return flowStrip("activities") +
+  '<div class="pagehead"><div><h1>Activities</h1>' +
+    '<p>Every activity that moves the goal forward. When you reach one and it is still too big, hit <b>＋ Wave</b> to break it into the next wave of smaller tasks — as deep as you need.</p></div>' +
+    '<div class="spacer"></div>' +
+    '<div class="btnrow no-print">' +
+      '<select data-act="goal-switch" style="flex:1 1 180px;width:auto;min-width:0;max-width:100%">' +
+        S.goals.map(x => '<option value="' + x.id + '"' + (x.id === g.id ? " selected" : "") + '>' + h(x.title) + '</option>').join("") +
+      '</select>' +
+      '<button class="btn ghost" data-act="bulk-open" data-id="' + g.id + '">Paste a list</button>' +
+      '<button class="btn primary" data-act="task-add" data-id="' + g.id + '">＋ Activity</button>' +
+    '</div></div>' +
+  '<div class="stats">' + activityStats(g) + '</div>' +
+  '<div class="card pad">' +
+    (g.tasks.length
+      ? '<div class="tree">' + g.tasks.map((t,i) => nodeHTML(t, 0, i, g.tasks.length, g.id)).join("") + '</div>'
+      : '<div class="empty"><h3>No activities yet</h3><p>What is the first concrete thing that moves “' + h(g.title) + '” forward?<br>Add it, estimate it, and it will appear on the timeline.</p>' +
+        '<div class="btnrow no-print" style="justify-content:center;margin-top:14px"><button class="btn primary" data-act="task-add" data-id="' + g.id + '">＋ Add first activity</button></div></div>') +
+  '</div>' +
+  '<p class="note" style="margin-top:14px">Estimates roll up: a parent activity takes the total of its wave, so only leaf tasks need a number. ' +
+  'Leave dates blank and the <b>Schedule</b> tab will place tasks for you around your working week.</p>';
+}
+function stat(v, label){ return '<div class="stat"><b>' + v + '</b><span>' + label + '</span></div>'; }
+function maxDepth(g){ let m = 0; eachTask(g.tasks, (t,d) => { if(d > m) m = d; }); return m; }
+
+const STATUSES = [["todo","To do"],["doing","In progress"],["blocked","Blocked"],["done","Done"]];
+
+function nodeHTML(t, depth, idx, count, goalId){
+  const leaf = isLeaf(t);
+  const eff = effort(t), prog = taskProgress(t), late = isOverdue(t);
+  const win = taskWindow(t);
+  const ticked = isDone(t);
+  return '<div class="node' + (ticked ? " done" : "") + (t.status === "blocked" ? " blocked" : "") + (t.notes ? " open" : "") + '" data-node="' + t.id + '">' +
+    '<div class="node-main">' +
+      '<button class="tick' + (ticked ? " on" : "") + '" data-act="task-tick" data-id="' + t.id + '" title="' + (leaf ? "Mark done" : "Mark the whole wave done") + '">✓</button>' +
+      '<span class="wave-tag" title="Wave ' + depth + (leaf ? " — a task you can actually sit down and do" : " — a container; its wave holds the real work") + '">W' + depth + '</span>' +
+      '<input class="node-title" type="text" value="' + h(t.title) + '" data-act="task-field" data-k="title" data-id="' + t.id + '" placeholder="What needs doing?">' +
+      (leaf
+        ? '<input class="est" type="number" min="0" step="15" value="' + (t.est || "") + '" data-act="task-field" data-k="est" data-id="' + t.id + '" title="How long will it take? In minutes — ' + h(minsToText(t.est)) + '" placeholder="0">' +
+          '<span class="unit" title="minutes">min</span>'
+        : '<span class="rollup" title="Rolled up from the wave below">Σ ' + minsToText(eff) + ' · ' + prog + '%</span>') +
+      '<input class="dt' + ((leaf ? t.start : win.start) ? "" : " empty") + '" type="date" value="' + h(leaf ? t.start : win.start) + '" data-act="task-field" data-k="start" data-id="' + t.id + '" title="Start — leave blank and the scheduler picks the day"' + (leaf ? "" : " disabled") + '>' +
+      '<input class="dt' + ((leaf ? t.due : win.end) ? "" : " empty") + '" type="date" value="' + h(leaf ? t.due : win.end) + '" data-act="task-field" data-k="due" data-id="' + t.id + '" title="Due date"' + (leaf ? "" : " disabled") + '>' +
+      '<select class="node-status" data-act="task-field" data-k="status" data-id="' + t.id + '"' + (leaf ? "" : " disabled") + '>' +
+        STATUSES.map(([v,l]) => '<option value="' + v + '"' + (t.status === v ? " selected" : "") + '>' + l + '</option>').join("") +
+      '</select>' +
+      (late ? '<span class="chip stop">overdue</span>' : "") +
+      '<span class="no-print" style="display:flex;gap:2px">' +
+        '<button class="iconbtn" data-act="task-notes" data-id="' + t.id + '" title="Notes">✎</button>' +
+        '<button class="iconbtn" data-act="task-wave" data-id="' + t.id + '" title="Break into a wave of smaller tasks">＋ Wave</button>' +
+        '<button class="iconbtn" data-act="task-up" data-id="' + t.id + '" title="Move up"' + (idx === 0 ? " disabled" : "") + '>↑</button>' +
+        '<button class="iconbtn" data-act="task-down" data-id="' + t.id + '" title="Move down"' + (idx === count-1 ? " disabled" : "") + '>↓</button>' +
+        '<button class="iconbtn del" data-act="task-del" data-id="' + t.id + '" title="Delete">✕</button>' +
+      '</span>' +
+    '</div>' +
+    '<div class="node-extra"><textarea data-act="task-field" data-k="notes" data-id="' + t.id + '" placeholder="Notes, definition of done, links, who else is involved…">' + h(t.notes) + '</textarea></div>' +
+    (t.kids.length
+      ? '<div class="kids">' + t.kids.map((k,i) => nodeHTML(k, depth+1, i, t.kids.length, goalId)).join("") +
+        '<div class="no-print"><button class="btn ghost sm" data-act="task-wave" data-id="' + t.id + '">＋ Add to this wave</button></div></div>'
+      : "") +
+  '</div>';
+}
+
+/* ------------------------------------------------------------- TIMELINE */
+const SCALES = { day:{ ppd:34, label:"Day" }, week:{ ppd:13, label:"Week" }, month:{ ppd:4.6, label:"Month" } };
+
+function goalWindow(g){
+  let lo = g.start || "", hi = g.due || "";
+  g.tasks.forEach(t => {
+    const w = taskWindow(t);
+    if(w.start && (!lo || w.start < lo)) lo = w.start;
+    if(w.end   && (!hi || w.end   > hi)) hi = w.end;
+  });
+  if(lo && !hi) hi = lo;
+  if(hi && !lo) lo = hi;
+  return { start: lo, end: hi };
+}
+
+function ganttRows(){
+  const rows = [];
+  S.goals.forEach(g => {
+    const w = goalWindow(g);
+    rows.push({ kind:"goal", id:g.id, label:g.title, depth:0, start:w.start, end:w.end,
+                prog:goalProgress(g), eff:goalEffort(g), done:g.status === "done" });
+    if(!(S.ui.collapsed || {})[g.id]){
+      allTasks(g).forEach(({ t, depth }) => {
+        const tw = taskWindow(t);
+        rows.push({ kind:"task", id:t.id, label:t.title, depth: depth+1, start:tw.start, end:tw.end,
+                    prog:taskProgress(t), eff:effort(t), done:t.status === "done",
+                    leaf:isLeaf(t), late:isOverdue(t), scheduled: !t.start && !t.due && t.sched.length > 0 });
+      });
+    }
+  });
+  return rows;
+}
+
+function viewTimeline(){
+  if(!S.goals.length) return flowStrip("timeline") + '<div class="card empty"><h3>Nothing to plot yet</h3><p>Add a goal and some activities first.</p></div>';
+  const rows = ganttRows();
+  const dated = rows.filter(r => r.start && r.end);
+  const t0 = todayISO();
+  let lo = t0, hi = addDays(t0, 21);
+  dated.forEach(r => { if(r.start < lo) lo = r.start; if(r.end > hi) hi = r.end; });
+  lo = addDays(lo, -3); hi = addDays(hi, 4);
+  const span = Math.max(daysBetween(lo, hi) + 1, 14);
+  const ppd = SCALES[S.ui.scale] ? SCALES[S.ui.scale].ppd : SCALES.week.ppd;
+  const W = Math.round(span * ppd);
+
+  /* header ticks + weekend shading */
+  let head = "", grid = "";
+  for(let i = 0; i < span; i++){
+    const d = addDays(lo, i), dt = parseISO(d), x = Math.round(i * ppd);
+    const isMon = dt.getDay() === 1, first = dt.getDate() === 1;
+    if(S.ui.scale === "day"){
+      head += '<div class="g-tick' + (isMon ? " strong" : "") + '" style="left:' + x + 'px"></div>' +
+              '<div class="g-lbl" style="left:' + x + 'px">' + DAYNAME[dt.getDay()][0] + dt.getDate() + '</div>';
+      grid += '<div class="g-tick' + (isMon ? " strong" : "") + '" style="left:' + x + 'px"></div>';
+    }else if(S.ui.scale === "week"){
+      if(isMon){
+        head += '<div class="g-tick strong" style="left:' + x + 'px"></div><div class="g-lbl" style="left:' + x + 'px">' + dt.getDate() + '</div>';
+        grid += '<div class="g-tick strong" style="left:' + x + 'px"></div>';
+      }
+    }else if(first){
+      head += '<div class="g-tick strong" style="left:' + x + 'px"></div>';
+      grid += '<div class="g-tick strong" style="left:' + x + 'px"></div>';
+    }
+    if(first) head += '<div class="g-mon" style="left:' + x + 'px">' + MONNAME[dt.getMonth()] + " " + String(dt.getFullYear()).slice(2) + '</div>';
+    if(ppd >= 10 && (dt.getDay() === 0 || dt.getDay() === 6))
+      grid += '<div class="g-weekend" style="left:' + x + 'px;width:' + Math.ceil(ppd) + 'px"></div>';
+  }
+  const todayX = Math.round(daysBetween(lo, t0) * ppd);
+  const todayLine = (todayX >= 0 && todayX <= W) ? '<div class="g-today" style="left:' + todayX + 'px"></div>' : "";
+
+  /* rows */
+  const left = rows.map(r => {
+    if(r.kind === "goal"){
+      const col = (S.ui.collapsed || {})[r.id];
+      return '<div class="g-row goalrow"><button class="iconbtn no-print" data-act="g-collapse" data-id="' + r.id + '" title="Collapse">' +
+             (col ? "▸" : "▾") + '</button><span title="' + h(r.label) + '">' + h(r.label) + '</span></div>';
+    }
+    return '<div class="g-row"><span style="padding-left:' + (10 + r.depth * 12) + 'px;color:' + (r.done ? "var(--muted)" : "inherit") +
+           '" title="' + h(r.label) + '">' + (r.leaf ? "" : "▸ ") + h(r.label) + '</span></div>';
+  }).join("");
+
+  const body = rows.map(r => {
+    if(!r.start || !r.end)
+      return '<div class="g-row"><div class="g-none">no dates — give it an estimate, then auto-schedule</div></div>';
+    const x = Math.round(daysBetween(lo, r.start) * ppd);
+    const w = Math.max(Math.round((daysBetween(r.start, r.end) + 1) * ppd), 5);
+    const cls = r.kind === "goal" ? "summary" : (r.done ? "done" : r.late ? "late" : "") + (r.scheduled ? " sched" : "");
+    const tip = r.label + " · " + shortDate(r.start) + " → " + shortDate(r.end) + " · " + minsToText(r.eff) + " · " + r.prog + "%";
+    return '<div class="g-row">' +
+      '<div class="g-bar ' + cls + '" style="left:' + x + 'px;width:' + w + 'px" title="' + h(tip) + '">' +
+        (r.prog > 0 && !r.done ? '<i class="g-fill" style="width:' + r.prog + '%"></i>' : "") +
+      '</div>' +
+      '<span class="g-name" style="left:' + (x + w + 7) + 'px">' + h(r.label) + ' · ' + r.prog + '%</span>' +
+    '</div>';
+  }).join("");
+
+  let undated = 0;
+  S.goals.forEach(g => eachTask(g.tasks, t => {
+    const w = taskWindow(t);
+    if(isLeaf(t) && t.status !== "done" && (!w.start || !w.end)) undated++;
+  }));
+
+  return flowStrip("timeline") +
+  '<div class="pagehead"><div><h1>Timeline</h1>' +
+    '<p>The Gantt view. Solid bars are dates you set; hatched bars are placed by the scheduler. The red line is today.</p></div>' +
+    '<div class="spacer"></div><div class="btnrow no-print">' +
+      Object.keys(SCALES).map(k => '<button class="btn ' + (S.ui.scale === k ? "primary" : "ghost") + ' sm" data-act="scale" data-k="' + k + '">' + SCALES[k].label + '</button>').join("") +
+      '<button class="btn ghost sm" data-act="print">Print</button>' +
+    '</div></div>' +
+  (undated ? '<div class="card pad no-print" style="margin-bottom:14px;border-left:4px solid var(--warn)"><b>' + undated + ' task' + (undated>1?"s":"") + ' has no place on the timeline.</b> ' +
+     'Give each one an estimate on the Activities tab, then run <b>Auto-schedule</b> on the Schedule tab. ' +
+     '<button class="btn ghost sm" data-act="tab" data-k="schedule">Go to Schedule</button></div>' : "") +
+  '<div class="gantt">' +
+    '<div class="g-left"><div class="g-head" style="padding:0 12px;align-items:center"><b style="font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--bronze)">Goal / activity</b></div>' + left + '</div>' +
+    '<div class="g-right"><div class="g-canvas" style="width:' + W + 'px">' +
+      '<div class="g-head" style="width:' + W + 'px">' + head + '</div>' + todayLine + body +
+    '</div></div>' +
+  '</div>' +
+  '<div class="legend">' +
+    '<span><i style="background:var(--charcoal)"></i>Goal (rolled up)</span>' +
+    '<span><i style="background:var(--bronze)"></i>Activity</span>' +
+    '<span><i style="background:var(--bronze);opacity:.55"></i>Auto-scheduled</span>' +
+    '<span><i style="background:var(--ok)"></i>Done</span>' +
+    '<span><i style="background:var(--stop)"></i>Overdue</span>' +
+  '</div>';
+}
+
+/* ------------------------------------------------------------- SCHEDULE */
+function orderedLeaves(){
+  const out = [];
+  S.goals.forEach(g => {
+    if(g.status === "parked") return;
+    eachTask(g.tasks, t => { if(isLeaf(t) && t.status !== "done") out.push({ g, t }); });
+  });
+  return out;
+}
+function isWorkDay(d){ return (S.settings.workDays || []).indexOf(dow(d)) !== -1; }
+
+/* Packs every estimated, unfinished task into your working week, in order,
+   splitting a long task across days when it will not fit in one. */
+function autoSchedule(){
+  const st = S.settings;
+  const cap = Math.max(30, Math.round((Number(st.hoursPerDay) || 4) * 60));
+  const dayStart = Number(st.dayStartMin) || 540;
+  S.goals.forEach(g => eachTask(g.tasks, t => { t.sched = []; }));
+  if(!(st.workDays || []).length){ toast("Pick at least one working day first."); return 0; }
+
+  const from = st.scheduleFrom || todayISO();
+  const used = {};                         // date -> minutes already committed
+
+  /* Fills a task forward from a date, spilling into later days when a day is full. */
+  const place = (t, startFrom) => {
+    let d = startFrom < from ? from : startFrom;
+    let rem = Number(t.est) || 0, guard = 0;
+    while(rem > 0 && guard++ < 4000){
+      if(!isWorkDay(d) || (used[d] || 0) >= cap){ d = addDays(d, 1); continue; }
+      const u = used[d] || 0;
+      const slot = Math.min(rem, cap - u);
+      t.sched.push({ date:d, startMin: dayStart + u, mins: slot });
+      used[d] = u + slot;
+      rem -= slot;
+    }
+  };
+
+  const leaves = orderedLeaves();
+  const estimated = leaves.filter(x => (Number(x.t.est) || 0) > 0);
+  const skipped = leaves.length - estimated.length;
+
+  /* Pass 1 — tasks with a start date of their own hold that date. */
+  estimated.filter(x => x.t.start).forEach(x => place(x.t, x.t.start));
+  /* Pass 2 — everything else fills the earliest room left, flowing around the pinned work. */
+  estimated.filter(x => !x.t.start).forEach(x => place(x.t, from));
+
+  save();
+  toast(estimated.length + " task" + (estimated.length === 1 ? "" : "s") + " scheduled" +
+        (skipped ? " · " + skipped + " skipped (no estimate)" : ""));
+  return estimated.length;
+}
+function clearSchedule(){
+  S.goals.forEach(g => eachTask(g.tasks, t => { t.sched = []; }));
+  save(); render(); toast("Schedule cleared.");
+}
+
+function sortSched(){
+  S.goals.forEach(g => eachTask(g.tasks, t => {
+    (t.sched || []).sort((a,b) => a.date < b.date ? -1 : a.date > b.date ? 1 : a.startMin - b.startMin);
+  }));
+}
+function agenda(){
+  sortSched();
+  const byDate = {};
+  S.goals.forEach(g => eachTask(g.tasks, t => {
+    (t.sched || []).forEach(c => {
+      (byDate[c.date] ||= []).push({ goal:g, task:t, chunk:c });
+    });
+  }));
+  return Object.keys(byDate).sort().map(d => ({ date:d, items: byDate[d].sort((a,b) => a.chunk.startMin - b.chunk.startMin) }));
+}
+
+function viewSchedule(){
+  const st = S.settings;
+  const days = agenda();
+  const noEstimate = [];
+  S.goals.forEach(g => eachTask(g.tasks, t => { if(isLeaf(t) && t.status !== "done" && !(Number(t.est) > 0)) noEstimate.push({ g, t }); }));
+  const totalMins = days.reduce((n,d) => n + d.items.reduce((m,i) => m + i.chunk.mins, 0), 0);
+
+  return flowStrip("calendar") +
+  '<div class="pagehead"><div><h1>Schedule</h1>' +
+    '<p>Estimates become actual days. Set your working pattern, auto-schedule, then send it to whichever calendar you already use.</p></div>' +
+    '<div class="spacer"></div><div class="btnrow no-print">' +
+      '<button class="btn ghost" data-act="sched-clear">Clear</button>' +
+      '<button class="btn ghost" data-act="ics">Download .ics</button>' +
+      '<button class="btn primary" data-act="sched-run">⟳ Auto-schedule</button>' +
+    '</div></div>' +
+  '<div class="grid2"><div>' +
+    '<div class="card pad">' +
+      '<h2 class="section-title">Your working week</h2>' +
+      '<div class="field"><label>Working days</label><div class="inline" style="gap:6px">' +
+        DAYNAME.map((d,i) => '<label class="chip' + ((st.workDays||[]).indexOf(i) !== -1 ? " ok" : "") + '" style="cursor:pointer;min-width:0;flex:0 0 auto">' +
+          '<input type="checkbox" style="width:auto;margin:0" data-act="workday" data-k="' + i + '"' + ((st.workDays||[]).indexOf(i) !== -1 ? " checked" : "") + '> ' + d + '</label>').join("") +
+      '</div></div>' +
+      '<div class="inline">' +
+        '<div class="field"><label>Hours per day</label><input type="number" min="0.5" step="0.5" value="' + st.hoursPerDay + '" data-act="setting" data-k="hoursPerDay"></div>' +
+        '<div class="field"><label>Day starts</label><input type="time" value="' + pad(Math.floor(st.dayStartMin/60)) + ":" + pad(st.dayStartMin%60) + '" data-act="setting" data-k="dayStartMin"></div>' +
+      '</div>' +
+      '<div class="inline">' +
+        '<div class="field"><label>Schedule from</label><input type="date" value="' + h(st.scheduleFrom) + '" data-act="setting" data-k="scheduleFrom" placeholder="today"></div>' +
+        '<div class="field"><label>Default estimate (min)</label><input type="number" min="0" step="15" value="' + st.defaultEstimate + '" data-act="setting" data-k="defaultEstimate"></div>' +
+      '</div>' +
+      '<p class="note">Capacity is ' + minsToText((Number(st.hoursPerDay)||0)*60) + ' on each of ' + (st.workDays||[]).length +
+        ' day(s) a week. Tasks are placed in goal order, then activity order — anything with its own start date waits until that date.</p>' +
+    '</div>' +
+    (noEstimate.length ? '<div class="card pad" style="margin-top:14px;border-left:4px solid var(--warn)">' +
+      '<h2 class="section-title">Needs an estimate (' + noEstimate.length + ')</h2>' +
+      '<p class="note" style="margin-bottom:8px">These are skipped by the scheduler until you say how long they take.</p>' +
+      noEstimate.slice(0,12).map(x => '<div style="margin-bottom:5px">• ' + h(x.t.title) + ' <span class="chip">' + h(x.g.title.slice(0,26)) + '</span></div>').join("") +
+      (noEstimate.length > 12 ? '<div class="note">…and ' + (noEstimate.length-12) + ' more</div>' : "") +
+      '<div class="btnrow no-print" style="margin-top:10px"><button class="btn ghost sm" data-act="tab" data-k="activities">Fix on Activities</button></div></div>' : "") +
+  '</div><div>' +
+    '<div class="stats" style="margin-bottom:14px">' +
+      stat(days.length, "working days booked") +
+      stat(minsToText(totalMins), "scheduled effort") +
+      stat(days.length ? prettyDate(days[days.length-1].date).replace(/^\w+ /, "") : "—", "finish date") +
+    '</div>' +
+    (days.length
+      ? days.slice(0, 60).map(dayBlock).join("")
+      : '<div class="card empty"><h3>Nothing scheduled</h3><p>Set your working pattern, then hit <b>Auto-schedule</b>. Every estimated task gets a real slot in a real day.</p></div>') +
+    (days.length > 60 ? '<p class="note">Showing the first 60 days.</p>' : "") +
+    (days.length ? '<div class="card pad no-print" style="margin-top:14px"><h2 class="section-title">Into your calendar</h2>' +
+      '<p class="note"><b>Download .ics</b> gives you one file holding every scheduled block. Import it into Google Calendar (Settings → Import &amp; export), ' +
+      'Outlook (File → Open &amp; Export → Import), or Apple Calendar (File → Import). Re-run the scheduler and re-import whenever the plan shifts — ' +
+      'events carry stable IDs, so most calendars update the existing entries rather than duplicating them. ' +
+      'An import only adds and updates, though — if a task ends up needing fewer blocks than last time, the leftover entries stay until you delete them, ' +
+      'so import into a calendar of its own that you can clear in one go.</p>' +
+      '<div class="btnrow" style="margin-top:10px"><button class="btn primary" data-act="ics">Download .ics</button></div></div>' : "") +
+  '</div></div>';
+}
+
+function dayBlock(d){
+  const isToday = d.date === todayISO();
+  const mins = d.items.reduce((n,i) => n + i.chunk.mins, 0);
+  return '<div class="day"><div class="day-h"><b>' + prettyDate(d.date) + '</b>' +
+    (isToday ? '<span class="today-flag">Today</span>' : "") +
+    '<span class="spacer" style="flex:1"></span><span class="chip">' + minsToText(mins) + '</span></div>' +
+    d.items.map(i => {
+      const end = i.chunk.startMin + i.chunk.mins;
+      return '<div class="slot' + (i.task.status === "done" ? " done" : "") + '">' +
+        '<button class="tick' + (i.task.status === "done" ? " on" : "") + '" data-act="task-tick" data-id="' + i.task.id + '">✓</button>' +
+        '<span class="time">' + timeOfDay(i.chunk.startMin) + " – " + timeOfDay(end) + '</span>' +
+        '<span class="what">' + h(i.task.title) + '<small>' + h(i.goal.title) + '</small></span>' +
+        '<span class="chip">' + minsToText(i.chunk.mins) + '</span>' +
+        '<a class="btn ghost sm no-print" target="_blank" rel="noopener" href="' + gcalLink(i) + '">＋ Google</a>' +
+      '</div>';
+    }).join("") + '</div>';
+}
+
+/* ------------------------------------------------- calendar export (.ics) */
+function stampLocal(dateISO, mins){
+  const d = parseISO(dateISO);
+  if(!d) return "";
+  d.setMinutes(d.getMinutes() + Math.round(mins || 0));
+  return "" + d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) + "T" +
+         pad(d.getHours()) + pad(d.getMinutes()) + "00";
+}
+function icsEsc(s){
+  return String(s == null ? "" : s).replace(/\\/g, "\\\\").replace(/;/g, "\\;")
+    .replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
+}
+function fold(line){
+  if(line.length <= 74) return line;
+  let out = line.slice(0, 74), rest = line.slice(74);
+  while(rest.length > 73){ out += "\r\n " + rest.slice(0, 73); rest = rest.slice(73); }
+  return out + (rest ? "\r\n " + rest : "");
+}
+function taskPath(goal, task){
+  const trail = [];
+  let cur = findTask(task.id);
+  while(cur && cur.parent){ trail.unshift(cur.parent.title); cur = findTask(cur.parent.id); }
+  return [goal.title].concat(trail).join(" › ");
+}
+function buildICS(){
+  sortSched();
+  const now = new Date();
+  const dtstamp = "" + now.getUTCFullYear() + pad(now.getUTCMonth()+1) + pad(now.getUTCDate()) + "T" +
+                  pad(now.getUTCHours()) + pad(now.getUTCMinutes()) + pad(now.getUTCSeconds()) + "Z";
+  const L = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//General Disability Support//Goal Studio//EN",
+             "CALSCALE:GREGORIAN","METHOD:PUBLISH","X-WR-CALNAME:Goal Studio"];
+  const events = [];
+  S.goals.forEach(g => eachTask(g.tasks, t => {
+    (t.sched || []).forEach((c, i) => {
+      const desc = "Goal: " + taskPath(g, t) + (t.notes ? "\n\n" + t.notes : "") +
+                   "\n\nEstimate: " + minsToText(t.est) +
+                   ((t.sched.length > 1) ? "  (block " + (i+1) + " of " + t.sched.length + ")" : "");
+      const from = stampLocal(c.date, c.startMin);
+      events.push({ from, lines: [
+        "BEGIN:VEVENT",
+        "UID:" + t.id + "-" + i + "@goalstudio.gds",
+        "DTSTAMP:" + dtstamp,
+        "DTSTART:" + from,
+        "DTEND:" + stampLocal(c.date, c.startMin + c.mins),
+        fold("SUMMARY:" + icsEsc(t.title)),
+        fold("DESCRIPTION:" + icsEsc(desc)),
+        fold("CATEGORIES:" + icsEsc(g.title)),
+        "STATUS:" + (t.status === "done" ? "COMPLETED" : "CONFIRMED"),
+        "END:VEVENT"] });
+    });
+  }));
+  events.sort((a, b) => a.from < b.from ? -1 : a.from > b.from ? 1 : 0);
+  events.forEach(e => L.push.apply(L, e.lines));
+  L.push("END:VCALENDAR");
+  return { text: L.join("\r\n"), count: events.length };
+}
+function gcalLink(item){
+  const s = stampLocal(item.chunk.date, item.chunk.startMin);
+  const e = stampLocal(item.chunk.date, item.chunk.startMin + item.chunk.mins);
+  return "https://calendar.google.com/calendar/render?action=TEMPLATE" +
+    "&text=" + encodeURIComponent(item.task.title) +
+    "&dates=" + s + "/" + e +
+    "&details=" + encodeURIComponent("Goal: " + item.goal.title + (item.task.notes ? "\n\n" + item.task.notes : ""));
+}
+function download(name, text, type){
+  const blob = new Blob([text], { type: type || "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
+
+/* ------------------------------------------------------------------ DATA */
+function viewData(){
+  const tasks = S.goals.reduce((n,g) => n + allTasks(g).length, 0);
+  return flowStrip("") +
+  '<div class="pagehead"><div><h1>Data</h1><p>Everything lives in this browser. Nothing is sent anywhere.</p></div></div>' +
+  '<div class="grid2"><div class="card pad">' +
+    '<h2 class="section-title">Backup &amp; restore</h2>' +
+    '<p class="note">Your plan is stored in this browser\'s local storage on this device. Clearing site data, using a different browser, or a fresh device means starting empty — so export a copy somewhere safe (OneDrive, Google Drive) whenever you have done a solid planning session.</p>' +
+    '<div class="btnrow" style="margin-top:14px">' +
+      '<button class="btn primary" data-act="export">Export JSON backup</button>' +
+      '<button class="btn ghost" data-act="import">Import backup</button>' +
+      '<button class="btn ghost" data-act="ics">Download .ics</button>' +
+      '<button class="btn ghost" data-act="print">Print / PDF</button>' +
+    '</div>' +
+    '<input type="file" id="importfile" accept="application/json,.json" style="display:none">' +
+    '<div class="divider"></div>' +
+    '<h2 class="section-title">Start over</h2>' +
+    '<div class="btnrow">' +
+      '<button class="btn ghost" data-act="sample">Load worked example</button>' +
+      '<button class="btn danger" data-act="wipe">Delete everything</button>' +
+    '</div>' +
+    '<p class="note" style="margin-top:10px">Currently holding <b>' + S.goals.length + '</b> goal(s) and <b>' + tasks + '</b> activities.</p>' +
+  '</div><div class="card pad">' +
+    '<h2 class="section-title">How this replaces the scattered stack</h2>' +
+    '<ul class="tight">' +
+      '<li><b>SMART goal template (Word)</b> → the Goals tab. Same five prompts, but the answers stay attached to the goal instead of sitting in a file.</li>' +
+      '<li><b>Task template (Word)</b> → the Activities tab. One activity per row, notes underneath.</li>' +
+      '<li><b>Wave breakdown</b> → ＋ Wave on any activity, as many levels deep as the work needs. Effort and progress roll upward automatically.</li>' +
+      '<li><b>Gantt (Excel)</b> → the Timeline tab, drawn from the same dates, never re-typed.</li>' +
+      '<li><b>Calendar</b> → the Schedule tab turns estimates into real time blocks and exports one .ics for Google, Outlook or Apple.</li>' +
+    '</ul>' +
+    '<div class="divider"></div>' +
+    '<h2 class="section-title">A working rhythm</h2>' +
+    '<ul class="tight">' +
+      '<li><b>Set</b> the goal and get all five SMART rows filled — an unmeasurable goal produces unmeasurable tasks.</li>' +
+      '<li><b>Break</b> it into activities. If an activity cannot be started in one sitting, it is a container: give it a wave.</li>' +
+      '<li><b>Estimate</b> only leaf tasks, in minutes. Round up; you will be wrong in the same direction every time and that is fine.</li>' +
+      '<li><b>Schedule</b> weekly. Re-run auto-schedule after anything slips and re-import the .ics.</li>' +
+      '<li><b>Review</b> the Timeline fortnightly, add the next wave to whatever you have now reached.</li>' +
+    '</ul>' +
+  '</div></div>';
+}
+
+/* =====================================================================
+   ACTIONS
+   ===================================================================== */
+function newTask(){
+  return { id:uid(), title:"", status:"todo", notes:"", est:Number(S.settings.defaultEstimate) || 60,
+           start:"", due:"", sched:[], kids:[] };
+}
+function newGoal(){
+  return { id:uid(), title:"", why:"", status:"active", start:todayISO(), due:"",
+           smart:{ s:"", m:"", a:"", r:"", t:"" }, tasks:[] };
+}
+function removeTask(id){
+  const strip = list => {
+    const i = list.findIndex(t => t.id === id);
+    if(i !== -1){ list.splice(i, 1); return true; }
+    return list.some(t => strip(t.kids));
+  };
+  S.goals.some(g => strip(g.tasks));
+}
+function moveTask(id, dir){
+  const hit = findTask(id);
+  if(!hit) return;
+  const list = hit.parent ? hit.parent.kids : hit.goal.tasks;
+  const i = list.findIndex(t => t.id === id), j = i + dir;
+  if(i === -1 || j < 0 || j >= list.length) return;
+  list.splice(j, 0, list.splice(i, 1)[0]);
+}
+
+function openModal(html){ $("#modal").innerHTML = html; $("#modalbg").classList.add("on"); }
+function closeModal(){ $("#modalbg").classList.remove("on"); $("#modal").innerHTML = ""; }
+
+function doAction(act, el){
+  const id = el.dataset.id, k = el.dataset.k;
+  switch(act){
+    case "tab": S.ui.tab = k; save(); render(); window.scrollTo(0,0); return;
+    case "goal-new": {
+      const g = newGoal();
+      S.goals.push(g); S.ui.goalId = g.id; S.ui.tab = "goals";
+      save(); render();
+      const inp = $('input[data-k="title"][data-id="' + g.id + '"]');
+      if(inp) inp.focus();
+      return;
+    }
+    case "goal-select": S.ui.goalId = id; save(); render(); return;
+    case "goal-del": {
+      const g = S.goals.find(x => x.id === id);
+      if(!g) return;
+      if(!confirm('Delete "' + (g.title || "this goal") + '" and everything under it?')) return;
+      S.goals = S.goals.filter(x => x.id !== id);
+      if(S.ui.goalId === id) S.ui.goalId = S.goals.length ? S.goals[0].id : null;
+      save(); render(); toast("Goal deleted.");
+      return;
+    }
+    case "goto-activities": S.ui.goalId = id; S.ui.tab = "activities"; save(); render(); window.scrollTo(0,0); return;
+
+    case "task-add": {
+      const g = S.goals.find(x => x.id === id) || currentGoal();
+      if(!g) return;
+      const t = newTask();
+      g.tasks.push(t); save(); render();
+      focusTask(t.id);
+      return;
+    }
+    case "task-wave": {
+      const hit = findTask(id);
+      if(!hit) return;
+      const t = newTask();
+      hit.task.kids.push(t);
+      if(hit.task.status === "done") hit.task.status = "doing";
+      save(); render(); focusTask(t.id);
+      return;
+    }
+    case "task-tick": {
+      const hit = findTask(id);
+      if(!hit) return;
+      const t = hit.task;
+      const next = isDone(t) ? "todo" : "done";
+      t.status = next;
+      eachTask(t.kids, k => { k.status = next; });
+      save(); render();
+      return;
+    }
+    case "task-del": {
+      const hit = findTask(id);
+      if(!hit) return;
+      const kids = allTasks({ tasks:[hit.task] }).length - 1;
+      if(kids > 0 && !confirm("Delete this activity and its " + kids + " sub-task(s)?")) return;
+      removeTask(id); save(); render();
+      return;
+    }
+    case "task-up":   moveTask(id, -1); save(); render(); return;
+    case "task-down": moveTask(id,  1); save(); render(); return;
+    case "task-notes": {
+      const n = document.querySelector('.node[data-node="' + id + '"]');
+      if(n){ n.classList.toggle("open"); const ta = n.querySelector(".node-extra textarea"); if(ta && n.classList.contains("open")) ta.focus(); }
+      return;
+    }
+    case "bulk-open": {
+      const hit = findTask(id);
+      const where = hit ? "the wave under “" + h(hit.task.title || "this activity") + "”" : "this goal";
+      openModal('<h3>Paste a list</h3><p class="note">One activity per line. They land in ' + where +
+        ', each with your default estimate of ' + minsToText(S.settings.defaultEstimate) + '.</p>' +
+        '<textarea id="bulktext" style="min-height:170px;margin:14px 0" placeholder="Draft the referral one-pager&#10;Call three support coordinators&#10;Set up the follow-up reminder"></textarea>' +
+        '<div class="btnrow" style="justify-content:flex-end"><button class="btn ghost" data-act="modal-close">Cancel</button>' +
+        '<button class="btn primary" data-act="bulk-save" data-id="' + h(id || "") + '">Add activities</button></div>');
+      setTimeout(() => { const t = $("#bulktext"); if(t) t.focus(); }, 30);
+      return;
+    }
+    case "bulk-save": {
+      const lines = ($("#bulktext").value || "").split("\n").map(s => s.replace(/^\s*[-*•\d.)\]]+\s*/, "").trim()).filter(Boolean);
+      if(!lines.length){ closeModal(); return; }
+      const hit = id ? findTask(id) : null;
+      const list = hit ? hit.task.kids : (currentGoal() ? currentGoal().tasks : null);
+      if(!list){ closeModal(); return; }
+      lines.forEach(line => { const t = newTask(); t.title = line; list.push(t); });
+      closeModal(); save(); render();
+      toast(lines.length + " activities added.");
+      return;
+    }
+    case "modal-close": closeModal(); return;
+
+    case "scale": S.ui.scale = k; save(); render(); return;
+    case "g-collapse": (S.ui.collapsed ||= {}); S.ui.collapsed[id] = !S.ui.collapsed[id]; save(); render(); return;
+
+    case "sched-run": autoSchedule(); render(); return;
+    case "sched-clear": clearSchedule(); return;
+    case "ics": {
+      const { text, count } = buildICS();
+      if(!count){ toast("Nothing scheduled yet — run Auto-schedule first."); return; }
+      download("goal-studio-schedule.ics", text, "text/calendar;charset=utf-8");
+      toast(count + " calendar event(s) exported.");
+      return;
+    }
+    case "export":
+      download("goal-studio-backup-" + todayISO() + ".json", JSON.stringify(S, null, 2), "application/json");
+      toast("Backup downloaded.");
+      return;
+    case "import": {
+      const f = $("#importfile");
+      if(f) f.click();
+      return;
+    }
+    case "sample": {
+      if(S.goals.length && !confirm("Add the worked example to your existing goals?")) return;
+      const added = sampleGoals();
+      S.goals = S.goals.concat(added);
+      S.ui.goalId = added[0].id;
+      S.ui.tab = "goals";
+      save(); render(); toast("Example loaded — follow it through the tabs.");
+      return;
+    }
+    case "wipe": {
+      if(!confirm("Delete every goal, activity and schedule on this device? Export a backup first if you might want it back.")) return;
+      const tab = S.ui.tab;
+      S = blank(); S.ui.tab = tab;
+      save(); render(); toast("Cleared.");
+      return;
+    }
+    case "print": window.print(); return;
+  }
+}
+function focusTask(id){
+  const inp = document.querySelector('.node[data-node="' + id + '"] .node-title');
+  if(inp){ inp.focus(); inp.scrollIntoView({ block:"center", behavior:"smooth" }); }
+}
+
+/* -------------------------------------------------- live, focus-safe edits */
+function activityStats(g){
+  const spent = g.tasks.reduce((n,t) => n + doneEffort(t), 0);
+  return stat(goalProgress(g) + "%", "complete") +
+         stat(countLeaves(g), "tasks at the coalface") +
+         stat(minsToText(goalEffort(g)), "estimated effort") +
+         stat(minsToText(goalEffort(g) - spent), "effort remaining") +
+         stat(maxDepth(g) + 1, "waves deep");
+}
+/* Updates the numbers that depend on other numbers, without rebuilding the
+   DOM — so the cursor stays exactly where you left it. */
+function refreshRollups(){
+  const g = currentGoal();
+  if(!g || S.ui.tab !== "activities") return;
+  eachTask(g.tasks, t => {
+    const node = document.querySelector('.node[data-node="' + t.id + '"]');
+    if(!node) return;
+    const tick = node.querySelector(":scope > .node-main > .tick");
+    if(tick){ const d = isDone(t); tick.classList.toggle("on", d); node.classList.toggle("done", d); }
+    if(!isLeaf(t)){
+      const r = node.querySelector(":scope > .node-main > .rollup");
+      if(r) r.textContent = "Σ " + minsToText(effort(t)) + " · " + taskProgress(t) + "%";
+      const w = taskWindow(t);
+      const dates = node.querySelectorAll(":scope > .node-main > input.dt");
+      if(dates[0]){ dates[0].value = w.start || ""; dates[0].classList.toggle("empty", !w.start); }
+      if(dates[1]){ dates[1].value = w.end   || ""; dates[1].classList.toggle("empty", !w.end); }
+    }
+  });
+  const box = document.querySelector(".stats");
+  if(box) box.innerHTML = activityStats(g);
+}
+function syncGoalTitle(g){
+  const card = document.querySelector('.goal-card[data-id="' + g.id + '"] h3');
+  if(card) card.textContent = g.title;
+}
+function refreshSmart(g){
+  const sc = smartScore(g);
+  const box = document.querySelector(".smart-score");
+  if(box) box.innerHTML = "<b>" + sc + "/5</b><span>" +
+    (sc === 5 ? "Fully framed — this goal is testable."
+     : sc >= 3 ? "Nearly there. The blank rows are where goals usually go soft."
+     : "Fill these in before breaking the goal down — vague goals produce vague tasks.") + "</span>";
+  SMART_FIELDS.forEach(([k]) => {
+    const ta = document.querySelector('textarea[data-act="smart-field"][data-k="' + k + '"]');
+    if(ta) ta.closest(".smart-row").classList.toggle("filled", (g.smart[k] || "").trim().length > 2);
+  });
+}
+
+function setGoalField(el){
+  const g = S.goals.find(x => x.id === el.dataset.id);
+  if(!g) return;
+  g[el.dataset.k] = el.value;
+  if(el.dataset.k === "title") syncGoalTitle(g);
+  save();
+}
+function setSmartField(el){
+  const g = S.goals.find(x => x.id === el.dataset.id);
+  if(!g) return;
+  g.smart[el.dataset.k] = el.value;
+  refreshSmart(g);
+  save();
+}
+function setTaskField(el){
+  const hit = findTask(el.dataset.id);
+  if(!hit) return;
+  const t = hit.task, k = el.dataset.k;
+  if(k === "est"){
+    t.est = Math.max(0, Math.round(Number(el.value) || 0));
+    refreshRollups();
+  }else if(k === "status"){
+    t.status = el.value;
+    save(); render();
+    return;
+  }else{
+    t[k] = el.value;
+    if(k === "start" || k === "due"){ el.classList.toggle("empty", !el.value); refreshRollups(); }
+  }
+  save();
+}
+function setSetting(el){
+  const k = el.dataset.k;
+  let v = el.value;
+  if(k === "hoursPerDay")      v = Math.min(16, Math.max(0.5, Number(v) || 4));
+  if(k === "defaultEstimate")  v = Math.max(0, Math.round(Number(v) || 0));
+  if(k === "dayStartMin"){
+    const p = String(v).split(":");
+    v = (Number(p[0]) || 0) * 60 + (Number(p[1]) || 0);
+  }
+  S.settings[k] = v;
+  save();
+}
+
+/* =====================================================================
+   WIRING
+   ===================================================================== */
+const CLICK_ACTS = ["tab","goal-new","goal-select","goal-del","goto-activities","task-add","task-wave",
+  "task-tick","task-del","task-up","task-down","task-notes","bulk-open","bulk-save","modal-close",
+  "scale","g-collapse","sched-run","sched-clear","ics","export","import","sample","wipe","print"];
+
+document.addEventListener("click", e => {
+  const el = e.target.closest("[data-act]");
+  if(!el) return;
+  const act = el.dataset.act;
+  if(CLICK_ACTS.indexOf(act) === -1) return;
+  e.preventDefault();
+  doAction(act, el);
+});
+document.addEventListener("input", e => {
+  const el = e.target.closest("[data-act]");
+  if(!el) return;
+  const act = el.dataset.act;
+  if(act === "goal-field")  setGoalField(el);
+  else if(act === "smart-field") setSmartField(el);
+  else if(act === "task-field")  setTaskField(el);
+});
+document.addEventListener("change", e => {
+  if(e.target.id === "importfile"){ importBackup(e.target); return; }
+  const el = e.target.closest("[data-act]");
+  if(!el) return;
+  const act = el.dataset.act;
+  if(act === "goal-field"){ setGoalField(el); if(el.tagName === "SELECT") render(); }
+  else if(act === "task-field") setTaskField(el);
+  else if(act === "goal-switch"){ S.ui.goalId = el.value; save(); render(); }
+  else if(act === "setting"){ setSetting(el); render(); }
+  else if(act === "workday"){
+    const d = Number(el.dataset.k);
+    const list = S.settings.workDays || [];
+    S.settings.workDays = el.checked ? list.concat([d]).sort() : list.filter(x => x !== d);
+    save(); render();
+  }
+});
+
+function importBackup(input){
+  const file = input.files && input.files[0];
+  if(!file) return;
+  const rd = new FileReader();
+  rd.onload = () => {
+    try{
+      const d = JSON.parse(rd.result);
+      if(!d || !Array.isArray(d.goals)) throw new Error("not a Goal Studio backup");
+      S.goals = d.goals; S.goals.forEach(normaliseGoal);
+      S.settings = Object.assign({}, DEFAULT_SETTINGS, d.settings || {});
+      S.ui.goalId = S.goals.length ? S.goals[0].id : null;
+      save(); render(); toast("Backup restored — " + S.goals.length + " goal(s).");
+    }catch(err){
+      toast("That file could not be read as a backup.");
+    }
+  };
+  rd.onerror = () => toast("That file could not be read.");
+  rd.readAsText(file);
+  input.value = "";
+}
+$("#tabs").addEventListener("click", e => {
+  const b = e.target.closest(".tab");
+  if(!b) return;
+  S.ui.tab = b.dataset.tab; save(); render(); window.scrollTo(0,0);
+});
+$("#modalbg").addEventListener("click", e => { if(e.target.id === "modalbg") closeModal(); });
+document.addEventListener("keydown", e => { if(e.key === "Escape") closeModal(); });
+window.addEventListener("pagehide", () => { try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} });
+
+/* ---------------------------------------------------------- worked example */
+function sampleGoals(){
+  const T = todayISO();
+  const mk = (title, est, kids, start, due) => {
+    const t = newTask();
+    t.title = title; t.est = est || 0; t.kids = kids || [];
+    t.start = start || ""; t.due = due || "";
+    return t;
+  };
+  const g1 = newGoal();
+  g1.title = "Grow to 15 regular participants by 30 June";
+  g1.why = "A steady book of regular supports means predictable income, better continuity for participants, and no scrambling for shifts.";
+  g1.start = T;
+  g1.due = addDays(T, 120);
+  g1.smart = {
+    s: "Fifteen participants receiving at least one scheduled support per fortnight across Newcastle and Lake Macquarie.",
+    m: "Count of participants with a recurring booking in the roster. Checkpoint: 8 by the halfway mark.",
+    a: "Currently sits around 6. Two new participants a month is realistic on existing capacity without hiring.",
+    r: "Referral flow is the bottleneck on everything else — pricing, hours, and eventually a second worker.",
+    t: "By 30 June, with a review of the referral pipeline every fortnight."
+  };
+  g1.tasks = [
+    mk("Referral pipeline with support coordinators", 0, [
+      mk("Draft a one-page referral summary (services, area, availability)", 120),
+      mk("List 20 support coordinators across Newcastle and Lake Macquarie", 90),
+      mk("Send the intro email to the first 10", 60),
+      mk("Book coffee or a call with anyone who replies", 180)
+    ]),
+    mk("Website does the explaining", 0, [
+      mk("Write a plain-English page for each service", 180),
+      mk("Set up and verify the Google Business Profile", 60),
+      mk("Ask five current families for a review", 45)
+    ]),
+    mk("Onboarding that does not lose people", 0, [
+      mk("Write the intake checklist", 90),
+      mk("Build the service agreement template", 120),
+      mk("Set a 48-hour response standard and a reminder to hold it", 30)
+    ]),
+    mk("Fortnightly pipeline review", 45, [], addDays(T, 14), addDays(T, 14))
+  ];
+
+  const g2 = newGoal();
+  g2.title = "Compliance and screening fully current before the next audit";
+  g2.why = "Nothing else matters if the paperwork is not straight — and chasing it late always costs more.";
+  g2.start = T;
+  g2.due = addDays(T, 45);
+  g2.smart = {
+    s: "Worker screening, first aid, insurance and police check all valid and filed in one place.",
+    m: "Five of five documents current, each with an expiry date and a reminder set.",
+    a: "All renewals are online; the only real cost is time and the first aid course.",
+    r: "Coordinators ask for these before referring. Gaps directly cost referrals.",
+    t: "Everything current within six weeks, then reminders 60 days before each expiry."
+  };
+  g2.tasks = [
+    mk("Audit what expires when", 60),
+    mk("Book and complete first aid refresher", 480),
+    mk("Renew insurance certificate of currency", 60),
+    mk("File everything in one folder and set 60-day reminders", 45)
+  ];
+  return [g1, g2];
+}
+
+/* ------------------------------------------------------------------- boot */
+if(!S.ui.goalId && S.goals.length) S.ui.goalId = S.goals[0].id;
+render();
+$("#savechip").textContent = S.goals.length ? "Saved locally" : "Ready";
+</script>
+</body>
+</html>
