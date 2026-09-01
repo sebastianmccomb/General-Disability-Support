@@ -2,10 +2,19 @@
 <html lang="en-AU">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="robots" content="noindex, nofollow" />
 <title>Goal Studio | General Disability Support</title>
 <meta name="description" content="Goal setting, activity breakdown, estimation, timeline and calendar in one place." />
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#121619" />
+<meta name="color-scheme" content="light" />
+<link rel="icon" href="icon-192.png" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="apple-mobile-web-app-title" content="Goal Studio" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -19,14 +28,16 @@
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,system-ui,-apple-system,sans-serif;font-size:14px;line-height:1.5}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,system-ui,-apple-system,sans-serif;font-size:14px;line-height:1.5;
+  padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px);-webkit-tap-highlight-color:rgba(185,138,81,.18)}
 a{color:inherit}
 button,input,select,textarea{font:inherit;color:inherit}
 h1,h2,h3{margin:0}
 ::selection{background:var(--bronze);color:#fff}
 
 /* ---------- top bar ---------- */
-.topbar{position:sticky;top:0;z-index:60;background:var(--charcoal);color:var(--cream);border-bottom:1px solid rgba(214,173,116,.25)}
+.topbar{position:sticky;top:0;z-index:60;background:var(--charcoal);color:var(--cream);border-bottom:1px solid rgba(214,173,116,.25);
+  padding-top:env(safe-area-inset-top,0px)}
 .topbar-in{display:flex;align-items:center;gap:22px;padding:12px 20px;flex-wrap:wrap}
 .brand{display:flex;gap:12px;align-items:center;min-width:0}
 .mark{width:32px;height:32px;border:1px solid var(--bronze);border-radius:50%;display:grid;place-items:center;flex:0 0 auto}
@@ -41,7 +52,7 @@ h1,h2,h3{margin:0}
 .savechip{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--bronze-2);opacity:.85;white-space:nowrap}
 
 /* ---------- layout ---------- */
-.wrap{max-width:1400px;margin:0 auto;padding:26px 20px 90px}
+.wrap{max-width:1400px;margin:0 auto;padding:26px 20px calc(90px + env(safe-area-inset-bottom,0px))}
 .pagehead{display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap;margin-bottom:18px}
 .pagehead h1{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:600;letter-spacing:.01em}
 .pagehead p{margin:6px 0 0;color:var(--muted);max-width:70ch}
@@ -50,6 +61,7 @@ h1,h2,h3{margin:0}
 .card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
 .pad{padding:20px}
 .grid2{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:20px;align-items:start}
+.grid2 > *{min-width:0}   /* grid items default to min-width:auto and refuse to shrink */
 @media(max-width:900px){.grid2{grid-template-columns:1fr}}
 
 /* ---------- flow strip ---------- */
@@ -131,6 +143,8 @@ textarea{resize:vertical;min-height:74px;line-height:1.5}
 .dt{width:138px!important;flex:0 0 auto;padding:6px 8px;font-size:12.5px}
 .node-status{width:104px!important;flex:0 0 auto;padding:6px 8px;font-size:12px}
 .kids{margin:0 0 8px 26px;padding-left:14px;border-left:2px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.node-when{display:contents}
+.rowmove{display:flex;gap:2px}
 .node-extra{padding:0 11px 11px 40px;display:none}
 .node.open .node-extra{display:block}
 .tick{width:19px;height:19px;flex:0 0 auto;border:1.5px solid var(--line);border-radius:5px;background:var(--white);cursor:pointer;display:grid;place-items:center;color:transparent;font-size:12px;line-height:1;padding:0}
@@ -189,6 +203,7 @@ textarea{resize:vertical;min-height:74px;line-height:1.5}
 
 /* ---------- misc ---------- */
 .note{font-size:12.5px;color:var(--muted);line-height:1.6}
+p,li,.note,.stat span{overflow-wrap:anywhere}   /* long URLs must wrap, not push the page sideways */
 .kbd{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:var(--paper);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
 #toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:var(--charcoal);color:var(--cream);padding:12px 22px;border-radius:999px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:200;box-shadow:var(--shadow)}
 #toast.on{opacity:1;transform:translate(-50%,0)}
@@ -198,6 +213,63 @@ textarea{resize:vertical;min-height:74px;line-height:1.5}
 .modal h3{font-family:'Cormorant Garamond',serif;font-size:24px;margin-bottom:6px}
 ul.tight{margin:8px 0 0;padding-left:18px}
 ul.tight li{margin-bottom:5px;color:var(--ink-2)}
+/* ---------- phones: a compact shell so the work starts above the fold ---------- */
+@media(max-width:700px){
+  .topbar-in{padding:9px 13px;gap:9px}
+  .brand-title strong{font-size:17px;letter-spacing:.16em}
+  .brand-title span{display:none}
+  .brand{order:1}
+  .savechip{order:2;margin-left:auto;font-size:9.5px}
+  .tabs{order:3;width:100%;margin-left:0;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{padding:7px 13px;font-size:11.5px;flex:0 0 auto}
+  .mark{width:27px;height:27px}
+  .mark:before{width:10px;height:17px}
+  .flow{display:none}
+  .wrap{padding:16px 13px calc(70px + env(safe-area-inset-bottom,0px))}
+  .pagehead{margin-bottom:14px;gap:10px}
+  .pagehead h1{font-size:26px}
+  .pagehead p{display:none}                  /* the guidance lives on the Data tab */
+  .pagehead .keep{display:block;font-size:12.5px}
+  .pad{padding:15px}
+  .stats{display:flex;overflow-x:auto;gap:8px;padding-bottom:3px;scrollbar-width:none}
+  .stats::-webkit-scrollbar{display:none}
+  .stat{flex:0 0 auto;min-width:98px;padding:9px 13px}
+  .stat b{font-size:21px}
+  .stat span{font-size:9px;letter-spacing:.1em}
+  .goal-card h3{font-size:18px}
+  .kids{margin-left:12px;padding-left:9px}
+  /* One activity, one line: dates and status wait behind ✎ */
+  .node-when{display:none}
+  .node.open .node-when{display:flex;flex-wrap:wrap;gap:7px;width:100%;margin-top:2px}
+  .node-main{gap:7px;padding:8px 9px}
+  /* line 1: tick, wave tag, title — line 2: estimate, rollup, tools.
+     Scoped to the activity row so schedule slots keep their own order. */
+  .node-main > .tick{order:1}
+  .node-main > .wave-tag{order:2}
+  .node-main > .node-title{order:3;flex:1 1 58%;min-width:0}
+  .node-main > .est{order:4;flex:0 0 auto;width:66px!important}
+  .node-main > .unit{order:5}
+  .node-main > .rollup{order:6}
+  .node-main > .node-when{order:7}
+  .node-main > .rowtools{order:8;margin-left:auto}
+  .rowmove{display:none}                     /* reordering waits behind ✎ too */
+  .node.open .rowmove{display:flex}
+  .iconbtn{padding:8px 9px}
+  .node-when .dt,.node-when .node-status{flex:1 1 44%}
+  .node-extra{padding:0 10px 10px 10px}
+  .slot{flex-wrap:wrap;gap:7px}
+  .slot .time{min-width:0}
+  .smart-row{grid-template-columns:28px 1fr;gap:9px}
+  .smart-key{width:28px;height:28px;font-size:16px}
+}
+/* Fingers need more than a mouse does. */
+@media(pointer:coarse){
+  .tick{width:30px;height:30px;font-size:16px}
+  .iconbtn{padding:9px 11px;font-size:15px;min-height:38px}
+  .btn.sm{padding:9px 14px}
+  .node-title,.est,.dt,.node-status{padding-top:9px;padding-bottom:9px}
+}
 @media print{
   .topbar,.tabs,.btnrow,.flow,.no-print{display:none!important}
   body{background:#fff}
@@ -347,6 +419,7 @@ function save(){
   saveTimer = setTimeout(() => {
     try{
       localStorage.setItem(KEY, JSON.stringify(S));
+      keepData();
       const n = new Date();
       $("#savechip").textContent = "Saved " + pad(n.getHours()) + ":" + pad(n.getMinutes());
     }catch(e){
@@ -594,17 +667,21 @@ function nodeHTML(t, depth, idx, count, goalId){
         ? '<input class="est" type="number" min="0" step="15" value="' + (t.est || "") + '" data-act="task-field" data-k="est" data-id="' + t.id + '" title="How long will it take? In minutes — ' + h(minsToText(t.est)) + '" placeholder="0">' +
           '<span class="unit" title="minutes">min</span>'
         : '<span class="rollup" title="Rolled up from the wave below">Σ ' + minsToText(eff) + ' · ' + prog + '%</span>') +
-      '<input class="dt' + ((leaf ? t.start : win.start) ? "" : " empty") + '" type="date" value="' + h(leaf ? t.start : win.start) + '" data-act="task-field" data-k="start" data-id="' + t.id + '" title="Start — leave blank and the scheduler picks the day"' + (leaf ? "" : " disabled") + '>' +
-      '<input class="dt' + ((leaf ? t.due : win.end) ? "" : " empty") + '" type="date" value="' + h(leaf ? t.due : win.end) + '" data-act="task-field" data-k="due" data-id="' + t.id + '" title="Due date"' + (leaf ? "" : " disabled") + '>' +
-      '<select class="node-status" data-act="task-field" data-k="status" data-id="' + t.id + '"' + (leaf ? "" : " disabled") + '>' +
-        STATUSES.map(([v,l]) => '<option value="' + v + '"' + (t.status === v ? " selected" : "") + '>' + l + '</option>').join("") +
-      '</select>' +
+      '<span class="node-when">' +
+        '<input class="dt' + ((leaf ? t.start : win.start) ? "" : " empty") + '" type="date" value="' + h(leaf ? t.start : win.start) + '" data-act="task-field" data-k="start" data-id="' + t.id + '" title="Start — leave blank and the scheduler picks the day"' + (leaf ? "" : " disabled") + '>' +
+        '<input class="dt' + ((leaf ? t.due : win.end) ? "" : " empty") + '" type="date" value="' + h(leaf ? t.due : win.end) + '" data-act="task-field" data-k="due" data-id="' + t.id + '" title="Due date"' + (leaf ? "" : " disabled") + '>' +
+        '<select class="node-status" data-act="task-field" data-k="status" data-id="' + t.id + '"' + (leaf ? "" : " disabled") + '>' +
+          STATUSES.map(([v,l]) => '<option value="' + v + '"' + (t.status === v ? " selected" : "") + '>' + l + '</option>').join("") +
+        '</select>' +
+      '</span>' +
       (late ? '<span class="chip stop">overdue</span>' : "") +
-      '<span class="no-print" style="display:flex;gap:2px">' +
-        '<button class="iconbtn" data-act="task-notes" data-id="' + t.id + '" title="Notes">✎</button>' +
+      '<span class="rowtools no-print" style="display:flex;gap:2px">' +
+        '<button class="iconbtn" data-act="task-notes" data-id="' + t.id + '" title="Notes, dates and status">✎</button>' +
         '<button class="iconbtn" data-act="task-wave" data-id="' + t.id + '" title="Break into a wave of smaller tasks">＋ Wave</button>' +
-        '<button class="iconbtn" data-act="task-up" data-id="' + t.id + '" title="Move up"' + (idx === 0 ? " disabled" : "") + '>↑</button>' +
-        '<button class="iconbtn" data-act="task-down" data-id="' + t.id + '" title="Move down"' + (idx === count-1 ? " disabled" : "") + '>↓</button>' +
+        '<span class="rowmove">' +
+          '<button class="iconbtn" data-act="task-up" data-id="' + t.id + '" title="Move up"' + (idx === 0 ? " disabled" : "") + '>↑</button>' +
+          '<button class="iconbtn" data-act="task-down" data-id="' + t.id + '" title="Move down"' + (idx === count-1 ? " disabled" : "") + '>↓</button>' +
+        '</span>' +
         '<button class="iconbtn del" data-act="task-del" data-id="' + t.id + '" title="Delete">✕</button>' +
       '</span>' +
     '</div>' +
@@ -971,6 +1048,7 @@ function viewData(){
   return flowStrip("") +
   '<div class="pagehead"><div><h1>Data</h1><p>Everything lives in this browser. Nothing is sent anywhere.</p></div></div>' +
   '<div class="grid2"><div class="card pad">' +
+    installSection() +
     '<h2 class="section-title">Backup &amp; restore</h2>' +
     '<p class="note">Your plan is stored in this browser\'s local storage on this device. Clearing site data, using a different browser, or a fresh device means starting empty — so export a copy somewhere safe (OneDrive, Google Drive) whenever you have done a solid planning session.</p>' +
     '<div class="btnrow" style="margin-top:14px">' +
@@ -1006,6 +1084,34 @@ function viewData(){
       '<li><b>Review</b> the Timeline fortnightly, add the next wave to whatever you have now reached.</li>' +
     '</ul>' +
   '</div></div>';
+}
+
+function installSection(){
+  const installed = isInstalled();
+  const offline = ("serviceWorker" in navigator) && !!navigator.serviceWorker.controller;
+  const steps = isApple()
+    ? ['Open this page in <b>Safari</b> — Chrome on iPhone cannot install web apps.',
+       'Tap <b>Share</b>, the square with the arrow out the top.',
+       'Scroll down, tap <b>Add to Home Screen</b>, then <b>Add</b>.']
+    : ['Open this page in <b>Chrome</b>.',
+       'Tap the <b>⋮</b> menu, top right.',
+       'Tap <b>Add to Home screen</b> (or <b>Install app</b>), then confirm.'];
+  return '<h2 class="section-title">Use it as an app</h2>' +
+    (installed
+      ? '<p class="note"><span class="chip ok">Installed</span> Running as an app' +
+        (offline ? ' — and the offline copy is ready, so it opens with no signal.' : '.') + '</p>'
+      : '<p class="note">Add Goal Studio to your home screen and it opens like any other app: its own icon, no browser bars, ' +
+        'and it works with no signal — on the train, in someone\'s lounge room, anywhere.</p>' +
+        '<ol class="tight" style="margin-top:10px">' + steps.map(x => '<li>' + x + '</li>').join("") + '</ol>' +
+        (installPrompt ? '<div class="btnrow" style="margin-top:12px"><button class="btn primary" data-act="install">Install now</button></div>' : "") +
+        '<p class="note" style="margin-top:9px">On another device, the address is <b>generaldisabilitysupport.com.au/goal-studio/</b></p>' +
+        '<p class="note" style="margin-top:10px">' +
+          (offline ? 'The offline copy is saved, so it will open even with no signal.'
+                   : 'Stay on this page a moment while the offline copy saves.') +
+        '</p>') +
+    '<p class="note" style="margin-top:10px"><b>Each device keeps its own plan.</b> Phone and laptop do not sync — ' +
+    'they are separate copies. To move your plan across, export the JSON backup below on one and import it on the other.</p>' +
+    '<div class="divider"></div>';
 }
 
 /* =====================================================================
@@ -1167,6 +1273,7 @@ function doAction(act, el){
       return;
     }
     case "print": window.print(); return;
+    case "install": doInstall(); return;
   }
 }
 function focusTask(id){
@@ -1197,7 +1304,7 @@ function refreshRollups(){
       const r = node.querySelector(":scope > .node-main > .rollup");
       if(r) r.textContent = "Σ " + minsToText(effort(t)) + " · " + taskProgress(t) + "%";
       const w = taskWindow(t);
-      const dates = node.querySelectorAll(":scope > .node-main > input.dt");
+      const dates = node.querySelectorAll(":scope > .node-main input.dt");
       if(dates[0]){ dates[0].value = w.start || ""; dates[0].classList.toggle("empty", !w.start); }
       if(dates[1]){ dates[1].value = w.end   || ""; dates[1].classList.toggle("empty", !w.end); }
     }
@@ -1271,7 +1378,7 @@ function setSetting(el){
    ===================================================================== */
 const CLICK_ACTS = ["tab","goal-new","goal-select","goal-del","goto-activities","task-add","task-wave",
   "task-tick","task-del","task-up","task-down","task-notes","bulk-open","bulk-save","modal-close",
-  "scale","g-collapse","sched-run","sched-clear","ics","export","import","sample","wipe","print"];
+  "scale","g-collapse","sched-run","sched-clear","ics","export","import","sample","wipe","print","install"];
 
 document.addEventListener("click", e => {
   const el = e.target.closest("[data-act]");
@@ -1397,9 +1504,80 @@ function sampleGoals(){
   return [g1, g2];
 }
 
+/* =====================================================================
+   INSTALLING AS AN APP
+   ===================================================================== */
+let installPrompt = null;      // set by Chrome/Edge when the app is installable
+let swReady = false;
+
+function isInstalled(){
+  return (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) ||
+         window.navigator.standalone === true;
+}
+function isApple(){
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+         (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+
+window.addEventListener("beforeinstallprompt", e => {
+  e.preventDefault();
+  installPrompt = e;
+  if(S.ui.tab === "data") render();
+});
+window.addEventListener("appinstalled", () => {
+  installPrompt = null;
+  toast("Installed. Look for Goal Studio on your home screen.");
+  if(S.ui.tab === "data") render();
+});
+
+async function doInstall(){
+  if(!installPrompt){ toast("Use your browser's menu — see the steps below."); return; }
+  installPrompt.prompt();
+  try{ await installPrompt.userChoice; }catch(e){}
+  installPrompt = null;
+  render();
+}
+
+/* Offline shell. Registered only over http(s) — opening the file directly
+   from disk has no service worker, and that is fine. */
+function registerSW(){
+  if(!("serviceWorker" in navigator) || location.protocol.indexOf("http") !== 0) return;
+  navigator.serviceWorker.register("sw.js").then(reg => {
+    swReady = true;
+    reg.addEventListener("updatefound", () => {
+      const sw = reg.installing;
+      if(!sw) return;
+      sw.addEventListener("statechange", () => {
+        if(sw.state === "installed" && navigator.serviceWorker.controller) toast("Updated — reopen to get the newest version.");
+      });
+    });
+  }).catch(() => {});
+}
+
+/* Ask the browser not to evict the plan when it is short of room.
+   Chrome decides silently on engagement; Safari and Firefox may ask. */
+let askedToPersist = false;
+function keepData(){
+  if(askedToPersist || !navigator.storage || !navigator.storage.persist) return;
+  if(!S.goals.length) return;
+  askedToPersist = true;
+  navigator.storage.persist().catch(() => {});
+}
+
+/* Home-screen shortcuts land here: ?tab=schedule */
+function applyLaunchParams(){
+  try{
+    const q = new URLSearchParams(location.search);
+    const tab = q.get("tab");
+    if(tab && ["goals","activities","timeline","schedule","data"].indexOf(tab) !== -1) S.ui.tab = tab;
+  }catch(e){}
+}
+
 /* ------------------------------------------------------------------- boot */
 if(!S.ui.goalId && S.goals.length) S.ui.goalId = S.goals[0].id;
+applyLaunchParams();
 render();
+registerSW();
 $("#savechip").textContent = S.goals.length ? "Saved locally" : "Ready";
 </script>
 </body>
