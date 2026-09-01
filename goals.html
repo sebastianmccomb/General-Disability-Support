@@ -544,9 +544,9 @@ function draftStatement(g){
   if(!s && !m) return "";
   let out = s || g.title;
   if(m) out += " — measured by: " + m.replace(/\.$/, "");
-  if(t) out += ". By " + t.replace(/\.$/, "") + ".";
-  else if(g.due) out += ". By " + prettyDate(g.due) + ".";
-  else out += ".";
+  let when = t ? (/^by\b/i.test(t) ? t : "By " + t) : (g.due ? "By " + prettyDate(g.due) : "");
+  when = when.replace(/\.$/, "");
+  out += when ? ". " + when.charAt(0).toUpperCase() + when.slice(1) + "." : ".";
   return out;
 }
 
