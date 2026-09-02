@@ -189,18 +189,6 @@ textarea{resize:vertical;min-height:74px;line-height:1.5}
 .stat b{display:block;font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;line-height:1.1}
 .stat span{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 
-/* ---------- agenda ---------- */
-.day{border:1px solid var(--line);border-radius:12px;background:var(--white);margin-bottom:12px;overflow:hidden}
-.day-h{display:flex;align-items:center;gap:10px;padding:10px 15px;background:rgba(185,138,81,.07);border-bottom:1px solid var(--line)}
-.day-h b{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600}
-.day-h .today-flag{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:var(--stop);padding:2px 8px;border-radius:99px}
-.slot{display:flex;align-items:center;gap:11px;padding:9px 15px;border-bottom:1px solid rgba(185,138,81,.13)}
-.slot:last-child{border-bottom:0}
-.slot .time{font-variant-numeric:tabular-nums;font-size:12px;color:var(--muted);white-space:nowrap;min-width:112px}
-.slot .what{flex:1;min-width:120px}
-.slot .what small{display:block;color:var(--muted);font-size:11px}
-.slot.done .what{text-decoration:line-through;color:var(--muted)}
-
 /* ---------- misc ---------- */
 .note{font-size:12.5px;color:var(--muted);line-height:1.6}
 p,li,.note,.stat span{overflow-wrap:anywhere}   /* long URLs must wrap, not push the page sideways */
@@ -270,6 +258,156 @@ ul.tight li{margin-bottom:5px;color:var(--ink-2)}
   .btn.sm{padding:9px 14px}
   .node-title,.est,.dt,.node-status{padding-top:9px;padding-bottom:9px}
 }
+
+/* ---------- week planner ---------- */
+.availbar{display:flex;align-items:center;gap:11px;flex-wrap:wrap;background:var(--white);
+  border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:14px}
+.avail-summary{display:none;align-items:center;gap:7px;font-size:12.5px;color:var(--ink-2)}
+.avail-summary .linky{padding:0;margin-left:4px}
+.bar-lbl{font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--bronze);font-weight:700}
+.dim{color:var(--muted);font-size:12px}
+.vsep{width:1px;align-self:stretch;background:var(--line)}
+.timefield{width:70px!important;text-align:center;font-variant-numeric:tabular-nums;font-weight:600;
+  padding:5px 6px;background:transparent;border-color:transparent}
+.timefield:hover{border-color:var(--line)}
+.dayrow{display:flex;gap:3px}
+.daybtn{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:transparent;
+  color:var(--muted);font-size:11.5px;font-weight:700;cursor:pointer}
+.daybtn[aria-pressed="true"]{background:var(--bronze);border-color:var(--bronze);color:#fff}
+.daybtn:hover{border-color:var(--bronze)}
+
+.banner{display:flex;gap:14px;align-items:center;flex-wrap:wrap;background:rgba(179,118,42,.08);
+  border:1px solid rgba(179,118,42,.35);border-left:4px solid var(--warn);border-radius:12px;
+  padding:12px 15px;margin-bottom:14px;font-size:13px}
+.banner > div:first-child{flex:1;min-width:220px}
+
+.work{display:grid;grid-template-columns:246px 1fr;gap:16px;align-items:start}
+.work > *{min-width:0}
+.rail{background:var(--white);border:1px solid var(--line);border-radius:13px;padding:15px}
+.railsub{color:var(--muted);font-size:11.5px;margin:0 0 10px}
+.railsub.ok{color:var(--ok)}
+.qchips{display:flex;flex-direction:column;gap:6px}
+.qchip{display:flex;align-items:center;gap:8px;width:100%;text-align:left;background:var(--paper);
+  border:1px solid var(--line);border-left:3px solid var(--bronze);border-radius:9px;padding:8px 10px;
+  cursor:grab;touch-action:none}
+.qchip:hover{box-shadow:var(--shadow);transform:translateY(-1px)}
+.qchip .t{flex:1;min-width:0;font-size:12.5px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qchip .d{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.noest{margin-top:12px;padding:10px 11px;border:1px solid rgba(179,118,42,.35);
+  border-left:3px solid var(--warn);border-radius:9px;background:rgba(179,118,42,.07);font-size:11.5px}
+.noest b{display:block;margin-bottom:3px}
+.noest span{display:block;color:var(--muted);line-height:1.45}
+.wklegend{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);display:flex;
+  flex-direction:column;gap:7px;font-size:11.5px;color:var(--muted)}
+.wklegend div{display:flex;gap:8px;align-items:center}
+.key{width:16px;height:11px;border-radius:3px;flex:0 0 auto}
+.key.busy{background:var(--charcoal)}
+.key.auto{background:rgba(185,138,81,.3);border:1px dashed var(--bronze)}
+.key.pin{background:var(--bronze)}
+
+.fc{border:1px solid var(--line);border-left:4px solid var(--bronze);border-radius:10px;padding:11px 12px;
+  margin-bottom:9px;background:var(--paper)}
+.fc > b{display:block;font-size:12.5px;line-height:1.3;margin-bottom:7px}
+.bar-mini{height:5px;background:rgba(18,22,25,.08);border-radius:99px;overflow:hidden}
+.bar-mini i{display:block;height:100%;border-radius:99px}
+.fcmeta{display:flex;gap:9px;flex-wrap:wrap;font-size:10.5px;color:var(--muted);margin:7px 0 2px;
+  font-variant-numeric:tabular-nums}
+.chip.flat{width:100%;justify-content:center;margin-top:5px;font-size:11px;padding:5px 8px;text-align:center}
+.linky{background:none;border:0;padding:6px 0 0;color:var(--bronze);font-size:11.5px;font-weight:600;
+  cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.levers{display:flex;flex-direction:column;gap:5px;margin-top:7px}
+.lever{display:flex;justify-content:space-between;gap:8px;align-items:center;background:var(--white);
+  border:1px solid var(--line);border-radius:8px;padding:7px 9px;cursor:pointer;font-size:11.5px;text-align:left}
+.lever:hover{border-color:var(--bronze);background:rgba(185,138,81,.07)}
+.lever b{font-variant-numeric:tabular-nums;white-space:nowrap}
+
+.cal{background:var(--white);border:1px solid var(--line);border-radius:13px;overflow:hidden}
+.calhead{display:grid;grid-template-columns:50px repeat(7,1fr);border-bottom:1px solid var(--line)}
+.calhead > div{padding:8px 4px;text-align:center;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);font-weight:600;border-left:1px solid var(--line-soft,rgba(185,138,81,.14))}
+.calhead > div:first-child{border-left:0}
+.calhead > div.today{color:var(--bronze);background:rgba(185,138,81,.08)}
+.calhead b{display:block;font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--ink);
+  text-transform:none;letter-spacing:0}
+.calbody{overflow-y:auto;max-height:min(66vh,620px)}
+.calgrid{display:grid;grid-template-columns:50px repeat(7,1fr);position:relative}
+.gutter{position:relative}
+.gutter span{position:absolute;right:6px;font-size:10px;color:var(--muted);
+  font-variant-numeric:tabular-nums;transform:translateY(-6px)}
+.col{position:relative;border-left:1px solid rgba(185,138,81,.14);touch-action:none}
+.col.off{background:repeating-linear-gradient(-45deg,transparent 0 7px,rgba(185,138,81,.10) 7px 8px)}
+.band{position:absolute;left:0;right:0;background:rgba(185,138,81,.07);pointer-events:none}
+.hr{position:absolute;left:0;right:0;border-top:1px solid rgba(185,138,81,.14);pointer-events:none}
+.hr.half{border-top-style:dotted;opacity:.5}
+.now{position:absolute;left:0;right:0;height:2px;background:var(--stop);opacity:.6;z-index:6;pointer-events:none}
+.now:before{content:"";position:absolute;left:-3px;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--stop)}
+
+.blk{position:absolute;left:3px;right:3px;border-radius:7px;padding:3px 6px;overflow:hidden;cursor:grab;
+  touch-action:none;z-index:2;font-size:11.5px;line-height:1.25;--gc:var(--bronze)}
+.blk b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:14px}
+.blk small{display:block;opacity:.8;font-size:10px;font-variant-numeric:tabular-nums}
+.blk:hover{box-shadow:var(--shadow);z-index:5}
+.blk.dragging{z-index:20;box-shadow:var(--shadow);opacity:.94}
+.blk .grip{position:absolute;left:0;right:0;bottom:0;height:9px;cursor:ns-resize;touch-action:none}
+.blk .grip:after{content:"";position:absolute;left:50%;bottom:2px;width:18px;height:2px;margin-left:-9px;
+  border-radius:2px;background:currentColor;opacity:0}
+.blk:hover .grip:after{opacity:.5}
+.bdone{position:absolute;top:2px;right:2px;width:17px;height:17px;border-radius:5px;border:1px solid currentColor;
+  background:transparent;color:inherit;opacity:.45;font-size:10px;line-height:1;cursor:pointer;padding:0;z-index:3}
+.bdone:hover{opacity:1}
+.blk.busy{background:var(--charcoal);color:var(--cream);border:1px solid var(--charcoal)}
+.blk.busy:after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(-45deg,transparent 0 6px,rgba(255,255,255,.06) 6px 12px)}
+.blk.task{background:var(--paper);background:color-mix(in srgb,var(--gc) 20%,var(--white));
+  border:1px dashed var(--gc);color:var(--ink)}
+.blk.task.pinned{background:var(--gc);border-style:solid;color:#fff}
+.blk.task.done{background:rgba(75,127,91,.18);border:1px solid var(--ok);color:var(--ok)}
+.blk.task.done b{text-decoration:line-through}
+.blk.task.done .bdone{opacity:1}
+
+.bpop{position:fixed;z-index:200;width:252px;background:var(--white);border:1px solid var(--line);
+  border-radius:12px;box-shadow:var(--shadow);padding:13px}
+.bpop h3{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--bronze);margin-bottom:8px}
+.bp-task{margin:0 0 9px;font-size:13px;font-weight:600;line-height:1.3}
+.bp-task span{display:block;font-size:11px;font-weight:500;margin-top:2px}
+.bpop input[type=text]{margin-bottom:9px}
+.bp-row{display:flex;gap:6px;align-items:center;margin-bottom:9px;font-size:12px}
+.bp-row b{font-variant-numeric:tabular-nums}
+.step{width:26px;height:26px;border-radius:7px;border:1px solid var(--line);background:transparent;
+  cursor:pointer;font-weight:700;line-height:1;flex:0 0 auto}
+.step:hover{border-color:var(--bronze);background:rgba(185,138,81,.1)}
+.bp-days{display:flex;gap:3px;margin-bottom:10px}
+.bp-days button{flex:1;padding:5px 0;font-size:10.5px;font-weight:700;border:1px solid var(--line);
+  background:transparent;border-radius:6px;cursor:pointer;color:var(--muted)}
+.bp-days button.on{background:var(--bronze);border-color:var(--bronze);color:#fff}
+.bp-acts{display:flex;gap:6px;margin-bottom:8px}
+.bp-acts .btn{flex:1;text-align:center}
+.bp-rep{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--ink-2);margin-bottom:10px}
+.bp-rep input{width:auto}
+.bp-hint{font-size:11px;color:var(--muted);margin:0;line-height:1.45}
+
+.dayswitch{display:none;gap:6px;overflow-x:auto;padding-bottom:9px;scrollbar-width:none}
+.dayswitch::-webkit-scrollbar{display:none}
+.dayswitch button{flex:0 0 auto;border:1px solid var(--line);background:var(--white);border-radius:10px;
+  padding:6px 12px;cursor:pointer;font-size:11px;line-height:1.3;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--muted)}
+.dayswitch button.on{background:var(--charcoal);border-color:var(--charcoal);color:var(--cream)}
+.dayswitch button b{display:block;font-family:'Cormorant Garamond',serif;font-size:16px;
+  text-transform:none;letter-spacing:0}
+@media(max-width:960px){.work{grid-template-columns:1fr}.rail{order:2}}
+@media(max-width:760px){
+  .dayswitch{display:flex}
+  .cal.single .calhead{grid-template-columns:50px 1fr}
+  .cal.single .calgrid{grid-template-columns:50px 1fr}
+  .cal.single .col:not(.show),.cal.single .calhead > div[data-d]:not(.show){display:none}
+  .calbody{max-height:none}
+  .availbar{gap:8px;padding:9px 11px}
+  .avail-summary{display:flex;flex:1;flex-wrap:wrap}
+  .availbar:not(.open) .avail-controls{display:none}
+  .availbar:not(.open) .spacer{display:none}
+  .pagehead .btnrow .btn{padding:8px 13px;font-size:12px}
+  .banner{padding:11px 12px}
+}
 @media print{
   .topbar,.tabs,.btnrow,.flow,.no-print{display:none!important}
   body{background:#fff}
@@ -320,6 +458,13 @@ const uid = () => Math.random().toString(36).slice(2, 10);
 const h = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, c =>
   ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
 
+/* Grid geometry. Declared up here on purpose: load() reaches for clampMin,
+   and a `const` further down the file is still in its dead zone by then. */
+const T0 = 5*60, T1 = 23*60;            // hard limits for any stored time
+let V0 = 8*60, V1 = 19*60;              // the slice of day the grid draws — set per render
+const PXMIN = 52/60, SNAP = 15;
+const GOAL_COLOURS = ["#b98a51","#4b7f5b","#4a6d8c","#7a4f6d","#a3653b","#3f7d78"];
+
 /* ---------- dates (all ISO yyyy-mm-dd, parsed local to dodge UTC drift) -- */
 const pad = n => String(n).padStart(2, "0");
 function iso(d){ return d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate()); }
@@ -354,6 +499,12 @@ function minsToText(m){
   const hh = Math.floor(m/60), mm = m%60;
   return (hh ? hh + "h" : "") + (mm ? (hh ? " " : "") + mm + "m" : "");
 }
+function hhmm(m){ m = clampMin(Number(m) || 0); return pad(Math.floor(m/60)) + ":" + pad(m%60); }
+function parseTime(str, fallback){
+  const m = /^(\d{1,2})\s*[:.h]?\s*(\d{2})?/.exec(String(str).trim());
+  if(!m) return fallback;
+  return clampMin((+m[1]) * 60 + (+(m[2] || 0)));
+}
 function timeOfDay(mins){
   const hh = Math.floor(mins/60) % 24, mm = Math.round(mins) % 60;
   const ap = hh < 12 ? "am" : "pm";
@@ -363,19 +514,20 @@ function timeOfDay(mins){
 
 /* ---------- state ---------- */
 const DEFAULT_SETTINGS = {
-  workDays: [1,2,3,4,5],   // Mon–Fri
-  hoursPerDay: 4,
-  dayStartMin: 9 * 60,     // 9:00am
-  defaultEstimate: 60,     // minutes, used when a task has no estimate
-  scheduleFrom: ""         // blank = start from today
+  availFrom: 9 * 60,          // the hours you are free to work on your own goals
+  availTo:  17 * 60,
+  availDays: [1,2,3,4,5],     // Mon–Fri
+  defaultEstimate: 60         // minutes given to a newly added activity
 };
 
+let loadError = null;    // set when saved data could not be read
+let rawSaved = null;     // the untouched file, kept so it can still be rescued
 let S = load();
 let saveTimer = null;
 
 function blank(){
-  return { version: 1, goals: [], settings: Object.assign({}, DEFAULT_SETTINGS),
-           ui: { tab: "goals", goalId: null, scale: "week" } };
+  return { version: 2, goals: [], blocks: [], settings: Object.assign({}, DEFAULT_SETTINGS),
+           ui: { tab:"goals", goalId:null, scale:"week", weekStart:null, viewDay:0, openLever:null, collapsed:{} } };
 }
 function load(){
   try{
@@ -384,14 +536,52 @@ function load(){
     const d = JSON.parse(raw);
     const s = blank();
     s.goals    = Array.isArray(d.goals) ? d.goals : [];
-    s.settings = Object.assign({}, DEFAULT_SETTINGS, d.settings || {});
+    s.blocks   = Array.isArray(d.blocks) ? d.blocks : [];
+    s.settings = Object.assign({}, DEFAULT_SETTINGS, migrateSettings(d.settings || {}));
     s.ui       = Object.assign(s.ui, d.ui || {});
+    s.ui.collapsed = s.ui.collapsed || {};
     s.goals.forEach(normaliseGoal);
+    if(!(d.version >= 2)) s.blocks = s.blocks.concat(migrateSchedule(s.goals));
+    s.blocks.forEach(b => {
+      b.id ||= uid(); b.kind = b.kind === "busy" ? "busy" : "task";
+      b.mins = Math.max(15, Number(b.mins) || 60);
+      b.startMin = clampMin(Number(b.startMin) || 540);
+      b.skip = Array.isArray(b.skip) ? b.skip : [];
+      b.pinned = !!b.pinned; b.done = !!b.done;
+    });
     return s;
   }catch(e){
     console.warn("Could not read saved data:", e);
+    loadError = (e && e.message) || String(e);
+    try{ rawSaved = localStorage.getItem(KEY); }catch(err){}
     return blank();
   }
+}
+/* v1 kept a working day as hours-per-day; v2 keeps the window you are free. */
+function migrateSettings(old){
+  if(old.availFrom !== undefined) return old;
+  const from = Number(old.dayStartMin) || 9*60;
+  return {
+    availFrom: from,
+    availTo: Math.min(23*60, from + (Number(old.hoursPerDay) || 4) * 60),
+    availDays: Array.isArray(old.workDays) ? old.workDays : [1,2,3,4,5],
+    defaultEstimate: Number(old.defaultEstimate) || 60
+  };
+}
+/* v1 recomputed the schedule from scratch each run; v2 keeps real blocks you
+   can drag. Carry the old chunks over so nobody loses their plan. */
+function migrateSchedule(goals){
+  const out = [];
+  goals.forEach(g => eachTask(g.tasks, t => {
+    (t.sched || []).forEach(c => {
+      if(!c || !c.date) return;
+      out.push({ id:uid(), kind:"task", taskId:t.id, title:"", date:c.date,
+                 startMin:clampMin(Number(c.startMin) || 540), mins:Math.max(15, Number(c.mins) || 60),
+                 pinned:false, done:t.status === "done", repeat:null, skip:[] });
+    });
+    delete t.sched;
+  }));
+  return out;
 }
 function normaliseGoal(g){
   g.id ||= uid();
@@ -408,13 +598,15 @@ function normaliseGoal(g){
       t.notes ||= "";
       t.est = Number(t.est) || 0;
       t.start ||= ""; t.due ||= "";
-      t.sched = Array.isArray(t.sched) ? t.sched : [];
       t.kids = Array.isArray(t.kids) ? t.kids : [];
       walk(t.kids);
     });
   })(g.tasks);
 }
 function save(){
+  /* Never write over a plan we failed to read — that turns a display problem
+     into permanent data loss. */
+  if(loadError){ $("#savechip").textContent = "Not saving"; return; }
   clearTimeout(saveTimer);
   saveTimer = setTimeout(() => {
     try{
@@ -491,10 +683,10 @@ function smartScore(g){ return ["s","m","a","r","t"].filter(k => (g.smart[k] || 
 /* A task's effective window: explicit dates first, else the auto-schedule. */
 function taskWindow(t){
   let start = t.start || "", end = t.due || "";
-  if(t.sched && t.sched.length){
-    const sd = t.sched[0].date, ed = t.sched[t.sched.length-1].date;
-    if(!start) start = sd;
-    if(!end) end = ed;
+  const bl = taskBlocks(t.id).map(b => b.date).sort();
+  if(bl.length){
+    if(!start) start = bl[0];
+    if(!end) end = bl[bl.length-1];
   }
   if(!isLeaf(t)){
     // Summary rows span everything underneath them.
@@ -521,10 +713,20 @@ function isOverdue(t){
 function currentGoal(){
   return S.goals.find(g => g.id === S.ui.goalId) || S.goals[0] || null;
 }
+function rescueBanner(){
+  if(!loadError) return "";
+  return '<div class="banner" style="border-left-color:var(--stop);background:rgba(163,69,59,.08);' +
+    'border-color:rgba(163,69,59,.35)"><div><b>Your saved plan could not be read.</b> ' +
+    h(loadError) + '. Nothing has been overwritten and nothing is being saved, so the original file is still ' +
+    'intact — download it before doing anything else.</div>' +
+    '<div class="btnrow"><button class="btn sm" data-act="rescue">Download the file</button>' +
+    '<button class="btn ghost sm" data-act="rescue-reset">Start fresh</button></div></div>';
+}
 function render(){
   $$("#tabs .tab").forEach(b => b.classList.toggle("on", b.dataset.tab === S.ui.tab));
   const views = { goals:viewGoals, activities:viewActivities, timeline:viewTimeline, schedule:viewSchedule, data:viewData };
-  $("#app").innerHTML = (views[S.ui.tab] || viewGoals)();
+  $("#app").innerHTML = rescueBanner() + (views[S.ui.tab] || viewGoals)();
+
 }
 function flowStrip(active){
   const steps = ["Goal", "SMART", "Activities", "Waves", "Estimate", "Timeline", "Calendar"];
@@ -551,14 +753,16 @@ function viewGoals(){
     '<div class="spacer"></div><div class="btnrow no-print"><button class="btn primary" data-act="goal-new">＋ New goal</button></div></div>' +
   '<div class="grid2"><div>' +
     '<h2 class="section-title">Your goals (' + S.goals.length + ')</h2>' +
-    (S.goals.length ? '<div class="goal-list">' + S.goals.map(goalCard).join("") + '</div>'
+    (S.goals.length ? '<div class="goal-list">' + (function(){ const F = forecast();
+        return S.goals.map(g => goalCard(g, F[g.id])).join(""); })() + '</div>'
                     : '<div class="card pad note">No goals yet. Hit <b>New goal</b>, or load the worked example from the <b>Data</b> tab to see the whole chain filled in.</div>') +
   '</div><div>' + (g ? goalEditor(g) : '<div class="card empty"><h3>Nothing selected</h3><p>Create a goal to start.</p></div>') + '</div></div>';
 }
 
-function goalCard(g){
+function goalCard(g, f){
   const p = goalProgress(g), sc = smartScore(g), on = currentGoal() && currentGoal().id === g.id;
   const late = g.due && g.due < todayISO() && p < 100;
+  const v = (f && g.status === "active") ? verdict(g, f) : null;
   return '<div class="goal-card' + (on ? " on" : "") + '" data-act="goal-select" data-id="' + g.id + '">' +
     '<h3>' + h(g.title) + '</h3>' +
     (g.why ? '<div class="note" style="font-size:12px">' + h(g.why.slice(0,110)) + (g.why.length > 110 ? "…" : "") + '</div>' : "") +
@@ -570,6 +774,7 @@ function goalCard(g){
       '<span class="chip">' + minsToText(goalEffort(g)) + '</span>' +
       (g.due ? '<span class="chip' + (late ? " stop" : "") + '">due ' + shortDate(g.due) + '</span>' : "") +
       (g.status !== "active" ? '<span class="chip sky">' + h(g.status) + '</span>' : "") +
+      (v ? '<span class="chip ' + v.tone + '">' + h(v.text) + '</span>' : "") +
     '</div></div>';
 }
 
@@ -719,7 +924,7 @@ function ganttRows(){
         const tw = taskWindow(t);
         rows.push({ kind:"task", id:t.id, label:t.title, depth: depth+1, start:tw.start, end:tw.end,
                     prog:taskProgress(t), eff:effort(t), done:t.status === "done",
-                    leaf:isLeaf(t), late:isOverdue(t), scheduled: !t.start && !t.due && t.sched.length > 0 });
+                    leaf:isLeaf(t), late:isOverdue(t), scheduled: !t.start && !t.due && taskBlocks(t.id).length > 0 });
       });
     }
   });
@@ -820,154 +1025,596 @@ function viewTimeline(){
   '</div>';
 }
 
-/* ------------------------------------------------------------- SCHEDULE */
-function orderedLeaves(){
+/* =====================================================================
+   THE WEEK — blocks, free time, filling, and what it all means for the goal
+   ---------------------------------------------------------------------
+   A block is a real object you can drag, not a number the app recomputed.
+   Two kinds:
+     busy  — a shift, an appointment. Nothing is ever scheduled over it.
+     task  — time set aside for one activity. Pinned once you move it.
+   ===================================================================== */
+function mondayOf(d){ const w = dow(d); return addDays(d, w === 0 ? -6 : 1 - w); }
+function weekStart(){ return S.ui.weekStart || (S.ui.weekStart = mondayOf(todayISO())); }
+function weekDates(){ const m = weekStart(); return [0,1,2,3,4,5,6].map(i => addDays(m, i)); }
+function goalColour(g){
+  const i = S.goals.indexOf(g);
+  return g.colour || GOAL_COLOURS[(i < 0 ? 0 : i) % GOAL_COLOURS.length];
+}
+
+/* ---------- blocks ---------- */
+function newBlock(o){
+  return Object.assign({ id:uid(), kind:"task", taskId:null, title:"", date:todayISO(),
+                         startMin:9*60, mins:60, pinned:false, done:false, repeat:null, skip:[] }, o);
+}
+function blockTitle(b){
+  if(b.kind === "busy") return b.title || "Busy";
+  const hit = b.taskId && findTask(b.taskId);
+  return hit ? hit.task.title : (b.title || "Task");
+}
+function blockGoal(b){
+  const hit = b.taskId && findTask(b.taskId);
+  return hit ? hit.goal : null;
+}
+function taskBlocks(taskId){ return S.blocks.filter(b => b.kind === "task" && b.taskId === taskId); }
+function scheduledMins(t){ return taskBlocks(t.id).reduce((n,b) => n + b.mins, 0); }
+function doneBlockMins(t){ return taskBlocks(t.id).filter(b => b.done).reduce((n,b) => n + b.mins, 0); }
+/* Minutes of this task that still have nowhere to happen. */
+function toPlace(t){
+  if(t.status === "done") return 0;
+  return Math.max(0, (Number(t.est) || 0) - scheduledMins(t));
+}
+/* Minutes of work genuinely left, whether or not it has a slot yet. */
+function remainingMins(t){
+  if(t.status === "done") return 0;
+  return Math.max(0, (Number(t.est) || 0) - doneBlockMins(t));
+}
+function remainingEffort(g){
+  let n = 0;
+  eachTask(g.tasks, t => { if(isLeaf(t)) n += remainingMins(t); });
+  return n;
+}
+
+/* A weekly commitment is stored once and shown on every matching day. */
+function blocksOn(d){
   const out = [];
+  S.blocks.forEach(b => {
+    if(b.date === d){ out.push(b); return; }
+    if(b.repeat === "weekly" && b.date < d && dow(b.date) === dow(d) && (b.skip || []).indexOf(d) === -1)
+      out.push(Object.assign({}, b, { date:d, instOf:b.id, virtual:true }));
+  });
+  return out.sort((x,y) => x.startMin - y.startMin);
+}
+/* Editing one occurrence of a repeat splits it off from the series. */
+function materialise(inst){
+  const parent = S.blocks.find(b => b.id === inst.instOf);
+  if(!parent) return inst;
+  parent.skip = (parent.skip || []).concat(inst.date);
+  const real = newBlock(Object.assign({}, inst, { id:uid(), repeat:null, skip:[], virtual:false, instOf:null }));
+  S.blocks.push(real);
+  return real;
+}
+function realBlock(id, date){
+  const b = S.blocks.find(x => x.id === id);
+  if(b && (b.repeat !== "weekly" || b.date === date)) return b;
+  if(b) return materialise(Object.assign({}, b, { date, instOf:b.id, virtual:true }));
+  return null;
+}
+
+/* ---------- free time ---------- */
+function availOn(d){
+  const st = S.settings;
+  if((st.availDays || []).indexOf(dow(d)) === -1) return null;
+  return [st.availFrom, st.availTo];
+}
+/* Free stretches inside the hours you said you were free, minus commitments
+   and (optionally) the task time already booked. */
+function gapsOn(d, countTasks){
+  const w = availOn(d);
+  if(!w) return [];
+  const busy = blocksOn(d)
+    .filter(b => b.kind === "busy" || (countTasks && b.kind === "task"))
+    .map(b => [b.startMin, b.startMin + b.mins])
+    .sort((a,b) => a[0] - b[0]);
+  const gaps = [];
+  let t = w[0];
+  busy.forEach(([s,e]) => {
+    if(s > t) gaps.push([t, Math.min(s, w[1])]);
+    t = Math.max(t, e);
+  });
+  if(t < w[1]) gaps.push([t, w[1]]);
+  return gaps.filter(g => g[1] - g[0] >= SNAP);
+}
+function freeMinsOn(d){ return gapsOn(d, false).reduce((n,g) => n + (g[1]-g[0]), 0); }
+function freeLeftOn(d){ return gapsOn(d, true).reduce((n,g) => n + (g[1]-g[0]), 0); }
+
+/* ---------- filling ----------
+   Only ever places work that has nowhere to be. Never moves a commitment,
+   never touches a block you positioned yourself, never books the past. */
+function fillWeek(){
+  const dates = weekDates().filter(d => d >= todayISO());
+  if(!dates.length){ toast("That week has already been and gone."); return; }
+  let placed = 0, spare = 0;
   S.goals.forEach(g => {
     if(g.status === "parked") return;
-    eachTask(g.tasks, t => { if(isLeaf(t) && t.status !== "done") out.push({ g, t }); });
+    eachTask(g.tasks, t => {
+      if(!isLeaf(t) || t.status === "done") return;
+      let need = toPlace(t);
+      if(need <= 0) return;
+      for(const d of dates){
+        if(need <= 0) break;
+        if(t.start && d < t.start) continue;      // not allowed to start yet
+        for(const [s,e] of gapsOn(d, true)){
+          if(need <= 0) break;
+          const take = Math.min(need, e - s);
+          if(take < SNAP) continue;
+          S.blocks.push(newBlock({ kind:"task", taskId:t.id, date:d, startMin:s, mins:take }));
+          need -= take; placed++;
+        }
+      }
+      spare += need;
+    });
   });
+  save();
+  toast(placed ? placed + " block" + (placed===1?"":"s") + " added" +
+        (spare ? " · " + minsToText(spare) + " would not fit this week" : "")
+      : "No free time left this week.");
+}
+/* Takes back everything the planner placed, leaving your own choices alone. */
+function clearAuto(){
+  const before = S.blocks.length;
+  S.blocks = S.blocks.filter(b => b.kind !== "task" || b.pinned || b.done);
+  save(); render();
+  toast((before - S.blocks.length) + " placed block(s) cleared.");
+}
+
+/* ---------- what actually happened ---------- */
+function missedBlocks(){
+  const t = todayISO();
+  return S.blocks.filter(b => b.kind === "task" && !b.done && b.date < t);
+}
+function catchUp(){
+  const missed = missedBlocks();
+  if(!missed.length) return;
+  const ids = missed.map(b => b.id);
+  S.blocks = S.blocks.filter(b => ids.indexOf(b.id) === -1);
+  save();
+  fillWeek();
+  render();
+}
+function markMissedDone(){
+  missedBlocks().forEach(b => { b.done = true; syncTaskFromBlocks(b.taskId); });
+  save(); render();
+  toast("Marked as done.");
+}
+/* A task is finished once its blocks account for the whole estimate. */
+function syncTaskFromBlocks(taskId){
+  const hit = taskId && findTask(taskId);
+  if(!hit) return;
+  const t = hit.task;
+  const done = doneBlockMins(t);
+  if(done >= (Number(t.est) || 0) && done > 0) t.status = "done";
+  else if(t.status === "done" && done < (Number(t.est) || 0)) t.status = "doing";
+}
+
+/* ---------- the forecast ----------
+   Runs your availability forward, week after week, spending it on the work
+   that is left in goal order. It answers the only question that matters
+   when a plan slips: when does this actually land now? */
+function forecast(over){
+  const st = over || S.settings;
+  const saved = S.settings;
+  S.settings = st;
+  const res = {};
+  let cursor = todayISO(), left = freeMinsOn(cursor), guard = 0;
+  const step = () => { cursor = addDays(cursor, 1); left = freeMinsOn(cursor); };
+  try{
+    if(!(st.availDays || []).length) return res;
+    while(left <= 0 && guard++ < 900) step();
+    for(const g of S.goals){
+      let rem = remainingEffort(g);
+      res[g.id] = { remaining: rem, finish: null, over: false };
+      if(g.status === "parked" || rem <= 0) continue;
+      while(rem > 0){
+        if(guard++ > 4000){ res[g.id].over = true; break; }
+        if(left <= 0){ step(); continue; }
+        const take = Math.min(rem, left);
+        rem -= take; left -= take;
+        res[g.id].finish = cursor;
+      }
+    }
+  } finally { S.settings = saved; }
+  return res;
+}
+function verdict(g, f){
+  if(!f || f.over) return { tone:"stop", text:"beyond two years at this rate" };
+  if(!f.finish) return { tone:"ok", text:"nothing left to do" };
+  if(!g.due) return { tone:"sky", text:"lands " + shortDate(f.finish) + " — no target set" };
+  const slip = daysBetween(g.due, f.finish);
+  if(slip <= 0) return { tone:"ok", text:"lands " + shortDate(f.finish) + ", " + weeksText(-slip) + " to spare" };
+  return { tone:"stop", text:weeksText(slip) + " past your target" };
+}
+function weeksText(days){
+  if(days < 7) return days + (days === 1 ? " day" : " days");
+  const w = Math.round(days/7);
+  return w + (w === 1 ? " week" : " weeks");
+}
+/* Three levers, each priced in a finish date before you pull it. */
+function levers(g){
+  const st = S.settings, out = [];
+  const later = Object.assign({}, st, { availTo: Math.min(T1, st.availTo + 60) });
+  out.push({ key:"hour", label:"+1 hour a day", when:(forecast(later)[g.id]||{}).finish });
+  if((st.availDays||[]).indexOf(6) === -1){
+    const sat = Object.assign({}, st, { availDays: (st.availDays||[]).concat(6).sort() });
+    out.push({ key:"sat", label:"Work Saturdays", when:(forecast(sat)[g.id]||{}).finish });
+  }
   return out;
 }
-function isWorkDay(d){ return (S.settings.workDays || []).indexOf(dow(d)) !== -1; }
 
-/* Packs every estimated, unfinished task into your working week, in order,
-   splitting a long task across days when it will not fit in one. */
-function autoSchedule(){
-  const st = S.settings;
-  const cap = Math.max(30, Math.round((Number(st.hoursPerDay) || 4) * 60));
-  const dayStart = Number(st.dayStartMin) || 540;
-  S.goals.forEach(g => eachTask(g.tasks, t => { t.sched = []; }));
-  if(!(st.workDays || []).length){ toast("Pick at least one working day first."); return 0; }
 
-  const from = st.scheduleFrom || todayISO();
-  const used = {};                         // date -> minutes already committed
-
-  /* Fills a task forward from a date, spilling into later days when a day is full. */
-  const place = (t, startFrom) => {
-    let d = startFrom < from ? from : startFrom;
-    let rem = Number(t.est) || 0, guard = 0;
-    while(rem > 0 && guard++ < 4000){
-      if(!isWorkDay(d) || (used[d] || 0) >= cap){ d = addDays(d, 1); continue; }
-      const u = used[d] || 0;
-      const slot = Math.min(rem, cap - u);
-      t.sched.push({ date:d, startMin: dayStart + u, mins: slot });
-      used[d] = u + slot;
-      rem -= slot;
-    }
-  };
-
-  const leaves = orderedLeaves();
-  const estimated = leaves.filter(x => (Number(x.t.est) || 0) > 0);
-  const skipped = leaves.length - estimated.length;
-
-  /* Pass 1 — tasks with a start date of their own hold that date. */
-  estimated.filter(x => x.t.start).forEach(x => place(x.t, x.t.start));
-  /* Pass 2 — everything else fills the earliest room left, flowing around the pinned work. */
-  estimated.filter(x => !x.t.start).forEach(x => place(x.t, from));
-
-  save();
-  toast(estimated.length + " task" + (estimated.length === 1 ? "" : "s") + " scheduled" +
-        (skipped ? " · " + skipped + " skipped (no estimate)" : ""));
-  return estimated.length;
-}
-function clearSchedule(){
-  S.goals.forEach(g => eachTask(g.tasks, t => { t.sched = []; }));
-  save(); render(); toast("Schedule cleared.");
-}
-
-function sortSched(){
-  S.goals.forEach(g => eachTask(g.tasks, t => {
-    (t.sched || []).sort((a,b) => a.date < b.date ? -1 : a.date > b.date ? 1 : a.startMin - b.startMin);
-  }));
-}
-function agenda(){
-  sortSched();
-  const byDate = {};
-  S.goals.forEach(g => eachTask(g.tasks, t => {
-    (t.sched || []).forEach(c => {
-      (byDate[c.date] ||= []).push({ goal:g, task:t, chunk:c });
-    });
-  }));
-  return Object.keys(byDate).sort().map(d => ({ date:d, items: byDate[d].sort((a,b) => a.chunk.startMin - b.chunk.startMin) }));
-}
-
+/* ------------------------------------------------------------ WEEK VIEW */
 function viewSchedule(){
-  const st = S.settings;
-  const days = agenda();
-  const noEstimate = [];
-  S.goals.forEach(g => eachTask(g.tasks, t => { if(isLeaf(t) && t.status !== "done" && !(Number(t.est) > 0)) noEstimate.push({ g, t }); }));
-  const totalMins = days.reduce((n,d) => n + d.items.reduce((m,i) => m + i.chunk.mins, 0), 0);
+  if(!S.goals.length)
+    return flowStrip("calendar") + '<div class="card empty"><h3>Nothing to schedule</h3>' +
+      '<p>Set a goal and break it into activities first — then this is where you decide when they happen.</p></div>';
+  const st = S.settings, dates = weekDates(), f = forecast();
+  const thisWeek = dates.reduce((n,d) => n + blocksOn(d).filter(b => b.kind === "task").reduce((m,b) => m + b.mins, 0), 0);
+  const free = dates.filter(d => d >= todayISO()).reduce((n,d) => n + freeLeftOn(d), 0);
+  const left = S.goals.reduce((n,g) => { let m = 0; eachTask(g.tasks, t => { if(isLeaf(t)) m += toPlace(t); }); return n + m; }, 0);
 
   return flowStrip("calendar") +
-  '<div class="pagehead"><div><h1>Schedule</h1>' +
-    '<p>Estimates become actual days. Set your working pattern, auto-schedule, then send it to whichever calendar you already use.</p></div>' +
+  '<div class="pagehead"><div><h1>Your week</h1>' +
+    '<p>Block out what is already fixed, then fill what is left. Move anything by hand and it stays put.</p></div>' +
     '<div class="spacer"></div><div class="btnrow no-print">' +
-      '<button class="btn ghost" data-act="sched-clear">Clear</button>' +
-      '<button class="btn ghost" data-act="ics">Download .ics</button>' +
-      '<button class="btn primary" data-act="sched-run">⟳ Auto-schedule</button>' +
+      '<button class="btn ghost sm" data-act="week" data-k="-1">‹</button>' +
+      '<button class="btn ghost sm" data-act="week" data-k="0">This week</button>' +
+      '<button class="btn ghost sm" data-act="week" data-k="1">›</button>' +
+      '<button class="btn ghost" data-act="add-busy">＋ Shift</button>' +
+      '<button class="btn primary" data-act="fill">Fill free time</button>' +
     '</div></div>' +
-  '<div class="grid2"><div>' +
-    '<div class="card pad">' +
-      '<h2 class="section-title">Your working week</h2>' +
-      '<div class="field"><label>Working days</label><div class="inline" style="gap:6px">' +
-        DAYNAME.map((d,i) => '<label class="chip' + ((st.workDays||[]).indexOf(i) !== -1 ? " ok" : "") + '" style="cursor:pointer;min-width:0;flex:0 0 auto">' +
-          '<input type="checkbox" style="width:auto;margin:0" data-act="workday" data-k="' + i + '"' + ((st.workDays||[]).indexOf(i) !== -1 ? " checked" : "") + '> ' + d + '</label>').join("") +
-      '</div></div>' +
-      '<div class="inline">' +
-        '<div class="field"><label>Hours per day</label><input type="number" min="0.5" step="0.5" value="' + st.hoursPerDay + '" data-act="setting" data-k="hoursPerDay"></div>' +
-        '<div class="field"><label>Day starts</label><input type="time" value="' + pad(Math.floor(st.dayStartMin/60)) + ":" + pad(st.dayStartMin%60) + '" data-act="setting" data-k="dayStartMin"></div>' +
-      '</div>' +
-      '<div class="inline">' +
-        '<div class="field"><label>Schedule from</label><input type="date" value="' + h(st.scheduleFrom) + '" data-act="setting" data-k="scheduleFrom" placeholder="today"></div>' +
-        '<div class="field"><label>Default estimate (min)</label><input type="number" min="0" step="15" value="' + st.defaultEstimate + '" data-act="setting" data-k="defaultEstimate"></div>' +
-      '</div>' +
-      '<p class="note">Capacity is ' + minsToText((Number(st.hoursPerDay)||0)*60) + ' on each of ' + (st.workDays||[]).length +
-        ' day(s) a week. Tasks are placed in goal order, then activity order — anything with its own start date waits until that date.</p>' +
-    '</div>' +
-    (noEstimate.length ? '<div class="card pad" style="margin-top:14px;border-left:4px solid var(--warn)">' +
-      '<h2 class="section-title">Needs an estimate (' + noEstimate.length + ')</h2>' +
-      '<p class="note" style="margin-bottom:8px">These are skipped by the scheduler until you say how long they take.</p>' +
-      noEstimate.slice(0,12).map(x => '<div style="margin-bottom:5px">• ' + h(x.t.title) + ' <span class="chip">' + h(x.g.title.slice(0,26)) + '</span></div>').join("") +
-      (noEstimate.length > 12 ? '<div class="note">…and ' + (noEstimate.length-12) + ' more</div>' : "") +
-      '<div class="btnrow no-print" style="margin-top:10px"><button class="btn ghost sm" data-act="tab" data-k="activities">Fix on Activities</button></div></div>' : "") +
-  '</div><div>' +
-    '<div class="stats" style="margin-bottom:14px">' +
-      stat(days.length, "working days booked") +
-      stat(minsToText(totalMins), "scheduled effort") +
-      stat(days.length ? prettyDate(days[days.length-1].date).replace(/^\w+ /, "") : "—", "finish date") +
-    '</div>' +
-    (days.length
-      ? days.slice(0, 60).map(dayBlock).join("")
-      : '<div class="card empty"><h3>Nothing scheduled</h3><p>Set your working pattern, then hit <b>Auto-schedule</b>. Every estimated task gets a real slot in a real day.</p></div>') +
-    (days.length > 60 ? '<p class="note">Showing the first 60 days.</p>' : "") +
-    (days.length ? '<div class="card pad no-print" style="margin-top:14px"><h2 class="section-title">Into your calendar</h2>' +
-      '<p class="note"><b>Download .ics</b> gives you one file holding every scheduled block. Import it into Google Calendar (Settings → Import &amp; export), ' +
-      'Outlook (File → Open &amp; Export → Import), or Apple Calendar (File → Import). Re-run the scheduler and re-import whenever the plan shifts — ' +
-      'events carry stable IDs, so most calendars update the existing entries rather than duplicating them. ' +
-      'An import only adds and updates, though — if a task ends up needing fewer blocks than last time, the leftover entries stay until you delete them, ' +
-      'so import into a calendar of its own that you can clear in one go.</p>' +
-      '<div class="btnrow" style="margin-top:10px"><button class="btn primary" data-act="ics">Download .ics</button></div></div>' : "") +
-  '</div></div>';
+
+  missedBanner() +
+
+  '<div class="availbar no-print' + (S.ui.hoursOpen ? " open" : "") + '">' +
+    '<span class="avail-summary">' +
+      '<span class="bar-lbl">Hours</span> ' + hhmm(st.availFrom) + '–' + hhmm(st.availTo) + ' · ' +
+      ((st.availDays||[]).length ? (st.availDays||[]).map(i => DAYNAME[i][0]).join("") : "no days") +
+      '<button class="linky" data-act="hours">' + (S.ui.hoursOpen ? "Done" : "Change") + '</button>' +
+    '</span>' +
+    '<span class="bar-lbl avail-controls">Free to work</span>' +
+    '<input class="timefield avail-controls" data-act="avail" data-k="availFrom" value="' + hhmm(st.availFrom) + '" aria-label="Available from">' +
+    '<span class="dim avail-controls">to</span>' +
+    '<input class="timefield avail-controls" data-act="avail" data-k="availTo" value="' + hhmm(st.availTo) + '" aria-label="Available until">' +
+    '<span class="vsep avail-controls"></span><span class="bar-lbl avail-controls">On</span>' +
+    '<span class="dayrow avail-controls">' + DAYNAME.map((d,i) =>
+      '<button class="daybtn" data-act="availday" data-k="' + i + '" aria-pressed="' +
+      ((st.availDays||[]).indexOf(i) !== -1) + '" title="' + d + '">' + d[0] + '</button>').join("") + '</span>' +
+    '<span class="spacer"></span>' +
+    '<span class="dim">' + minsToText(thisWeek) + ' booked · ' + minsToText(free) + ' free' +
+      (left ? ' · ' + minsToText(left) + ' unplaced' : "") + '</span>' +
+    '<button class="btn ghost sm" data-act="clear-auto">Clear placed</button>' +
+    '<button class="btn ghost sm" data-act="ics">.ics</button>' +
+  '</div>' +
+
+  '<div class="dayswitch no-print">' + dates.map((d,i) =>
+    '<button data-act="viewday" data-k="' + i + '" class="' + (i === (S.ui.viewDay|0) ? "on" : "") + '">' +
+    DAYNAME[dow(d)] + '<b>' + parseISO(d).getDate() + '</b></button>').join("") + '</div>' +
+
+  '<div class="work">' + railHTML(f) + calHTML(dates) + '</div>';
 }
 
-function dayBlock(d){
-  const isToday = d.date === todayISO();
-  const mins = d.items.reduce((n,i) => n + i.chunk.mins, 0);
-  return '<div class="day"><div class="day-h"><b>' + prettyDate(d.date) + '</b>' +
-    (isToday ? '<span class="today-flag">Today</span>' : "") +
-    '<span class="spacer" style="flex:1"></span><span class="chip">' + minsToText(mins) + '</span></div>' +
-    d.items.map(i => {
-      const end = i.chunk.startMin + i.chunk.mins;
-      return '<div class="slot' + (i.task.status === "done" ? " done" : "") + '">' +
-        '<button class="tick' + (i.task.status === "done" ? " on" : "") + '" data-act="task-tick" data-id="' + i.task.id + '">✓</button>' +
-        '<span class="time">' + timeOfDay(i.chunk.startMin) + " – " + timeOfDay(end) + '</span>' +
-        '<span class="what">' + h(i.task.title) + '<small>' + h(i.goal.title) + '</small></span>' +
-        '<span class="chip">' + minsToText(i.chunk.mins) + '</span>' +
-        '<a class="btn ghost sm no-print" target="_blank" rel="noopener" href="' + gcalLink(i) + '">＋ Google</a>' +
-      '</div>';
-    }).join("") + '</div>';
+function missedBanner(){
+  const missed = missedBlocks();
+  if(!missed.length) return "";
+  const mins = missed.reduce((n,b) => n + b.mins, 0);
+  return '<div class="banner no-print"><div><b>' + minsToText(mins) + ' did not happen.</b> ' +
+    missed.length + ' block' + (missed.length === 1 ? "" : "s") + ' from before today are still unticked. ' +
+    'Nothing is lost — decide where it goes.</div>' +
+    '<div class="btnrow"><button class="btn sm" data-act="catchup">Move to free time</button>' +
+    '<button class="btn ghost sm" data-act="missed-done">They were done</button></div></div>';
 }
+
+function railHTML(f){
+  const rows = [];
+  S.goals.forEach(g => {
+    if(g.status === "parked") return;
+    eachTask(g.tasks, t => { if(isLeaf(t) && toPlace(t) > 0) rows.push({ g, t, mins: toPlace(t) }); });
+  });
+  return '<aside class="rail">' +
+    '<h2 class="section-title">To place' + (rows.length ? " (" + rows.length + ")" : "") + '</h2>' +
+    (rows.length
+      ? '<p class="railsub">Drag one onto a day, or hit Fill free time.</p><div class="qchips">' +
+        rows.slice(0, 40).map(r =>
+          '<button class="qchip" data-chip="' + r.t.id + '" style="border-left-color:' + goalColour(r.g) + '">' +
+            '<span class="t">' + h(r.t.title) + '</span><span class="d">' + minsToText(r.mins) + '</span>' +
+          '</button>').join("") +
+        (rows.length > 40 ? '<p class="railsub">…and ' + (rows.length-40) + ' more</p>' : "") + '</div>'
+      : '<p class="railsub ok">Every task has a slot.</p>') +
+    (function(){
+      const none = [];
+      S.goals.forEach(g => { if(g.status !== "parked")
+        eachTask(g.tasks, t => { if(isLeaf(t) && t.status !== "done" && !(Number(t.est) > 0)) none.push(t); }); });
+      return none.length
+        ? '<div class="noest"><b>' + none.length + ' task' + (none.length === 1 ? " has" : "s have") +
+          ' no estimate</b><span>They cannot be scheduled or forecast until you say how long they take.</span>' +
+          '<button class="linky no-print" data-act="tab" data-k="activities">Add estimates</button></div>'
+        : "";
+    })() +
+    '<div class="wklegend">' +
+      '<div><i class="key busy"></i> Fixed — nothing books over it</div>' +
+      '<div><i class="key auto"></i> Placed for you — may move</div>' +
+      '<div><i class="key pin"></i> You moved it — stays put</div>' +
+    '</div>' +
+    '<h2 class="section-title" style="margin-top:18px">Where this lands</h2>' +
+    (S.goals.filter(g => g.status !== "parked").map(g => forecastCard(g, f[g.id])).join("") ||
+      '<p class="railsub">No active goals.</p>') +
+  '</aside>';
+}
+
+function forecastCard(g, f){
+  const v = verdict(g, f);
+  const open = S.ui.openLever === g.id;
+  const showLevers = v.tone === "stop" && f && !f.over && f.finish;
+  return '<div class="fc" style="border-left-color:' + goalColour(g) + '">' +
+    '<b>' + h(g.title) + '</b>' +
+    '<div class="bar-mini"><i style="width:' + goalProgress(g) + '%;background:' + goalColour(g) + '"></i></div>' +
+    '<div class="fcmeta"><span>' + goalProgress(g) + '%</span>' +
+      '<span>' + (f ? minsToText(f.remaining) : "—") + ' left</span>' +
+      (g.due ? '<span>target ' + shortDate(g.due) + '</span>' : "") + '</div>' +
+    '<div class="chip ' + v.tone + ' flat">' + v.text + '</div>' +
+    (showLevers
+      ? '<button class="linky no-print" data-act="lever-open" data-id="' + g.id + '">' +
+          (open ? "Hide options" : "What would fix it?") + '</button>' +
+        (open ? '<div class="levers">' + levers(g).map(l =>
+            '<button class="lever" data-act="lever" data-id="' + g.id + '" data-k="' + l.key + '">' +
+              '<span>' + l.label + '</span><b>' + (l.when ? shortDate(l.when) : "—") + '</b></button>').join("") +
+          '<button class="lever" data-act="lever" data-id="' + g.id + '" data-k="move">' +
+            '<span>Move the target</span><b>' + (f.finish ? shortDate(f.finish) : "—") + '</b></button>' +
+          '</div>' : "")
+      : "") +
+  '</div>';
+}
+
+/* No point drawing 5am when nothing happens before 9. Fit the grid to the
+   hours you actually use, plus an hour of room either side. */
+function computeView(dates){
+  const st = S.settings;
+  let lo = st.availFrom, hi = st.availTo;
+  dates.forEach(d => blocksOn(d).forEach(b => {
+    lo = Math.min(lo, b.startMin);
+    hi = Math.max(hi, b.startMin + b.mins);
+  }));
+  V0 = Math.max(T0, Math.floor((lo - 60) / 60) * 60);
+  V1 = Math.min(T1, Math.ceil((hi + 60) / 60) * 60);
+  if(V1 - V0 < 360) V1 = Math.min(T1, V0 + 360);
+  if(V1 <= V0){ V0 = T0; V1 = T1; }
+}
+function calHTML(dates){
+  computeView(dates);
+  const H = Math.round((V1-V0)*PXMIN), vd = S.ui.viewDay|0;
+  let head = '<div class="calhead"><div></div>' + dates.map((d,i) =>
+    '<div data-d="' + i + '" class="' + (d === todayISO() ? "today " : "") + (i === vd ? "show" : "") + '">' +
+    DAYNAME[dow(d)] + '<b>' + parseISO(d).getDate() + '</b></div>').join("") + '</div>';
+
+  let g = '<div class="gutter" style="height:' + H + 'px">';
+  for(let m = V0; m <= V1; m += 60) g += '<span style="top:' + Math.round((m-V0)*PXMIN) + 'px">' + hhmm(m) + '</span>';
+  g += '</div>';
+
+  dates.forEach((d, i) => {
+    const w = availOn(d);
+    g += '<div class="col' + (w ? "" : " off") + (i === vd ? " show" : "") + '" data-date="' + d + '" data-d="' + i + '" style="height:' + H + 'px">';
+    if(w) g += '<div class="band" style="top:' + Math.round((w[0]-V0)*PXMIN) + 'px;height:' + Math.round((w[1]-w[0])*PXMIN) + 'px"></div>';
+    for(let m = V0; m <= V1; m += 30)
+      g += '<div class="hr' + (m % 60 ? " half" : "") + '" style="top:' + Math.round((m-V0)*PXMIN) + 'px"></div>';
+    if(d === todayISO()){
+      const n = new Date(), nm = clampMin(n.getHours()*60 + n.getMinutes());
+      if(nm >= V0 && nm <= V1) g += '<div class="now" style="top:' + Math.round((nm-V0)*PXMIN) + 'px"></div>';
+    }
+    g += blocksOn(d).map(blockHTML).join("");
+    g += '</div>';
+  });
+  return '<div class="cal' + (isNarrow() ? " single" : "") + '">' + head +
+         '<div class="calbody"><div class="calgrid">' + g + '</div></div></div>';
+}
+function clampMin(m){ return Math.max(T0, Math.min(T1, m)); }
+function isNarrow(){ return window.innerWidth <= 760; }
+
+function blockHTML(b){
+  const goal = blockGoal(b), col = goal ? goalColour(goal) : "";
+  const cls = b.kind === "busy" ? "busy"
+            : "task" + (b.pinned ? " pinned" : "") + (b.done ? " done" : "");
+  const px = Math.max(Math.round(b.mins * PXMIN) - 2, 15);
+  const style = 'top:' + Math.round((b.startMin-V0)*PXMIN) + 'px;height:' + px + 'px' +
+    (b.kind === "task" && col ? ';--gc:' + col : "");
+  return '<div class="blk ' + cls + '" data-id="' + (b.instOf || b.id) + '" data-date="' + b.date + '" style="' + style + '">' +
+    (b.kind === "task" ? '<button class="bdone" data-act="block-done" data-id="' + (b.instOf || b.id) +
+      '" data-date="' + b.date + '" title="Mark this block done">✓</button>' : "") +
+    '<b>' + h(blockTitle(b)) + '</b>' +
+    (px >= 34 ? '<small>' + hhmm(b.startMin) + "–" + hhmm(b.startMin + b.mins) + " · " + minsToText(b.mins) +
+      (b.repeat === "weekly" ? " · weekly" : "") + '</small>' : "") +
+    '<i class="grip"></i></div>';
+}
+
+
+/* ------------------------------------------------- moving things by hand */
+let drag = null, bpop = null;
+
+const colAt = x => [...document.querySelectorAll(".col")].find(c => {
+  const r = c.getBoundingClientRect();
+  return x >= r.left && x <= r.right && r.width > 0;
+});
+function minsAt(y, col){
+  const r = col.getBoundingClientRect();
+  const m = Math.round(((y - r.top) / PXMIN) / SNAP) * SNAP + V0;
+  return Math.max(V0, Math.min(m, V1));
+}
+function closeBPop(){ if(bpop){ bpop.remove(); bpop = null; } }
+
+document.addEventListener("pointerdown", e => {
+  if(S.ui.tab !== "schedule") return;
+  if(e.target.closest(".bdone") || e.target.closest(".bpop")) return;
+  closeBPop();
+
+  const chip = e.target.closest("[data-chip]");
+  if(chip){
+    const hit = findTask(chip.dataset.chip);
+    if(!hit) return;
+    const dates = weekDates();
+    const date = dates[S.ui.viewDay|0] || todayISO();
+    const b = newBlock({ kind:"task", taskId:hit.task.id, date,
+                         startMin:S.settings.availFrom, mins:Math.min(toPlace(hit.task), 240) || 60, pinned:true });
+    S.blocks.push(b);
+    render();
+    grabBlock(e, b, true);
+    e.preventDefault();
+    return;
+  }
+
+  const el = e.target.closest(".blk");
+  if(el){
+    const src = S.blocks.find(b => b.id === el.dataset.id);
+    if(!src) return;
+    drag = { instId:el.dataset.id, instDate:el.dataset.date, b:null, el,
+             col:el.closest(".col"), mode:e.target.classList.contains("grip") ? "size" : "move",
+             grab:minsAt(e.clientY, el.closest(".col")) - src.startMin, moved:false };
+    el.classList.add("dragging");
+    el.setPointerCapture(e.pointerId);
+    e.preventDefault();
+    return;
+  }
+
+  const col = e.target.closest(".col");
+  if(col){
+    const at = minsAt(e.clientY, col);
+    const b = newBlock({ kind:"busy", title:"Shift", date:col.dataset.date, startMin:at, mins:SNAP });
+    S.blocks.push(b);
+    render();
+    grabBlock(e, b, true, "size");
+    e.preventDefault();
+  }
+});
+
+function grabBlock(e, b, moved, mode){
+  const el = document.querySelector('.blk[data-id="' + b.id + '"]');
+  if(!el) return;
+  const col = el.closest(".col");
+  drag = { instId:b.id, instDate:b.date, b, el, col, mode:mode || "move",
+           grab:mode === "size" ? 0 : Math.round(b.mins/2), moved:!!moved };
+  el.classList.add("dragging");
+  try{ el.setPointerCapture(e.pointerId); }catch(err){}
+}
+
+document.addEventListener("pointermove", e => {
+  if(!drag) return;
+  if(!drag.b){
+    drag.b = realBlock(drag.instId, drag.instDate);   // split a repeat only once it really moves
+    if(!drag.b){ drag = null; return; }
+  }
+  drag.moved = true;
+  const b = drag.b;
+  if(drag.mode === "move"){
+    const col = colAt(e.clientX) || drag.col;
+    if(col !== drag.col && col.dataset.date){ b.date = col.dataset.date; drag.col = col; }
+    b.startMin = Math.max(V0, Math.min(minsAt(e.clientY, col) - drag.grab, V1 - b.mins));
+  }else{
+    b.mins = Math.max(SNAP, Math.min(minsAt(e.clientY, drag.col) - b.startMin, V1 - b.startMin));
+  }
+  if(b.kind === "task") b.pinned = true;
+  renderGridOnly();
+  const el = document.querySelector('.blk[data-id="' + b.id + '"][data-date="' + b.date + '"]');
+  if(el){ el.classList.add("dragging"); drag.el = el; drag.col = el.closest(".col"); }
+});
+
+document.addEventListener("pointerup", e => {
+  if(!drag) return;
+  const { b, moved, instId, instDate } = drag;
+  drag = null;
+  save(); render();
+  if(!moved){
+    const blk = b || S.blocks.find(x => x.id === instId);
+    if(blk) openBlockEditor(instId, instDate, e.clientX, e.clientY);
+  }
+});
+
+/* Redraw just the columns mid-drag so the whole tab does not flash. */
+function renderGridOnly(){
+  const cal = document.querySelector(".cal");
+  if(!cal) return;
+  const body = cal.querySelector(".calgrid");
+  const scroll = cal.querySelector(".calbody").scrollTop;
+  const dates = weekDates();
+  const tmp = document.createElement("div");
+  tmp.innerHTML = calHTML(dates);
+  body.innerHTML = tmp.querySelector(".calgrid").innerHTML;
+  cal.querySelector(".calbody").scrollTop = scroll;
+}
+
+/* ------------------------------------------------------------ the editor */
+function openBlockEditor(id, date, x, y){
+  closeBPop();
+  const src = S.blocks.find(b => b.id === id);
+  if(!src) return;
+  const showing = src.repeat === "weekly" && src.date !== date
+    ? Object.assign({}, src, { date, instOf:src.id, virtual:true }) : src;
+  const isTask = showing.kind === "task";
+  const goal = blockGoal(showing);
+  const dates = weekDates();
+
+  bpop = document.createElement("div");
+  bpop.className = "bpop";
+  bpop.innerHTML =
+    '<h3>' + (isTask ? "Task block" : "Fixed commitment") + '</h3>' +
+    (isTask
+      ? '<p class="bp-task">' + h(blockTitle(showing)) + (goal ? '<span style="color:' + goalColour(goal) + '">' + h(goal.title) + '</span>' : "") + '</p>'
+      : '<input type="text" id="bp-title" value="' + h(showing.title) + '" placeholder="Shift, appointment…">') +
+    '<div class="bp-row"><button class="step" data-p="-15">−</button><button class="step" data-p="15">+</button>' +
+      '<span class="spacer"></span><b>' + hhmm(showing.startMin) + "–" + hhmm(showing.startMin + showing.mins) +
+      ' · ' + minsToText(showing.mins) + '</b></div>' +
+    '<div class="bp-days">' + dates.map((d,i) =>
+      '<button data-p="day:' + d + '" class="' + (d === showing.date ? "on" : "") + '">' + DAYNAME[dow(d)][0] + '</button>').join("") + '</div>' +
+    (isTask
+      ? '<div class="bp-acts">' +
+          '<button class="btn ghost sm" data-p="done">' + (showing.done ? "Not done yet" : "Mark done") + '</button>' +
+          (showing.pinned ? '<button class="btn ghost sm" data-p="unpin">Let it move</button>' : "") +
+        '</div>'
+      : '<label class="bp-rep"><input type="checkbox" data-p="repeat"' + (src.repeat === "weekly" ? " checked" : "") +
+        '> Repeats every ' + DAYNAME[dow(showing.date)] + '</label>') +
+    '<div class="bp-acts"><button class="btn ghost sm danger" data-p="del">Remove' +
+      (src.repeat === "weekly" ? " this one" : "") + '</button>' +
+      (src.repeat === "weekly" ? '<button class="btn ghost sm danger" data-p="delall">Remove every week</button>' : "") + '</div>' +
+    '<p class="bp-hint">' + (isTask
+      ? (showing.pinned ? "You put this here, so Fill leaves it alone." : "Fill may move this to make room.")
+      : "Nothing gets scheduled over this.") + '</p>';
+
+  document.body.appendChild(bpop);
+  const r = bpop.getBoundingClientRect();
+  bpop.style.left = Math.max(8, Math.min(x - 130, innerWidth - r.width - 8)) + "px";
+  bpop.style.top  = Math.max(8, Math.min(y + 14, innerHeight - r.height - 8)) + "px";
+
+  const title = bpop.querySelector("#bp-title");
+  if(title) title.addEventListener("input", ev => {
+    const b = realBlock(id, date); if(b){ b.title = ev.target.value; save(); renderGridOnly(); }
+  });
+
+  bpop.addEventListener("click", ev => {
+    const t = ev.target.closest("[data-p]");
+    if(!t) return;
+    const p = t.dataset.p;
+    if(p === "delall"){ S.blocks = S.blocks.filter(b => b.id !== id); closeBPop(); save(); render(); return; }
+    const b = realBlock(id, date);
+    if(!b) return;
+    if(p === "-15" || p === "15") b.mins = Math.max(SNAP, Math.min(b.mins + (+p), T1 - b.startMin));
+    else if(p.indexOf("day:") === 0) b.date = p.slice(4);
+    else if(p === "done"){ b.done = !b.done; syncTaskFromBlocks(b.taskId); }
+    else if(p === "unpin") b.pinned = false;
+    else if(p === "repeat"){ b.repeat = t.checked ? "weekly" : null; b.skip = []; }
+    else if(p === "del"){ S.blocks = S.blocks.filter(z => z !== b); closeBPop(); save(); render(); return; }
+    else return;
+    if(b.kind === "task" && p !== "unpin" && p !== "done") b.pinned = true;
+    save(); render();
+    openBlockEditor(b.id, b.date, x, y);
+  });
+}
+addEventListener("keydown", e => { if(e.key === "Escape") closeBPop(); });
 
 /* ------------------------------------------------- calendar export (.ics) */
 function stampLocal(dateISO, mins){
@@ -994,44 +1641,46 @@ function taskPath(goal, task){
   return [goal.title].concat(trail).join(" › ");
 }
 function buildICS(){
-  sortSched();
   const now = new Date();
   const dtstamp = "" + now.getUTCFullYear() + pad(now.getUTCMonth()+1) + pad(now.getUTCDate()) + "T" +
                   pad(now.getUTCHours()) + pad(now.getUTCMinutes()) + pad(now.getUTCSeconds()) + "Z";
   const L = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//General Disability Support//Goal Studio//EN",
              "CALSCALE:GREGORIAN","METHOD:PUBLISH","X-WR-CALNAME:Goal Studio"];
   const events = [];
-  S.goals.forEach(g => eachTask(g.tasks, t => {
-    (t.sched || []).forEach((c, i) => {
-      const desc = "Goal: " + taskPath(g, t) + (t.notes ? "\n\n" + t.notes : "") +
-                   "\n\nEstimate: " + minsToText(t.est) +
-                   ((t.sched.length > 1) ? "  (block " + (i+1) + " of " + t.sched.length + ")" : "");
-      const from = stampLocal(c.date, c.startMin);
-      events.push({ from, lines: [
-        "BEGIN:VEVENT",
-        "UID:" + t.id + "-" + i + "@goalstudio.gds",
-        "DTSTAMP:" + dtstamp,
-        "DTSTART:" + from,
-        "DTEND:" + stampLocal(c.date, c.startMin + c.mins),
-        fold("SUMMARY:" + icsEsc(t.title)),
-        fold("DESCRIPTION:" + icsEsc(desc)),
-        fold("CATEGORIES:" + icsEsc(g.title)),
-        "STATUS:" + (t.status === "done" ? "COMPLETED" : "CONFIRMED"),
-        "END:VEVENT"] });
-    });
-  }));
+  /* Only your own task time goes out. Shifts already live in the roster —
+     exporting them would double them up in your calendar. */
+  S.blocks.filter(b => b.kind === "task").forEach(b => {
+    const hit = b.taskId && findTask(b.taskId);
+    if(!hit) return;
+    const t = hit.task, g = hit.goal;
+    const parts = taskBlocks(t.id).length;
+    const desc = "Goal: " + taskPath(g, t) + (t.notes ? "\n\n" + t.notes : "") +
+                 "\n\nEstimate: " + minsToText(t.est) + (parts > 1 ? "  (one of " + parts + " blocks)" : "");
+    const from = stampLocal(b.date, b.startMin);
+    events.push({ from, lines: [
+      "BEGIN:VEVENT",
+      "UID:" + b.id + "@goalstudio.gds",
+      "DTSTAMP:" + dtstamp,
+      "DTSTART:" + from,
+      "DTEND:" + stampLocal(b.date, b.startMin + b.mins),
+      fold("SUMMARY:" + icsEsc(t.title)),
+      fold("DESCRIPTION:" + icsEsc(desc)),
+      fold("CATEGORIES:" + icsEsc(g.title)),
+      "STATUS:" + (b.done ? "COMPLETED" : "CONFIRMED"),
+      "END:VEVENT"] });
+  });
   events.sort((a, b) => a.from < b.from ? -1 : a.from > b.from ? 1 : 0);
   events.forEach(e => L.push.apply(L, e.lines));
   L.push("END:VCALENDAR");
   return { text: L.join("\r\n"), count: events.length };
 }
-function gcalLink(item){
-  const s = stampLocal(item.chunk.date, item.chunk.startMin);
-  const e = stampLocal(item.chunk.date, item.chunk.startMin + item.chunk.mins);
+function gcalLink(b){
+  const hit = b.taskId && findTask(b.taskId);
+  if(!hit) return "#";
   return "https://calendar.google.com/calendar/render?action=TEMPLATE" +
-    "&text=" + encodeURIComponent(item.task.title) +
-    "&dates=" + s + "/" + e +
-    "&details=" + encodeURIComponent("Goal: " + item.goal.title + (item.task.notes ? "\n\n" + item.task.notes : ""));
+    "&text=" + encodeURIComponent(hit.task.title) +
+    "&dates=" + stampLocal(b.date, b.startMin) + "/" + stampLocal(b.date, b.startMin + b.mins) +
+    "&details=" + encodeURIComponent("Goal: " + hit.goal.title + (hit.task.notes ? "\n\n" + hit.task.notes : ""));
 }
 function download(name, text, type){
   const blob = new Blob([text], { type: type || "text/plain;charset=utf-8" });
@@ -1058,6 +1707,11 @@ function viewData(){
       '<button class="btn ghost" data-act="print">Print / PDF</button>' +
     '</div>' +
     '<input type="file" id="importfile" accept="application/json,.json" style="display:none">' +
+    '<div class="divider"></div>' +
+    '<h2 class="section-title">Preferences</h2>' +
+    '<div class="field" style="max-width:220px"><label>Default estimate for a new activity</label>' +
+      '<input type="number" min="0" step="15" value="' + S.settings.defaultEstimate +
+      '" data-act="setting" data-k="defaultEstimate"></div>' +
     '<div class="divider"></div>' +
     '<h2 class="section-title">Start over</h2>' +
     '<div class="btnrow">' +
@@ -1119,7 +1773,7 @@ function installSection(){
    ===================================================================== */
 function newTask(){
   return { id:uid(), title:"", status:"todo", notes:"", est:Number(S.settings.defaultEstimate) || 60,
-           start:"", due:"", sched:[], kids:[] };
+           start:"", due:"", kids:[] };
 }
 function newGoal(){
   return { id:uid(), title:"", why:"", status:"active", start:todayISO(), due:"",
@@ -1238,8 +1892,53 @@ function doAction(act, el){
     case "scale": S.ui.scale = k; save(); render(); return;
     case "g-collapse": (S.ui.collapsed ||= {}); S.ui.collapsed[id] = !S.ui.collapsed[id]; save(); render(); return;
 
-    case "sched-run": autoSchedule(); render(); return;
-    case "sched-clear": clearSchedule(); return;
+    case "hours": S.ui.hoursOpen = !S.ui.hoursOpen; save(); render(); return;
+    case "week":
+      S.ui.weekStart = (+k === 0) ? mondayOf(todayISO()) : addDays(weekStart(), 7 * (+k));
+      save(); render(); return;
+    case "viewday": S.ui.viewDay = +k; save(); render(); return;
+    case "fill": fillWeek(); render(); return;
+    case "clear-auto": clearAuto(); return;
+    case "catchup": catchUp(); return;
+    case "missed-done": markMissedDone(); return;
+    case "add-busy": {
+      const dates = weekDates();
+      const d = dates[S.ui.viewDay|0] || todayISO();
+      const b = newBlock({ kind:"busy", title:"Shift", date:d, startMin:S.settings.availFrom, mins:240 });
+      S.blocks.push(b); save(); render();
+      const el = document.querySelector('.blk[data-id="' + b.id + '"]');
+      if(el){
+        el.scrollIntoView({ block:"center", behavior:"smooth" });
+        const r = el.getBoundingClientRect();
+        openBlockEditor(b.id, b.date, r.left + 40, r.top);
+      }
+      return;
+    }
+    case "availday": {
+      const d = +k, list = S.settings.availDays || [];
+      S.settings.availDays = list.indexOf(d) !== -1 ? list.filter(x => x !== d) : list.concat(d).sort();
+      save(); render(); return;
+    }
+    case "block-done": {
+      const b = realBlock(id, el.dataset.date);
+      if(!b) return;
+      b.done = !b.done;
+      syncTaskFromBlocks(b.taskId);
+      save(); render(); return;
+    }
+    case "lever-open": S.ui.openLever = S.ui.openLever === id ? null : id; save(); render(); return;
+    case "lever": {
+      const g = S.goals.find(x => x.id === id);
+      if(!g) return;
+      if(k === "hour")      S.settings.availTo = Math.min(23*60, S.settings.availTo + 60);
+      else if(k === "sat")  S.settings.availDays = (S.settings.availDays || []).concat(6).sort();
+      else if(k === "move"){
+        const f = forecast()[g.id];
+        if(f && f.finish){ g.due = f.finish; toast("Target moved to " + prettyDate(f.finish) + "."); }
+      }
+      S.ui.openLever = null;
+      save(); render(); return;
+    }
     case "ics": {
       const { text, count } = buildICS();
       if(!count){ toast("Nothing scheduled yet — run Auto-schedule first."); return; }
@@ -1273,6 +1972,15 @@ function doAction(act, el){
       return;
     }
     case "print": window.print(); return;
+    case "rescue":
+      download("goal-studio-unreadable-" + todayISO() + ".json", rawSaved || "", "application/json");
+      toast("Downloaded. Send it over if you want it recovered.");
+      return;
+    case "rescue-reset":
+      if(!confirm("Start fresh? Download the file first if you have not — this cannot be undone.")) return;
+      loadError = null; rawSaved = null;
+      S = blank(); save(); render(); toast("Started fresh.");
+      return;
     case "install": doInstall(); return;
   }
 }
@@ -1362,15 +2070,15 @@ function setTaskField(el){
 }
 function setSetting(el){
   const k = el.dataset.k;
-  let v = el.value;
-  if(k === "hoursPerDay")      v = Math.min(16, Math.max(0.5, Number(v) || 4));
-  if(k === "defaultEstimate")  v = Math.max(0, Math.round(Number(v) || 0));
-  if(k === "dayStartMin"){
-    const p = String(v).split(":");
-    v = (Number(p[0]) || 0) * 60 + (Number(p[1]) || 0);
-  }
-  S.settings[k] = v;
+  S.settings[k] = k === "defaultEstimate" ? Math.max(0, Math.round(Number(el.value) || 0)) : el.value;
   save();
+}
+function setAvail(el){
+  const k = el.dataset.k;
+  S.settings[k] = parseTime(el.value, S.settings[k]);
+  if(S.settings.availTo <= S.settings.availFrom)
+    S.settings.availTo = clampMin(S.settings.availFrom + 60);
+  save(); render();
 }
 
 /* =====================================================================
@@ -1378,7 +2086,9 @@ function setSetting(el){
    ===================================================================== */
 const CLICK_ACTS = ["tab","goal-new","goal-select","goal-del","goto-activities","task-add","task-wave",
   "task-tick","task-del","task-up","task-down","task-notes","bulk-open","bulk-save","modal-close",
-  "scale","g-collapse","sched-run","sched-clear","ics","export","import","sample","wipe","print","install"];
+  "scale","g-collapse","ics","export","import","sample","wipe","print","install",
+  "week","viewday","fill","clear-auto","catchup","missed-done","add-busy","availday","block-done",
+  "lever","lever-open","rescue","rescue-reset","hours"];
 
 document.addEventListener("click", e => {
   const el = e.target.closest("[data-act]");
@@ -1405,12 +2115,7 @@ document.addEventListener("change", e => {
   else if(act === "task-field") setTaskField(el);
   else if(act === "goal-switch"){ S.ui.goalId = el.value; save(); render(); }
   else if(act === "setting"){ setSetting(el); render(); }
-  else if(act === "workday"){
-    const d = Number(el.dataset.k);
-    const list = S.settings.workDays || [];
-    S.settings.workDays = el.checked ? list.concat([d]).sort() : list.filter(x => x !== d);
-    save(); render();
-  }
+  else if(act === "avail"){ setAvail(el); }
 });
 
 function importBackup(input){
@@ -1440,7 +2145,10 @@ $("#tabs").addEventListener("click", e => {
 });
 $("#modalbg").addEventListener("click", e => { if(e.target.id === "modalbg") closeModal(); });
 document.addEventListener("keydown", e => { if(e.key === "Escape") closeModal(); });
-window.addEventListener("pagehide", () => { try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} });
+window.addEventListener("pagehide", () => {
+  if(loadError) return;                      // same rule as save(): never write over a file we could not read
+  try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){}
+});
 
 /* ---------------------------------------------------------- worked example */
 function sampleGoals(){
