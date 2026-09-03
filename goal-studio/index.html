@@ -399,7 +399,34 @@ ul.tight li{margin-bottom:5px;color:var(--ink-2)}
 .warnline{font-size:12.5px;line-height:1.5;color:var(--stop);background:rgba(163,69,59,.08);
   border:1px solid rgba(163,69,59,.3);border-radius:9px;padding:10px 12px;margin:0}
 @media(max-width:520px){.swap{grid-template-columns:1fr}.swap-arrow{text-align:center}}
-.bpop{position:fixed;z-index:200;width:252px;background:var(--surface);border:1px solid var(--line);
+/* ---------- steps ---------- */
+.steps{border-top:1px solid var(--line);margin:10px 0 0;padding-top:10px}
+.steps-head{display:flex;align-items:baseline;gap:8px;margin-bottom:7px}
+.steps-head span{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--bronze);font-weight:700}
+.steps-head b{margin-left:auto;font-size:11px;color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.steplist{list-style:none;margin:8px 0;padding:0;display:flex;flex-direction:column;gap:4px;
+  max-height:230px;overflow-y:auto}
+.steplist li{display:flex;align-items:center;gap:7px}
+.steplist li input{flex:1;min-width:0;background:transparent;border:1px solid transparent;padding:5px 7px;font-size:12.5px}
+.steplist li input:hover{border-color:var(--line)}
+.steplist li input:focus{border-color:var(--bronze);background:var(--surface-2)}
+.steplist li.on input{text-decoration:line-through;color:var(--muted)}
+.steplist li .iconbtn{opacity:0;flex:0 0 auto}
+.steplist li:hover .iconbtn,.steplist li .iconbtn:focus{opacity:1}
+.step-new{font-size:12.5px;padding:7px 9px}
+.steps-note{font-size:11px;color:var(--muted);margin:7px 0 0;line-height:1.45}
+.stepchip{background:rgba(199,154,95,.14);border:1px solid var(--line);color:var(--bronze-2);
+  border-radius:7px;padding:4px 8px;font-size:11px;font-variant-numeric:tabular-nums;cursor:pointer;
+  white-space:nowrap;flex:0 0 auto}
+.stepchip:hover{border-color:var(--bronze)}
+.blkfill{position:absolute;left:0;bottom:0;height:3px;background:currentColor;opacity:.55;
+  border-radius:0 2px 2px 0;pointer-events:none}
+@media(max-width:700px){
+  .node-main > .stepchip{order:6}
+  .steplist li .iconbtn{opacity:1}
+  .steplist{max-height:none}
+}
+.bpop{position:fixed;z-index:200;width:290px;background:var(--surface);border:1px solid var(--line);
   border-radius:12px;box-shadow:var(--shadow);padding:13px}
 .bpop h3{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--bronze);margin-bottom:8px}
 .bp-task{margin:0 0 9px;font-size:13px;font-weight:600;line-height:1.3}
@@ -644,6 +671,8 @@ function normaliseGoal(g){
       t.notes ||= "";
       t.est = Number(t.est) || 0;
       t.start ||= ""; t.due ||= "";
+      t.steps = Array.isArray(t.steps) ? t.steps.filter(x => x && x.text !== undefined) : [];
+      t.steps.forEach(x => { x.id ||= uid(); x.done = !!x.done; x.text = String(x.text || ""); });
       t.kids = Array.isArray(t.kids) ? t.kids : [];
       walk(t.kids);
     });
@@ -732,8 +761,28 @@ function doneEffort(t){
 /* Progress is weighted by effort; unestimated leaves still count as 1 unit. */
 function weight(t){ return isLeaf(t) ? Math.max(Number(t.est) || 0, 1) : t.kids.reduce((n,k) => n + weight(k), 0); }
 function doneWeight(t){
-  if(isLeaf(t)) return t.status === "done" ? Math.max(Number(t.est) || 0, 1) : 0;
+  if(isLeaf(t)) return Math.max(Number(t.est) || 0, 1) * taskFraction(t);
   return t.kids.reduce((n,k) => n + doneWeight(k), 0);
+}
+/* Steps break one task into equal shares of itself: tick 3 of 10 and the task
+   is 30% done, which is 30% of its weight against the goal. */
+function stepStats(t){
+  const list = (t && t.steps) || [];
+  return { n: list.length, done: list.filter(x => x.done).length };
+}
+function taskFraction(t){
+  if(t.status === "done") return 1;
+  const { n, done } = stepStats(t);
+  if(n) return done / n;
+  const est = Number(t.est) || 0;
+  return est ? Math.min(1, doneBlockMins(t) / est) : 0;   // else: time actually ticked off
+}
+/* Steps are the authority once they exist. */
+function syncSteps(t){
+  const { n, done } = stepStats(t);
+  if(!n) return;
+  if(done === n) t.status = "done";
+  else if(t.status === "done") t.status = "doing";
 }
 function goalProgress(g){
   if(!g.tasks.length) return 0;
@@ -951,6 +1000,9 @@ function nodeHTML(t, depth, idx, count, goalId){
       (late ? '<span class="chip stop">overdue</span>' : "") +
       (leaf ? '<button class="datechip no-print" data-act="task-notes" data-id="' + t.id + '">' +
         (t.start || t.due ? h(shortDate(t.start || t.due)) : "set dates") + '</button>' : "") +
+      (leaf && stepStats(t).n
+        ? '<button class="stepchip no-print" data-act="task-notes" data-id="' + t.id + '" title="Steps">' +
+          stepStats(t).done + '/' + stepStats(t).n + '</button>' : "") +
       '<span class="rowtools no-print" style="display:flex;gap:2px">' +
         '<button class="iconbtn" data-act="task-notes" data-id="' + t.id + '" title="Notes, dates and status">✎</button>' +
         '<button class="iconbtn" data-act="task-wave" data-id="' + t.id + '" title="Break into a wave of smaller tasks">＋ Wave</button>' +
@@ -961,7 +1013,9 @@ function nodeHTML(t, depth, idx, count, goalId){
         '<button class="iconbtn del" data-act="task-del" data-id="' + t.id + '" title="Delete">✕</button>' +
       '</span>' +
     '</div>' +
-    '<div class="node-extra"><textarea data-act="task-field" data-k="notes" data-id="' + t.id + '" placeholder="Notes, definition of done, links, who else is involved…">' + h(t.notes) + '</textarea></div>' +
+    '<div class="node-extra">' +
+      (leaf ? stepsHTML(t) : "") +
+      '<textarea data-act="task-field" data-k="notes" data-id="' + t.id + '" placeholder="Notes, definition of done, links, who else is involved…">' + h(t.notes) + '</textarea></div>' +
     (t.kids.length
       ? '<div class="kids">' + t.kids.map((k,i) => nodeHTML(k, depth+1, i, t.kids.length, goalId)).join("") +
         '<div class="no-print"><button class="btn ghost sm" data-act="task-wave" data-id="' + t.id + '">＋ Add to this wave</button></div></div>'
@@ -1138,7 +1192,9 @@ function toPlace(t){
 /* Minutes of work genuinely left, whether or not it has a slot yet. */
 function remainingMins(t){
   if(t.status === "done") return 0;
-  return Math.max(0, (Number(t.est) || 0) - doneBlockMins(t));
+  const est = Number(t.est) || 0;
+  if(stepStats(t).n) return Math.round(est * (1 - taskFraction(t)));
+  return Math.max(0, est - doneBlockMins(t));
 }
 function remainingEffort(g){
   let n = 0;
@@ -1268,6 +1324,7 @@ function syncTaskFromBlocks(taskId){
   const hit = taskId && findTask(taskId);
   if(!hit) return;
   const t = hit.task;
+  if(stepStats(t).n){ syncSteps(t); return; }      // steps outrank block ticks
   const done = doneBlockMins(t);
   if(done >= (Number(t.est) || 0) && done > 0) t.status = "done";
   else if(t.status === "done" && done < (Number(t.est) || 0)) t.status = "doing";
@@ -1508,6 +1565,8 @@ function isNarrow(){ return window.innerWidth <= 760; }
 
 function blockHTML(b){
   const goal = blockGoal(b), col = goal ? goalColour(goal) : "";
+  const bTask = b.kind === "task" && b.taskId ? findTask(b.taskId) : null;
+  const st = bTask ? stepStats(bTask.task) : { n:0, done:0 };
   const cls = b.kind === "busy" ? "busy"
             : "task" + (b.pinned ? " pinned" : "") + (b.done ? " done" : "");
   const px = Math.max(Math.round(b.mins * PXMIN) - 2, 15);
@@ -1518,13 +1577,52 @@ function blockHTML(b){
       '" data-date="' + b.date + '" title="Mark this block done">✓</button>' : "") +
     '<b>' + h(blockTitle(b)) + '</b>' +
     (px >= 34 ? '<small>' + hhmm(b.startMin) + "–" + hhmm(b.startMin + b.mins) + " · " + minsToText(b.mins) +
-      (b.repeat === "weekly" ? " · weekly" : "") + '</small>' : "") +
+      (b.repeat === "weekly" ? " · weekly" : "") + (st.n ? " · " + st.done + "/" + st.n : "") + '</small>' : "") +
+    (st.n ? '<i class="blkfill" style="width:' + Math.round(st.done / st.n * 100) + '%"></i>' : "") +
     '<i class="grip"></i></div>';
 }
 
 
+/* ---------------------------------------------------------------- STEPS
+   Breaking a task down where you meet it: on the block, in the week, at the
+   moment you sit down to do it. Steps divide the task's completion, not its
+   time — they all happen inside the block already set aside for them. */
+function stepsHTML(t){
+  const { n, done } = stepStats(t);
+  const pct = n ? Math.round(done / n * 100) : 0;
+  return '<div class="steps">' +
+    '<div class="steps-head"><span>Break it down</span>' +
+      (n ? '<b>' + done + ' of ' + n + ' · ' + pct + '%</b>' : "") + '</div>' +
+    (n ? '<div class="bar-mini"><i style="width:' + pct + '%;background:var(--bronze)"></i></div>' : "") +
+    (n ? '<ul class="steplist">' + t.steps.map(x =>
+        '<li class="' + (x.done ? "on" : "") + '">' +
+          '<button class="tick' + (x.done ? " on" : "") + '" data-act="step-tick" data-id="' + t.id +
+            '" data-k="' + x.id + '" title="Tick this off">✓</button>' +
+          '<input type="text" value="' + h(x.text) + '" data-act="step-text" data-id="' + t.id +
+            '" data-k="' + x.id + '" placeholder="What exactly?">' +
+          '<button class="iconbtn del" data-act="step-del" data-id="' + t.id +
+            '" data-k="' + x.id + '" title="Remove">✕</button>' +
+        '</li>').join("") + '</ul>' : "") +
+    '<input class="step-new" type="text" data-act="step-new" data-id="' + t.id + '" ' +
+      'placeholder="' + (n ? "Add another…" : "Add a step, then Enter") + '" ' +
+      'title="Type and press Enter. Pasting several lines adds them all.">' +
+    (n ? '<p class="steps-note">Each one is worth ' + Math.round(100/n) + '% of this task.</p>'
+       : '<p class="steps-note">List the small things this task really is. Ticking them moves the goal.</p>') +
+  '</div>';
+}
+function addSteps(taskId, text){
+  const hit = findTask(taskId);
+  if(!hit) return 0;
+  const lines = String(text || "").split("\n")
+    .map(x => x.replace(/^\s*[-*•\d.)\]]+\s*/, "").trim()).filter(Boolean);
+  if(!lines.length) return 0;
+  hit.task.steps = (hit.task.steps || []).concat(lines.map(x => ({ id:uid(), text:x, done:false })));
+  syncSteps(hit.task);
+  return lines.length;
+}
+
 /* ------------------------------------------------- moving things by hand */
-let drag = null, bpop = null;
+let drag = null, bpop = null, bpopCtx = null;
 
 const colAt = x => [...document.querySelectorAll(".col")].find(c => {
   const r = c.getBoundingClientRect();
@@ -1535,7 +1633,17 @@ function minsAt(y, col){
   const m = Math.round(((y - r.top) / PXMIN) / SNAP) * SNAP + V0;
   return Math.max(V0, Math.min(m, V1));
 }
-function closeBPop(){ if(bpop){ bpop.remove(); bpop = null; } }
+function closeBPop(){ if(bpop){ bpop.remove(); bpop = null; } bpopCtx = null; }
+/* Redraw the open block editor after a step changes, keeping it where it is. */
+function refreshBPop(focusNew){
+  if(!bpopCtx) return;
+  const c = bpopCtx;
+  openBlockEditor(c.id, c.date, c.x, c.y);
+  if(focusNew && bpop){
+    const el = bpop.querySelector(".step-new");
+    if(el) el.focus();
+  }
+}
 
 document.addEventListener("pointerdown", e => {
   if(S.ui.tab !== "schedule") return;
@@ -1658,6 +1766,7 @@ document.addEventListener("pointerup", e => {
 /* ------------------------------------------------------------ the editor */
 function openBlockEditor(id, date, x, y){
   closeBPop();
+  bpopCtx = { id, date, x, y };
   const src = S.blocks.find(b => b.id === id);
   if(!src) return;
   const showing = src.repeat === "weekly" && src.date !== date
@@ -1679,7 +1788,11 @@ function openBlockEditor(id, date, x, y){
     '<div class="bp-days">' + dates.map((d,i) =>
       '<button data-p="day:' + d + '" class="' + (d === showing.date ? "on" : "") + '">' + DAYNAME[dow(d)][0] + '</button>').join("") + '</div>' +
     (isTask
-      ? '<div class="bp-acts">' +
+      ? (function(){
+          const hit = showing.taskId && findTask(showing.taskId);
+          return hit ? stepsHTML(hit.task) : "";
+        })() +
+        '<div class="bp-acts">' +
           '<button class="btn ghost sm" data-p="done">' + (showing.done ? "Not done yet" : "Mark done") + '</button>' +
           (showing.pinned ? '<button class="btn ghost sm" data-p="unpin">Let it move</button>' : "") +
         '</div>'
@@ -1729,7 +1842,34 @@ function openBlockEditor(id, date, x, y){
     openBlockEditor(b.id, b.date, x, y);
   });
 }
-addEventListener("keydown", e => { if(e.key === "Escape") closeBPop(); });
+addEventListener("keydown", e => {
+  if(e.key === "Escape"){ closeBPop(); return; }
+  if(e.key !== "Enter") return;
+  const el = e.target.closest && e.target.closest('[data-act="step-new"]');
+  if(!el) return;
+  e.preventDefault();
+  const added = addSteps(el.dataset.id, el.value);
+  if(!added) return;
+  el.value = "";
+  save(); render(); refreshBPop(true);
+  if(!bpopCtx){                       // typing in the Activities drawer instead
+    const again = document.querySelector('[data-act="step-new"][data-id="' + el.dataset.id + '"]');
+    if(again) again.focus();
+  }
+  if(added > 1) toast(added + " steps added.");
+});
+/* Pasting a list is the fast way in, so split it on the spot. */
+document.addEventListener("paste", e => {
+  const el = e.target.closest && e.target.closest('[data-act="step-new"]');
+  if(!el) return;
+  const text = (e.clipboardData || window.clipboardData).getData("text") || "";
+  if(text.indexOf("\n") === -1) return;
+  e.preventDefault();
+  const added = addSteps(el.dataset.id, text);
+  if(!added) return;
+  save(); render(); refreshBPop(true);
+  toast(added + " steps added.");
+});
 
 /* ------------------------------------------------- calendar export (.ics) */
 function stampLocal(dateISO, mins){
@@ -1927,7 +2067,7 @@ function installSection(){
    ===================================================================== */
 function newTask(){
   return { id:uid(), title:"", status:"todo", notes:"", est:Number(S.settings.defaultEstimate) || 60,
-           start:"", due:"", kids:[] };
+           start:"", due:"", steps:[], kids:[] };
 }
 function newGoal(){
   return { id:uid(), title:"", why:"", status:"active", start:todayISO(), due:"",
@@ -2058,6 +2198,24 @@ function doAction(act, el){
     case "g-collapse": (S.ui.collapsed ||= {}); S.ui.collapsed[id] = !S.ui.collapsed[id]; save(); render(); return;
 
     case "hours": S.ui.hoursOpen = !S.ui.hoursOpen; save(); render(); return;
+    case "step-tick": {
+      const hit = findTask(id);
+      if(!hit) return;
+      const step = (hit.task.steps || []).find(x => x.id === k);
+      if(!step) return;
+      step.done = !step.done;
+      syncSteps(hit.task);
+      save(); render(); refreshBPop();
+      return;
+    }
+    case "step-del": {
+      const hit = findTask(id);
+      if(!hit) return;
+      hit.task.steps = (hit.task.steps || []).filter(x => x.id !== k);
+      syncSteps(hit.task);
+      save(); render(); refreshBPop();
+      return;
+    }
     case "week":
       S.ui.weekStart = (+k === 0) ? mondayOf(todayISO()) : addDays(weekStart(), 7 * (+k));
       save(); render(); return;
@@ -2257,7 +2415,8 @@ const CLICK_ACTS = ["tab","goal-new","goal-select","goal-del","goto-activities",
   "task-tick","task-del","task-up","task-down","task-notes","bulk-open","bulk-save","modal-close",
   "scale","g-collapse","ics","export","import","sample","wipe","print","install",
   "week","viewday","fill","clear-auto","catchup","missed-done","add-busy","availday","block-done",
-  "lever","lever-open","rescue","rescue-reset","hours","share","import-go","undo-import","fill-ahead"];
+  "lever","lever-open","rescue","rescue-reset","hours","share","import-go","undo-import","fill-ahead",
+  "step-tick","step-del"];
 
 document.addEventListener("click", e => {
   const el = e.target.closest("[data-act]");
@@ -2274,6 +2433,11 @@ document.addEventListener("input", e => {
   if(act === "goal-field")  setGoalField(el);
   else if(act === "smart-field") setSmartField(el);
   else if(act === "task-field")  setTaskField(el);
+  else if(act === "step-text"){
+    const hit = findTask(el.dataset.id);
+    const step = hit && (hit.task.steps || []).find(x => x.id === el.dataset.k);
+    if(step){ step.text = el.value; save(); }
+  }
 });
 document.addEventListener("change", e => {
   if(e.target.id === "importfile"){ importBackup(e.target); return; }
