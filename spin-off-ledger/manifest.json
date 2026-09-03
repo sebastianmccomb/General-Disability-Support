@@ -1,0 +1,13 @@
+{
+  "name": "Spin-off Ledger",
+  "short_name": "Ledger",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#101417",
+  "theme_color": "#101417",
+  "description": "US spin-offs registered on Form 10-12B, with Greenblatt research checklist.",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
