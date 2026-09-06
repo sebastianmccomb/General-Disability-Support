@@ -57,7 +57,7 @@ var CATALYST=[["","—"],["yes","Identified"],["none","None found"],["unclear","
 var SETUP=[["","—"],["stub","Demerger arbitrage / stub"],["cheap","Cheap absolute + relative"],
            ["forced","Indiscriminate selling"],["divi","Dividend as catalyst"]];
 var VERDICT=[["","—"],["watch","Watch"],["dig","Dig in"],["hold","Holding"],["discard","Discard"]];
-var FACT_KEYS=["facts","why","ra","rb","flags","econ","bs","rc","tax","cat","timing"];
+var FACT_KEYS=["facts","why","ra","rb","flags","econ","bs","rc","tax","cat","timing","dur","val"];
 function done(r){var n=0;FACT_KEYS.forEach(function(k){if((r[k]||"").trim())n++;});return n;}
 
 var SECTIONS=[
@@ -136,7 +136,26 @@ var SECTIONS=[
      "When-issued trading window",
      "First index rebalance after listing — when the mechanical selling clears",
      "First standalone earnings report",
-     "Option-strike setting date, if there are new grants (section 4)"]}
+     "Option-strike setting date, if there are new grants (section 4)"]},
+ {k:"dur",n:"12 · Revenue durability",src:"Information Statement → Business and Customers, plus the commercial agreements filed as exhibits",
+  p:["<b>Contracted, recurring, or transactional?</b> Contracted volume turns a thin margin into a good business — a sole-source OEM locked onto a platform for the model cycle. Transactional revenue carrying leverage is a different animal",
+     "Backlog, order book, subscription or service revenue as a percentage of the total",
+     "Customer concentration — top ten as a share of revenue, and anyone above 10% on their own",
+     "<b>Revenue contractually tied to the former parent, and when it expires</b> — this is the spin-off-specific one. It is a moat with a cliff edge",
+     "Term and termination rights on supply and distribution agreements, and whether exclusivity runs in your favour or against you",
+     "What actually drives demand: build cycles, replacement and retrofit, regulation, code mandates",
+     "Switching costs — what would it cost this customer to buy somewhere else tomorrow?",
+     "Pricing power: has it passed cost inflation through, and does gross margin show it?"]},
+ {k:"val",n:"13 · Valuation scaffolding",src:"Your arithmetic, with every assumption stated. No target price here — that belongs in section 14.",
+  p:["Owner earnings: pre-tax income + depreciation and amortisation + impairments − maintenance capex, taxed at 25%",
+     "Maintenance capex = MIN(average capex, average depreciation × 0.9). Name the years used",
+     "<b>Flag every add-back that is contested, and show the number both ways.</b> Acquired intangible amortisation is the usual one — if growth was bought and must keep being bought, it is a real cost",
+     "EV bridge: market cap + debt + preferred at liquidation value − cash",
+     "Tangible book: equity − goodwill − intangibles − preferred",
+     "Graham NCAV: current assets − <i>total</i> liabilities. A negative number is an answer, not a failure",
+     "Liquidation with haircuts: receivables ~80%, inventory ~50–60%, PP&amp;E ~30%",
+     "Operating cash flow against interest expense, across every year available",
+     "<b>What would have to be true</b> for today's price to be right — not what you think it is worth"]}
 ];
 
 /* ---------- list ---------- */
@@ -164,7 +183,7 @@ function renderList(){
       '<td>'+(r.catalyst?'<span class="chip '+esc(r.catalyst)+'">'+label(CATALYST,r.catalyst)+'</span>':'<span class="dash">—</span>')+'</td>'+
       '<td>'+dots+'</td>'+
       '<td><a class="open" data-go="'+esc(r.id)+'" href="#">'+
-        (done(r)?'Research <span class="n">'+done(r)+'/11</span>':'Research <span class="n">+</span>')+'</a></td></tr>';
+        (done(r)?'Research <span class="n">'+done(r)+'/'+FACT_KEYS.length+'</span>':'Research <span class="n">+</span>')+'</a></td></tr>';
   }).join("");
 
   app.className="wrap";
@@ -234,10 +253,10 @@ function renderResearch(id){
       '<div><span>Parent</span><b>'+(esc(r.parent)||"—")+(r.ptick?" ("+esc(r.ptick)+")":"")+'</b></div>'+
       '<div><span>Announced</span><b>'+(fmt(r.ann)||"—")+'</b></div>'+
       '<div><span>First trade</span><b>'+(fmt(r.first)||"—")+'</b></div></div></div>'+
-    '<p class="convention">Sections 1–11 hold <b>facts and where they came from</b>. The judgement calls — the (a)/(b)/(c) verdicts, the setup, the buy price and the conclusion — are section 12.</p>'+
+    '<p class="convention">Sections 1–13 hold <b>facts and where they came from</b>. The judgement calls — the (a)/(b)/(c) verdicts, the setup, the buy price and the conclusion — are section 14.</p>'+
     (r.url?'<p style="margin:0 0 20px"><a class="filing" href="'+esc(r.url)+'" target="_blank" rel="noopener">Open the Form 10 on EDGAR →</a></p>':'')+
     blocks+
-    '<section class="blk" style="margin-top:32px"><h3>12 · Classify and conclude</h3>'+
+    '<section class="blk" style="margin-top:32px"><h3>14 · Classify and conclude</h3>'+
       '<p class="why">Yours, not the report\'s. Write the buy price before it trades, so a quoted price can\'t anchor you.</p>'+
       '<div class="grid2" style="margin-bottom:15px">'+
         '<div><label class="fl">Catalyst</label>'+sel("catalyst",CATALYST)+'</div>'+
