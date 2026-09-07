@@ -484,6 +484,108 @@ ul.tight li{margin-bottom:5px;color:var(--ink-2)}
   .card,.node,.day,.gantt{box-shadow:none;break-inside:avoid}
   .wrap{padding:0;max-width:none}
 }
+
+/* ---- navigation menu --------------------------------------------------- */
+.navwrap{position:relative;margin-left:auto}
+.navbtn{display:flex;align-items:center;gap:9px;padding:8px 15px;border-radius:999px;
+  border:1px solid var(--line);background:transparent;color:var(--ink-2,#c3bcb1);cursor:pointer;
+  font:500 11.5px/1 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase}
+.navbtn:hover{color:var(--bronze);border-color:var(--bronze)}
+.navbtn .navcar{font-size:8px;color:var(--muted)}
+.navwrap .tabs{position:absolute;right:0;top:calc(100% + 8px);z-index:60;display:flex;flex-direction:column;
+  min-width:172px;padding:6px;border-radius:12px;border:1px solid var(--line);background:#0d1114;
+  box-shadow:0 22px 50px rgba(0,0,0,.6)}
+/* display:flex above outranks the UA rule for [hidden], so say it here. */
+.navwrap .tabs[hidden]{display:none}
+.navwrap .tab{text-align:left;padding:9px 12px;border-radius:7px;border:0;background:none;cursor:pointer;
+  color:var(--ink-2,#c3bcb1);font:500 12px/1 Inter,sans-serif;letter-spacing:.05em}
+.navwrap .tab:hover{background:rgba(242,236,225,.07);color:#f2ece1}
+.navwrap .tab.on{color:#e0bb87}
+
+/* ---- pillars -----------------------------------------------------------
+   The page opens on the work itself: no heading, no explanation, nothing
+   above the fold but the pillars. Gold is a material here, not a tint —
+   it is the one screen showing what is already finished. */
+.pillars-page{display:grid;grid-template-columns:236px 1fr;gap:28px;align-items:start;padding-top:4px}
+@media(max-width:900px){.pillars-page{grid-template-columns:1fr}}
+
+.bay{position:sticky;top:80px;display:flex;flex-direction:column;gap:12px}
+.harvest{position:relative;padding:20px 18px;cursor:grab;border-radius:3px;
+  border:1px solid #d9b678;
+  background:linear-gradient(155deg,#e8c88d 0%,#c79a5f 34%,#a97f47 62%,#d9b678 100%);
+  box-shadow:0 1px 0 rgba(255,238,206,.6) inset,0 -1px 0 rgba(90,60,20,.5) inset,
+             0 12px 28px rgba(0,0,0,.5);
+  transition:transform .16s ease,box-shadow .16s ease}
+.harvest:hover{transform:translateY(-2px);box-shadow:0 1px 0 rgba(255,244,220,.75) inset,
+  0 -1px 0 rgba(90,60,20,.5) inset,0 18px 40px rgba(0,0,0,.6),0 0 30px rgba(224,187,135,.24)}
+.harvest.dragging{opacity:.45;transform:none}
+.harvest h4{margin:0 0 5px;font:600 16px/1.25 'Cormorant Garamond',Georgia,serif;color:#231a0c}
+.harvest .h-meta{margin:0;font:600 9px/1 Inter,sans-serif;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(52,38,16,.72)}
+/* Drag is the gesture. This is the fallback for touch and keyboard, so it has
+   to exist — but it should read as part of the plaque, not a browser control
+   dropped on top of it. */
+.harvest .h-sel{-webkit-appearance:none;appearance:none;margin-top:12px;width:100%;
+  padding:6px 22px 6px 0;border:0;border-top:1px solid rgba(70,48,18,.28);border-radius:0;
+  background:transparent url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M0 0h10L5 6z' fill='%234a3413'/%3E%3C/svg%3E") right center/8px 5px no-repeat;
+  color:rgba(52,38,16,.8);cursor:pointer;
+  font:600 9px/1 Inter,sans-serif;letter-spacing:.18em;text-transform:uppercase}
+.harvest .h-sel:focus{outline:0;color:#231a0c}
+.harvest .h-sel option{background:#0d1114;color:#f2ece1;letter-spacing:0;text-transform:none;font-size:12px}
+.addpillar{padding:13px;border-radius:3px;border:1px dashed rgba(199,154,95,.4);background:none;
+  color:var(--muted);cursor:pointer;font:500 10.5px/1 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase}
+.addpillar:hover{border-color:#c79a5f;color:#e0bb87}
+
+.pillar-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:24px}
+.pillar-none{padding:40px;text-align:center;border:1px dashed var(--line);border-radius:4px}
+.pillar-none p{color:var(--muted);margin:0 0 14px}
+
+.pillar{position:relative;padding:0 0 6px;border-radius:4px;overflow:hidden;
+  border:1px solid #c79a5f;background:#12171a;
+  box-shadow:0 16px 40px rgba(0,0,0,.42);transition:box-shadow .16s ease,border-color .16s ease}
+.pillar::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;
+  background:linear-gradient(90deg,#a97f47,#f0d9a8 22%,#c79a5f 48%,#f0d9a8 74%,#a97f47)}
+.pillar.over{border-color:#f0d9a8;box-shadow:0 0 0 2px rgba(240,217,168,.55),0 24px 56px rgba(0,0,0,.55)}
+.p-head{display:flex;align-items:center;gap:14px;padding:24px 24px 6px;
+  background:linear-gradient(180deg,rgba(199,154,95,.22),rgba(199,154,95,0))}
+.p-title{flex:1;min-width:0;background:none;border:0;padding:0;color:#f7edda;
+  font:500 26px/1.15 'Cormorant Garamond',Georgia,serif}
+.p-title::placeholder{color:rgba(199,154,95,.45)}
+.p-title:focus{outline:0}
+.p-n{font:500 30px/1 'Cormorant Garamond',Georgia,serif;color:#e0bb87}
+/* min-height:0 undoes the global textarea floor — a one-line reason should
+   take one line, not three. It grows to fit whatever is typed instead. */
+.p-why{width:calc(100% - 48px);margin:0 24px;height:22px;min-height:0;background:none;border:0;
+  resize:none;overflow:hidden;padding:0;color:var(--muted);font-size:12.5px;line-height:1.6}
+.p-why:focus{outline:0;color:var(--ink-2,#c3bcb1)}
+/* An empty pillar shows nothing — a dashed box on an otherwise finished card
+   is a form field, and this page is not a form. The target only appears while
+   something is actually in the air. */
+.p-drop{height:18px}
+body.carrying .p-drop{height:52px;margin:14px 24px 18px;border:1px dashed rgba(199,154,95,.34);
+  border-radius:2px;transition:none}
+body.carrying .pillar.over .p-drop{border-color:#f0d9a8;background:rgba(199,154,95,.08)}
+body.carrying .pillar{border-color:rgba(199,154,95,.55)}
+
+.p-stack{list-style:none;margin:16px 0 0;padding:0 24px}
+.p-goal{border-top:1px solid rgba(199,154,95,.15)}
+.p-goal:first-child{border-top:0}
+.pg-head{display:flex;align-items:baseline;gap:12px;width:100%;padding:13px 0;
+  background:none;border:0;cursor:pointer;text-align:left;color:inherit}
+.pg-car{color:#c79a5f;font-size:13px;line-height:1;transition:transform .15s}
+.p-goal.open .pg-car{transform:rotate(90deg)}
+.pg-title{flex:1;font:500 16px/1.3 'Cormorant Garamond',Georgia,serif;color:#f2ece1}
+.pg-when{font:400 10px/1 ui-monospace,Menlo,monospace;color:var(--muted)}
+.pg-body{padding:0 0 14px 25px}
+.pg-body ul{list-style:none;margin:0 0 10px;padding:0}
+.pg-body li{position:relative;padding:5px 0 5px 18px;font-size:12.5px;color:var(--ink-2,#c3bcb1)}
+.pg-body li::before{content:"✓";position:absolute;left:0;top:5px;color:#c79a5f;font-size:10px}
+
+.mini{font:500 10.5px/1 Inter,sans-serif;padding:5px 9px;border-radius:999px;border:1px solid var(--line);
+  background:none;color:var(--muted);cursor:pointer}
+.mini:hover{color:#e0bb87;border-color:#c79a5f}
+.mini.danger{border:0;font-size:16px;line-height:1;padding:0 2px;color:rgba(199,154,95,.5)}
+.mini.danger:hover{color:#d4796e}
 </style>
 </head>
 <body>
@@ -493,13 +595,19 @@ ul.tight li{margin-bottom:5px;color:var(--ink-2)}
       <div class="mark"></div>
       <div class="brand-title"><strong>GOAL STUDIO</strong><span>General Disability Support</span></div>
     </div>
-    <nav class="tabs" id="tabs">
-      <button class="tab" data-tab="goals">Goals</button>
-      <button class="tab" data-tab="activities">Activities</button>
-      <button class="tab" data-tab="timeline">Timeline</button>
-      <button class="tab" data-tab="schedule">Schedule</button>
-      <button class="tab" data-tab="data">Data</button>
-    </nav>
+    <div class="navwrap" id="navwrap">
+      <button class="navbtn" id="navbtn" aria-haspopup="true" aria-expanded="false" aria-controls="tabs">
+        <span id="navlabel">Goals</span><span class="navcar">▾</span>
+      </button>
+      <nav class="tabs" id="tabs" hidden>
+        <button class="tab" data-tab="goals">Goals</button>
+        <button class="tab" data-tab="activities">Activities</button>
+        <button class="tab" data-tab="timeline">Timeline</button>
+        <button class="tab" data-tab="schedule">Schedule</button>
+        <button class="tab" data-tab="pillars">Pillars</button>
+        <button class="tab" data-tab="data">Data</button>
+      </nav>
+    </div>
     <div class="savechip" id="savechip">&nbsp;</div>
   </div>
 </header>
@@ -597,7 +705,7 @@ let S = load();
 let saveTimer = null;
 
 function blank(){
-  return { version: 2, goals: [], blocks: [], meta: { updated:"", device:"" },
+  return { version: 2, goals: [], blocks: [], pillars: [], meta: { updated:"", device:"" },
            settings: Object.assign({}, DEFAULT_SETTINGS),
            ui: { tab:"goals", goalId:null, scale:"week", weekStart:null, viewDay:0, openLever:null, collapsed:{} } };
 }
@@ -609,11 +717,14 @@ function load(){
     const s = blank();
     s.goals    = Array.isArray(d.goals) ? d.goals : [];
     s.blocks   = Array.isArray(d.blocks) ? d.blocks : [];
+    /* Pillars arrived after v2. A plan saved before them simply has none. */
+    s.pillars  = Array.isArray(d.pillars) ? d.pillars : [];
     s.meta     = Object.assign({ updated:"", device:"" }, d.meta || {});
     s.settings = Object.assign({}, DEFAULT_SETTINGS, migrateSettings(d.settings || {}));
     s.ui       = Object.assign(s.ui, d.ui || {});
     s.ui.collapsed = s.ui.collapsed || {};
     s.goals.forEach(normaliseGoal);
+    s.pillars.forEach(normalisePillar);
     if(!(d.version >= 2)) s.blocks = s.blocks.concat(migrateSchedule(s.goals));
     s.blocks.forEach(b => {
       b.id ||= uid(); b.kind = b.kind === "busy" ? "busy" : "task";
@@ -678,6 +789,55 @@ function normaliseGoal(g){
     });
   })(g.tasks);
 }
+/* ------------------------------------------------------------- PILLARS
+   A pillar is the life-level thing a stack of goals is in service of —
+   become a psychologist, finish an Ironman, build a permanent capital
+   vehicle. Goals come and go; pillars do not. Finished work gets filed
+   against one, so the pillar accumulates evidence that it is being built
+   rather than the completed goals simply vanishing. */
+function normalisePillar(p){
+  p.id ||= uid();
+  p.title ||= "Untitled pillar";
+  p.why ||= "";
+  p.colour ||= GOAL_COLOURS[0];
+  p.created ||= todayISO();
+}
+function newPillar(){
+  const used = (S.pillars || []).length;
+  return { id: uid(), title: "", why: "",
+           colour: GOAL_COLOURS[used % GOAL_COLOURS.length], created: todayISO() };
+}
+/* A goal is finished when every activity under it is finished. That is the
+   moment it leaves the working part of the app and becomes something you
+   have done. Nothing is inferred from dates or effort — only the ticks. */
+function goalComplete(g){
+  if(g.status === "done") return true;
+  return !!(g.tasks && g.tasks.length) && goalProgress(g) === 100;
+}
+/* Finished, and not yet placed against a pillar. These are what wait. */
+function harvest(){
+  return (S.goals || []).filter(g => goalComplete(g) && !g.pillarId);
+}
+/* Filed goals leave the schedule. Archived, never deleted. */
+function isArchived(g){ return !!g.pillarId; }
+function archivedTaskIds(){
+  const ids = {};
+  (S.goals || []).forEach(g => { if(isArchived(g)) eachTask(g.tasks, tk => { ids[tk.id] = 1; }); });
+  return ids;
+}
+function pillarGoals(pid){
+  return (S.goals || []).filter(g => g.pillarId === pid)
+    .sort((a,b) => (b.filedAt || "").localeCompare(a.filedAt || ""));
+}
+function fileGoal(goalId, pillarId){
+  const g = (S.goals || []).find(x => x.id === goalId);
+  if(!g) return false;
+  if(pillarId){ g.pillarId = pillarId; g.filedAt = g.filedAt || todayISO(); }
+  else { delete g.pillarId; delete g.filedAt; }
+  save();
+  return true;
+}
+
 function save(){
   /* Never write over a plan we failed to read — that turns a display problem
      into permanent data loss. */
@@ -840,18 +1000,94 @@ function rescueBanner(){
     '<div class="btnrow"><button class="btn sm" data-act="rescue">Download the file</button>' +
     '<button class="btn ghost sm" data-act="rescue-reset">Start fresh</button></div></div>';
 }
+const TAB_LABEL = { goals:"Goals", activities:"Activities", timeline:"Timeline",
+                    schedule:"Schedule", pillars:"Pillars", data:"Data" };
+/* The reason line has no scrollbar and no drag handle, so it has to size to
+   its own text — once after each render, and again on every keystroke. */
+function growWhy(el){
+  if(!el) return;
+  el.style.height = "0px";
+  el.style.height = Math.max(22, el.scrollHeight) + "px";
+}
+function closeNav(){
+  const n = $("#tabs"), b = $("#navbtn");
+  if(n) n.hidden = true;
+  if(b) b.setAttribute("aria-expanded", "false");
+}
 function render(){
   $$("#tabs .tab").forEach(b => b.classList.toggle("on", b.dataset.tab === S.ui.tab));
-  const views = { goals:viewGoals, activities:viewActivities, timeline:viewTimeline, schedule:viewSchedule, data:viewData };
+  const lbl = $("#navlabel");
+  if(lbl) lbl.textContent = TAB_LABEL[S.ui.tab] || "Goals";
+  const views = { goals:viewGoals, activities:viewActivities, timeline:viewTimeline, schedule:viewSchedule, pillars:viewPillars, data:viewData };
   $("#app").innerHTML = rescueBanner() + (views[S.ui.tab] || viewGoals)();
-
+  $$(".p-why").forEach(growWhy);
 }
-function flowStrip(active){
+/* The chain strip is retired. It taught the model once; after that it was a
+   banner on every screen earning nothing. Return "" and every caller drops it
+   without touching their string concatenation. */
+function flowStrip(){ return ""; }
+function flowStripLegacy(active){
   const steps = ["Goal", "SMART", "Activities", "Waves", "Estimate", "Timeline", "Calendar"];
   return '<div class="flow no-print"><b>The chain</b>' + steps.map((s,i) =>
     (i ? '<span class="flow-arrow">→</span>' : "") +
     '<span class="flow-step"' + (s.toLowerCase() === active ? ' style="background:var(--bronze);color:var(--on-accent);border-color:var(--bronze)"' : "") +
     '>' + s + '</span>').join("") + '</div>';
+}
+
+/* -------------------------------------------------------------- PILLARS */
+function viewPillars(){
+  const P = S.pillars || [];
+  const waiting = harvest();
+  const opts = () => P.map(x => '<option value="' + x.id + '">' + h(x.title || "Untitled pillar") + '</option>').join("");
+
+  const bay = waiting.map(g => {
+    const acts = allTasks(g).filter(x => isLeaf(x.t)).length;
+    return '<article class="harvest" draggable="true" data-drag="' + g.id + '">' +
+      '<h4>' + h(g.title || "Untitled goal") + '</h4>' +
+      '<p class="h-meta">' + acts + ' completed</p>' +
+      (P.length ? '<select class="h-sel" data-act="pillar-assign" data-id="' + g.id + '">' +
+          '<option value="">Place…</option>' + opts() + '</select>' : "") +
+    '</article>';
+  }).join("");
+
+  const cards = P.map(p => {
+    const mine = pillarGoals(p.id);
+    return '<section class="pillar" data-drop="' + p.id + '">' +
+      '<header class="p-head">' +
+        '<input class="p-title" data-act="pillar-field" data-id="' + p.id + '" data-k="title" ' +
+          'value="' + h(p.title) + '" placeholder="Name this pillar">' +
+        '<span class="p-n">' + mine.length + '</span>' +
+        '<button class="mini danger" data-act="pillar-del" data-id="' + p.id + '" title="Remove">×</button>' +
+      '</header>' +
+      '<textarea class="p-why" data-act="pillar-field" data-id="' + p.id + '" data-k="why" ' +
+        'placeholder="Why">' + h(p.why) + '</textarea>' +
+      (mine.length ? '<ol class="p-stack">' + mine.map(g => {
+          const open = S.ui.openGoal === g.id;
+          const acts = allTasks(g).filter(x => isLeaf(x.t));
+          return '<li class="p-goal' + (open ? " open" : "") + '">' +
+            '<button class="pg-head" data-act="pillar-goal-open" data-id="' + g.id + '">' +
+              '<span class="pg-car">›</span>' +
+              '<span class="pg-title">' + h(g.title || "Untitled goal") + '</span>' +
+              '<span class="pg-when">' + h(g.filedAt || "") + '</span></button>' +
+            (open ? '<div class="pg-body"><ul>' + acts.map(x =>
+                '<li>' + h(x.t.title || "Untitled activity") + '</li>').join("") + '</ul>' +
+              '<button class="mini" data-act="pillar-unfile" data-id="' + g.id + '">Return</button></div>' : "") +
+          '</li>';
+        }).join("") + '</ol>'
+        : "") +
+      '<div class="p-drop"></div>' +
+    '</section>';
+  }).join("");
+
+  return '<div class="pillars-page">' +
+    '<aside class="bay">' + bay +
+      '<button class="addpillar" data-act="pillar-new">＋ Pillar</button>' +
+    '</aside>' +
+    '<div class="pillars-main">' +
+      (P.length ? '<div class="pillar-grid">' + cards + '</div>'
+        : '<div class="pillar-none"><p>Nothing here yet.</p>' +
+          '<button class="btn" data-act="pillar-new">Add a pillar</button></div>') +
+    '</div></div>';
 }
 
 /* ---------------------------------------------------------------- GOALS */
@@ -866,8 +1102,7 @@ const SMART_FIELDS = [
 function viewGoals(){
   const g = currentGoal();
   return flowStrip("goal") +
-  '<div class="pagehead"><div><h1>Goals</h1>' +
-    '<p>Set the goal, frame it as SMART, then push it down into activities. Everything you enter here flows through to the timeline and the calendar.</p></div>' +
+  '<div class="pagehead"><div><h1>Goals</h1></div>' +
     '<div class="spacer"></div><div class="btnrow no-print"><button class="btn primary" data-act="goal-new">＋ New goal</button></div></div>' +
   '<div class="grid2"><div>' +
     '<h2 class="section-title">Your goals (' + S.goals.length + ')</h2>' +
@@ -951,8 +1186,7 @@ function viewActivities(){
   const g = currentGoal();
   if(!g) return flowStrip("activities") + '<div class="card empty"><h3>No goal yet</h3><p>Create a goal on the Goals tab first — activities always hang off a goal.</p></div>';
   return flowStrip("activities") +
-  '<div class="pagehead"><div><h1>Activities</h1>' +
-    '<p>Every activity that moves the goal forward. When you reach one and it is still too big, hit <b>＋ Wave</b> to break it into the next wave of smaller tasks — as deep as you need.</p></div>' +
+  '<div class="pagehead"><div><h1>Activities</h1></div>' +
     '<div class="spacer"></div>' +
     '<div class="btnrow no-print">' +
       '<select data-act="goal-switch" style="flex:1 1 180px;width:auto;min-width:0;max-width:100%">' +
@@ -1126,8 +1360,7 @@ function viewTimeline(){
   }));
 
   return flowStrip("timeline") +
-  '<div class="pagehead"><div><h1>Timeline</h1>' +
-    '<p>The Gantt view. Solid bars are dates you set; hatched bars are placed by the scheduler. The red line is today.</p></div>' +
+  '<div class="pagehead"><div><h1>Timeline</h1></div>' +
     '<div class="spacer"></div><div class="btnrow no-print">' +
       Object.keys(SCALES).map(k => '<button class="btn ' + (S.ui.scale === k ? "primary" : "ghost") + ' sm" data-act="scale" data-k="' + k + '">' + SCALES[k].label + '</button>').join("") +
       '<button class="btn ghost sm" data-act="print">Print</button>' +
@@ -1396,8 +1629,7 @@ function viewSchedule(){
   const left = S.goals.reduce((n,g) => { let m = 0; eachTask(g.tasks, t => { if(isLeaf(t)) m += toPlace(t); }); return n + m; }, 0);
 
   return flowStrip("calendar") +
-  '<div class="pagehead"><div><h1>Your week</h1>' +
-    '<p>Block out what is already fixed, then fill what is left. Move anything by hand and it stays put.</p></div>' +
+  '<div class="pagehead"><div><h1>Your week</h1></div>' +
     '<div class="spacer"></div><div class="btnrow no-print">' +
       '<button class="btn ghost sm" data-act="week" data-k="-1">‹</button>' +
       '<button class="btn ghost sm" data-act="week" data-k="0">This week</button>' +
@@ -1456,7 +1688,7 @@ function railHTML(f){
   return '<aside class="rail">' +
     '<h2 class="section-title">To place' + (rows.length ? " (" + rows.length + ")" : "") + '</h2>' +
     (rows.length
-      ? '<p class="railsub">Drag one onto a day, or hit Fill free time.</p><div class="qchips">' +
+      ? '<div class="qchips">' +
         rows.map(r =>
           '<button class="qchip" data-chip="' + r.t.id + '" style="border-left-color:' + goalColour(r.g) + '">' +
             '<span class="t">' + h(r.t.title) + '</span><span class="d">' + minsToText(r.mins) + '</span>' +
@@ -1486,8 +1718,12 @@ function railHTML(f){
       '<div><i class="key pin"></i> You moved it — stays put</div>' +
     '</div>' +
     '<h2 class="section-title" style="margin-top:18px">Where this lands</h2>' +
-    (S.goals.filter(g => g.status !== "parked").map(g => forecastCard(g, f[g.id])).join("") ||
-      '<p class="railsub">No active goals.</p>') +
+    /* A goal placed on a pillar is finished. Its activities stay on the
+       calendar so the week still shows what you did — but it stops taking up
+       room in this rail, which is only about work still ahead of you. */
+    (S.goals.filter(g => g.status !== "parked" && !isArchived(g))
+            .map(g => forecastCard(g, f[g.id])).join("") ||
+      '<p class="railsub">Nothing outstanding. Everything live is placed.</p>') +
   '</aside>';
 }
 
@@ -2105,6 +2341,30 @@ function doAction(act, el){
       if(inp) inp.focus();
       return;
     }
+    case "pillar-new": {
+      const p = newPillar();
+      S.pillars = S.pillars || []; S.pillars.push(p);
+      save(); render();
+      const inp = $('.p-title[data-id="' + p.id + '"]'); if(inp) inp.focus();
+      return;
+    }
+    case "pillar-del": {
+      const p = (S.pillars || []).find(x => x.id === id);
+      if(!p) return;
+      const n = pillarGoals(id).length;
+      if(!confirm('Delete the pillar "' + (p.title || "Untitled") + '"?' +
+        (n ? "\n\n" + n + " filed item" + (n === 1 ? "" : "s") +
+             " goes back to the waiting area. No work is deleted." : ""))) return;
+      pillarGoals(id).forEach(g => { delete g.pillarId; delete g.filedAt; });
+      S.pillars = S.pillars.filter(x => x.id !== id);
+      if(S.ui.openPillar === id) S.ui.openPillar = null;
+      save(); render(); toast("Pillar removed. The work is back in the waiting area.");
+      return;
+    }
+    case "pillar-open": S.ui.openPillar = (S.ui.openPillar === id ? null : id); save(); render(); return;
+    case "pillar-unfile": if(fileGoal(id, "")){ render(); toast("Returned to the waiting area."); } return;
+    case "pillar-goal-open": S.ui.openGoal = (S.ui.openGoal === id ? null : id); save(); render(); return;
+
     case "goal-select": S.ui.goalId = id; save(); render(); return;
     case "goal-del": {
       const g = S.goals.find(x => x.id === id);
@@ -2411,7 +2671,7 @@ function setAvail(el){
 /* =====================================================================
    WIRING
    ===================================================================== */
-const CLICK_ACTS = ["tab","goal-new","goal-select","goal-del","goto-activities","task-add","task-wave",
+const CLICK_ACTS = ["tab","pillar-new","pillar-del","pillar-open","pillar-unfile","pillar-goal-open","goal-new","goal-select","goal-del","goto-activities","task-add","task-wave",
   "task-tick","task-del","task-up","task-down","task-notes","bulk-open","bulk-save","modal-close",
   "scale","g-collapse","ics","export","import","sample","wipe","print","install",
   "week","viewday","fill","clear-auto","catchup","missed-done","add-busy","availday","block-done",
@@ -2430,7 +2690,12 @@ document.addEventListener("input", e => {
   const el = e.target.closest("[data-act]");
   if(!el) return;
   const act = el.dataset.act;
-  if(act === "goal-field")  setGoalField(el);
+  if(act === "pillar-field"){
+    const p = (S.pillars || []).find(x => x.id === el.dataset.id);
+    if(p){ p[el.dataset.k] = el.value; save(); }
+    if(el.classList.contains("p-why")) growWhy(el);
+  }
+  else if(act === "goal-field")  setGoalField(el);
   else if(act === "smart-field") setSmartField(el);
   else if(act === "task-field")  setTaskField(el);
   else if(act === "step-text"){
@@ -2441,6 +2706,10 @@ document.addEventListener("input", e => {
 });
 document.addEventListener("change", e => {
   if(e.target.id === "importfile"){ importBackup(e.target); return; }
+  if(e.target.dataset && e.target.dataset.act === "pillar-assign"){
+    if(e.target.value && fileGoal(e.target.dataset.id, e.target.value)){ render(); toast("Filed."); }
+    return;
+  }
   const el = e.target.closest("[data-act]");
   if(!el) return;
   const act = el.dataset.act;
@@ -2530,11 +2799,62 @@ function undoImport(){
   }catch(e){ toast("That undo copy could not be read."); }
 }
 function hasUndo(){ try{ return !!localStorage.getItem(KEY + ".undo"); }catch(e){ return false; } }
+/* Drag a finished item onto a pillar. The select on each row does the same
+   job for touch and keyboard, so this is never the only way through. */
+let dragId = null;
+document.addEventListener("dragstart", e => {
+  const li = e.target.closest("[data-drag]");
+  if(!li) return;
+  dragId = li.dataset.drag;
+  li.classList.add("dragging");
+  document.body.classList.add("carrying");   // opens the drop targets, only while in flight
+  try{ e.dataTransfer.setData("text/plain", dragId); e.dataTransfer.effectAllowed = "move"; }catch(err){}
+});
+document.addEventListener("dragend", () => {
+  dragId = null;
+  document.body.classList.remove("carrying");
+  $$(".dragging").forEach(x => x.classList.remove("dragging"));
+  $$(".over").forEach(x => x.classList.remove("over"));
+});
+document.addEventListener("dragover", e => {
+  const zone = e.target.closest("[data-drop]");
+  if(!zone || !dragId) return;
+  e.preventDefault();
+  try{ e.dataTransfer.dropEffect = "move"; }catch(err){}
+  if(!zone.classList.contains("over")){
+    $$(".over").forEach(x => x.classList.remove("over"));
+    zone.classList.add("over");
+  }
+});
+document.addEventListener("drop", e => {
+  const zone = e.target.closest("[data-drop]");
+  if(!zone) return;
+  e.preventDefault();
+  let id = dragId;
+  try{ id = id || e.dataTransfer.getData("text/plain"); }catch(err){}
+  dragId = null;
+  document.body.classList.remove("carrying");
+  $$(".over").forEach(x => x.classList.remove("over"));
+  if(id && fileGoal(id, zone.dataset.drop)){ render(); toast("Filed."); }
+});
+
 $("#tabs").addEventListener("click", e => {
   const b = e.target.closest(".tab");
   if(!b) return;
-  S.ui.tab = b.dataset.tab; save(); render(); window.scrollTo(0,0);
+  S.ui.tab = b.dataset.tab; closeNav(); save(); render(); window.scrollTo(0,0);
 });
+/* One quiet control instead of a permanent row. The section you are in is the
+   label, so the header still answers "where am I" without shouting it. */
+$("#navbtn").addEventListener("click", e => {
+  e.stopPropagation();
+  const n = $("#tabs"), open = !n.hidden;
+  n.hidden = open;
+  $("#navbtn").setAttribute("aria-expanded", String(!open));
+});
+document.addEventListener("click", e => {
+  if(!e.target.closest("#navwrap")) closeNav();
+});
+document.addEventListener("keydown", e => { if(e.key === "Escape") closeNav(); });
 $("#modalbg").addEventListener("click", e => { if(e.target.id === "modalbg") closeModal(); });
 document.addEventListener("keydown", e => { if(e.key === "Escape") closeModal(); });
 window.addEventListener("pagehide", () => {
