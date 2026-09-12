@@ -1,0 +1,2171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Lyric Studio — Pattison worksheet</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#faf8f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#17150f" media="(prefers-color-scheme: dark)">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png" type="image/png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Lyric Studio">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Moon Studio palette. Dark by design; the light block is the override. */
+:root{
+  --bg:#101417; --panel:#171d21; --well:#1e252a; --chrome:#0a0d10;
+  --ink:#f2ece1; --ink-2:#c3bcb1; --dim:#8d857a;
+  --line:rgba(214,173,116,.26); --wash:rgba(242,236,225,.09);
+  --accent:#c79a5f; --accent-2:#e0bb87; --accent-soft:rgba(199,154,95,.14);
+  --on-accent:#12171a;
+  --warn:#d9a253; --warn-soft:rgba(217,162,83,.14);
+  --ok:#79ad88;   --ok-soft:rgba(121,173,136,.14);
+  --radius:14px; --shadow:0 18px 50px rgba(0,0,0,.45);
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:light){
+  :root{
+    --bg:#fff; --panel:#fff; --well:#fff; --chrome:#121619;
+    --ink:#121619; --ink-2:#3d4448; --dim:#645e56;
+    --line:rgba(0,0,0,.28); --wash:rgba(0,0,0,.10);
+    --accent:#8a6636; --accent-2:#8a6636; --accent-soft:rgba(138,102,54,.10);
+    --on-accent:#fff; --warn:#8a5a12; --warn-soft:rgba(138,90,18,.10);
+    --ok:#2f6b41; --ok-soft:rgba(47,107,65,.10); --shadow:none;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.6 Inter,ui-sans-serif,-apple-system,"Segoe UI",Helvetica,sans-serif;
+  -webkit-font-smoothing:antialiased}
+header{border-bottom:1px solid var(--line);background:var(--chrome);position:sticky;top:0;z-index:20}
+.hwrap{max-width:1180px;margin:0 auto;padding:14px 20px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.savebox{display:flex;align-items:center;gap:10px;margin-left:auto}
+.savebadge{font:500 11px/1 Inter,sans-serif;color:var(--dim);white-space:nowrap;
+  letter-spacing:.14em;text-transform:uppercase}
+.mark{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+.mark svg{flex:none}
+h1{font:600 19px/1 var(--serif);margin:0;letter-spacing:.17em;text-transform:uppercase;color:var(--ink)}
+h1 span{display:block;font:400 9px/1.6 Inter,sans-serif;letter-spacing:.22em;
+  color:var(--dim);text-transform:uppercase;margin-top:3px}
+#title{font:inherit;padding:7px 12px;border:1px solid var(--line);border-radius:10px;
+  background:var(--well);color:var(--ink);min-width:230px}
+nav{display:flex;gap:4px;margin-left:auto}
+nav button{font:inherit;padding:7px 14px;border:1px solid transparent;border-radius:6px;
+  background:none;color:var(--dim);cursor:pointer}
+nav button:hover{color:var(--ink)}
+nav button.on{background:var(--accent-soft);color:var(--accent);border-color:var(--line);font-weight:600}
+nav button b{font-weight:700;margin-right:6px;opacity:.65}
+main{max-width:1180px;margin:0 auto;padding:22px 20px 90px}
+section.stage{display:none}
+section.stage.on{display:block}
+.lede{color:var(--dim);margin:0 0 18px;max-width:62ch}
+.lede em{color:var(--ink);font-style:normal;font-weight:600}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:16px;margin-bottom:16px}
+.panel h2{font:600 13px/1 inherit;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--dim);margin:0 0 12px}
+.cols{display:grid;grid-template-columns:320px 1fr;gap:16px;align-items:start}
+@media(max-width:840px){.cols{grid-template-columns:1fr}}
+input[type=text],input[type=search]{font:inherit;padding:9px 12px;border:1px solid var(--line);
+  border-radius:6px;background:var(--bg);color:var(--ink);width:100%}
+button.act{font:inherit;padding:8px 14px;border-radius:6px;border:1px solid var(--line);
+  background:var(--accent-soft);color:var(--accent);cursor:pointer;font-weight:600}
+button.act:hover{filter:brightness(.97)}
+.hits{max-height:340px;overflow:auto;margin-top:10px}
+.hit{display:flex;gap:9px;padding:7px 9px;border-radius:6px;cursor:pointer;align-items:baseline}
+.hit:hover{background:var(--accent-soft)}
+.hit.sel{background:var(--accent-soft);outline:1px solid var(--accent)}
+.hit .n{font:600 12px/1.4 var(--mono);color:var(--accent);min-width:34px}
+.hit .h{font-weight:600}
+.hit .p{color:var(--dim);font-size:12px;margin-left:auto}
+.nbr{display:flex;flex-direction:column;gap:2px;margin-bottom:14px}
+.nbr div{padding:5px 9px;border-radius:5px;cursor:pointer;display:flex;gap:10px;font-size:14px}
+.nbr div:hover{background:var(--accent-soft)}
+.nbr div.focus{background:var(--accent);color:var(--bg);font-weight:600}
+.nbr .n{font:600 12px/1.5 var(--mono);min-width:34px;opacity:.8}
+.nbr .g{color:var(--dim);font-size:12px;margin-left:auto}
+.nbr div.focus .g{color:var(--bg);opacity:.75}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.rollerPick{min-height:0;margin-top:9px}
+.rollerPick .chip{font-size:12.5px}
+.chip{font:inherit;font-size:13px;padding:4px 10px;border-radius:20px;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);cursor:pointer}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.has{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.chip .x{opacity:.6;margin-left:6px}
+.count{font:600 12px/1 var(--mono);color:var(--dim);float:right}
+.count b{color:var(--accent)}
+.note{font-size:13px;color:var(--dim);margin:10px 0 0}
+.flag{display:flex;gap:9px;align-items:flex-start;padding:9px 12px;border-radius:7px;
+  font-size:13.5px;margin-bottom:8px}
+.flag.warn{background:var(--warn-soft);color:var(--warn)}
+.flag.ok{background:var(--ok-soft);color:var(--ok)}
+.flag .ic{font-weight:700}
+table.vow{width:100%;border-collapse:collapse;font-size:14px}
+table.vow td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+table.vow td.v{font:600 12px/1.6 var(--mono);color:var(--accent);white-space:nowrap;width:132px}
+table.vow tr.clash td{background:var(--warn-soft)}
+table.vow tr.clash td.v{color:var(--warn)}
+.rw{margin-bottom:20px}
+.rw h3{font:600 16px/1 inherit;margin:0 0 3px;display:flex;align-items:baseline;gap:10px}
+.rw h3 .meta{font:400 12px/1 var(--mono);color:var(--dim)}
+.rtype{display:grid;grid-template-columns:118px 1fr;gap:10px;padding:7px 0;border-top:1px solid var(--line);align-items:start}
+.rtype .lbl{font-size:12.5px;color:var(--dim);padding-top:4px}
+.rtype .lbl b{display:block;color:var(--ink);font-size:13px;text-transform:capitalize}
+.rtype .lbl .bar{height:3px;border-radius:2px;background:var(--accent);margin-top:5px;opacity:.85}
+.chip.cliche{border-style:dashed;color:var(--warn);border-color:var(--warn)}
+.chip.more{background:none;border-style:dotted;color:var(--dim);font-size:12px}
+.draftGrid{display:grid;grid-template-columns:1fr 340px;gap:16px;align-items:start}
+@media(max-width:940px){.draftGrid{grid-template-columns:1fr}}
+.rail{position:sticky;top:74px;max-height:calc(100vh - 100px);overflow:auto}
+.rail .panel{padding:13px}
+.rail h2{margin-bottom:9px}
+ul.moves{margin:0;padding-left:17px;font-size:12.5px;color:var(--dim);line-height:1.5}
+ul.moves li{margin-bottom:7px}
+ul.moves b{color:var(--ink)}
+#lyric{font:15px/1.9 ui-monospace,SFMono-Regular,Menlo,monospace}
+.lm{display:grid;grid-template-columns:34px 1fr 150px;gap:8px;font-size:13px;padding:3px 0;
+  border-bottom:1px solid var(--line);align-items:baseline}
+.lm .ln{font:600 11px/1.6 var(--mono);color:var(--dim);text-align:right}
+.lm .tx{white-space:pre-wrap}
+.lm .rh{font-size:11.5px;color:var(--dim);text-align:right}
+.lm.sect{border:0;padding-top:11px}
+.lm.sect .tx{font-weight:700;color:var(--accent);text-transform:uppercase;font-size:11.5px;letter-spacing:.06em}
+.lm.pp .tx{font-weight:600}
+.lm.pp .ln{color:var(--accent)}
+.lm.cli .rh{color:var(--warn);font-weight:600}
+.railBox{font-size:12.5px;padding:6px 0;border-bottom:1px solid var(--line)}
+.railBox b{color:var(--accent);font:600 11px/1.6 var(--mono)}
+.panel.ref{background:linear-gradient(var(--accent-soft),var(--accent-soft)) padding-box,var(--panel);
+  border-color:var(--accent);border-style:solid}
+.panel.ref h2.reftog{cursor:pointer;user-select:none;margin:0;color:var(--accent)}
+.panel.ref .refbody{margin-top:12px}
+.panel.ref .note b{color:var(--ink)}
+textarea.refnote{min-height:150px;font:14px/1.6 inherit}
+.refslot{border-left:3px solid var(--accent);background:var(--accent-soft);
+  padding:8px 12px;border-radius:0 6px 6px 0;margin:6px 0 4px;font-size:13.5px;line-height:1.55}
+.refslot .rl{display:block;font:600 10px/1.6 var(--mono);text-transform:uppercase;
+  letter-spacing:.07em;color:var(--accent);margin-bottom:3px}
+details.refpaste{margin:0 0 14px}
+details.refpaste summary{cursor:pointer;font-size:12.5px;color:var(--accent);
+  padding:6px 0;user-select:none}
+details.refpaste textarea{min-height:190px;font:13px/1.6 var(--mono)}
+.sbs{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+@media(max-width:1000px){.sbs{grid-template-columns:1fr}}
+.rlm{display:grid;grid-template-columns:20px 22px 1fr;gap:7px;font-size:12.5px;
+  padding:2px 0;align-items:baseline;border-bottom:1px solid var(--line)}
+.rlm .sy{font:600 10px/1.5 var(--mono);color:var(--dim);text-align:right}
+.rlm .lt{font:700 11px/1.5 var(--mono);color:var(--accent)}
+.rlm .tx{white-space:pre-wrap}
+.rlm .rt{grid-column:3;font-size:11px;color:var(--dim);padding-bottom:2px}
+.rlm.hd{border:0;padding-top:10px;grid-template-columns:1fr}
+.rlm.hd .tx{font:700 11px/1.6 var(--mono);color:var(--accent);
+  text-transform:uppercase;letter-spacing:.06em}
+.chip.kept{background:var(--ok);border-color:var(--ok);color:var(--bg)}
+.empty{color:var(--dim);font-size:13px;padding:14px 0}
+.pal{position:fixed;bottom:0;left:0;right:0;background:var(--panel);
+  border-top:1px solid var(--line);padding:9px 20px;max-height:132px;overflow:auto;z-index:15}
+.pal .inner{max-width:1180px;margin:0 auto;display:flex;gap:12px;align-items:flex-start}
+.pal .ttl{font:600 11px/1.6 inherit;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--dim);white-space:nowrap;padding-top:3px}
+kbd{font:600 11px/1 var(--mono);border:1px solid var(--line);border-bottom-width:2px;
+  border-radius:4px;padding:3px 5px;background:var(--bg)}
+textarea{font:inherit;width:100%;min-height:340px;padding:12px 14px;border:1px solid var(--line);
+  border-radius:7px;background:var(--bg);color:var(--ink);resize:vertical;line-height:1.65}
+textarea.q{min-height:60px}
+.qlab{display:block;font-size:12.5px;color:var(--dim);margin:10px 0 4px;font-weight:600}
+.clock{font:600 40px/1 var(--mono);text-align:center;padding:10px 0 2px;letter-spacing:.02em}
+.clock.run{color:var(--accent)}
+.clock.done{color:var(--warn)}
+.sb{display:grid;grid-template-columns:82px 1fr 26px;gap:9px;align-items:center;
+  font-size:12.5px;padding:3px 0}
+.sb .track{height:7px;border-radius:4px;background:var(--line);overflow:hidden}
+.sb .fill{height:100%;background:var(--accent);border-radius:4px}
+.sb.zero .name,.sb.zero .num{color:var(--warn);font-weight:600}
+.sb .num{font:600 12px/1 var(--mono);color:var(--dim);text-align:right}
+.chip.on{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.cl{display:flex;gap:9px;padding:6px 8px;border-radius:6px;cursor:pointer;align-items:baseline}
+.cl:hover{background:var(--accent-soft)}
+.cl .n{font:600 12px/1.4 var(--mono);color:var(--accent);min-width:34px}
+.cl .sc{margin-left:auto;font:600 11px/1 var(--mono);color:var(--dim)}
+
+/* ═══════════════════ Moon Studio surface treatment ═══════════════════ */
+h2,h3,.section-title{font-family:var(--serif);font-weight:600;letter-spacing:.01em}
+.card,section,.panel,.box{border-radius:var(--radius)}
+/* the bronze top edge that makes a Moon Studio card a card */
+main section,main .card,main .panel{position:relative;overflow:hidden}
+main section::before,main .card::before,main .panel::before{
+  content:"";position:absolute;inset:0 0 auto 0;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent-2) 45%,transparent);
+  opacity:.85;pointer-events:none}
+button,.btn{border-radius:999px}
+nav button{border-radius:999px;letter-spacing:.02em}
+nav button.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+nav button b{opacity:.6;font-weight:600;margin-right:6px}
+input,textarea,select{border-radius:10px;background:var(--well);color:var(--ink);
+  border:1px solid var(--line);font-family:inherit}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)}
+
+/* ── song library ─────────────────────────────────────────────────── */
+.songbtn{display:inline-flex;align-items:center;gap:9px;font:500 13px/1 Inter,sans-serif;
+  padding:9px 15px;border:1px solid var(--line);border-radius:999px;background:var(--panel);
+  color:var(--ink);cursor:pointer;max-width:320px}
+.songbtn .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.songbtn .cv{color:var(--accent);font-size:10px;flex:none}
+.songwrap{position:relative}
+.songmenu{position:absolute;right:0;top:calc(100% + 9px);width:340px;max-height:70vh;
+  overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:8px;z-index:60}
+.songmenu[hidden]{display:none}
+.songmenu .hd{font:500 10px/1 Inter,sans-serif;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--dim);padding:10px 10px 8px}
+.songrow{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:10px;cursor:pointer}
+.songrow:hover{background:var(--accent-soft)}
+.songrow.on{background:var(--accent-soft)}
+.songrow .t{flex:1;min-width:0}
+.songrow .t b{display:block;font:600 14px/1.35 var(--serif);font-size:16px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.songrow .t i{display:block;font:400 11px/1.4 Inter,sans-serif;color:var(--dim);font-style:normal}
+.songrow .act{flex:none;display:flex;gap:2px;opacity:0;transition:opacity .12s}
+.songrow:hover .act{opacity:1}
+.songrow .act button{border:0;background:none;color:var(--dim);cursor:pointer;
+  padding:5px 7px;border-radius:8px;font-size:12px}
+.songrow .act button:hover{background:var(--wash);color:var(--ink)}
+.songrow .act button.del:hover{color:var(--warn)}
+.songmenu .sep{height:1px;background:var(--line);margin:8px 4px}
+.songmenu .add{display:block;width:100%;text-align:left;padding:11px 10px;border:0;
+  background:none;color:var(--accent);font:600 13px/1 Inter,sans-serif;cursor:pointer;border-radius:10px}
+.songmenu .add:hover{background:var(--accent-soft)}
+</style>
+</head>
+<body>
+
+<header><div class="hwrap">
+  <div class="mark">
+    <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true">
+      <circle cx="15" cy="15" r="13.2" fill="none" stroke="var(--accent)" stroke-width="1.3"/>
+      <path d="M15 1.8a13.2 13.2 0 000 26.4 10 13.2 0 010-26.4z" fill="var(--accent)"/>
+    </svg>
+    <h1>Lyric Studio<span>Pattison method</span></h1>
+  </div>
+  <input id="title" type="text" placeholder="Song title…" autocomplete="off">
+  <nav>
+    <button data-s="ref"><b>0</b>Ref</button>
+    <button data-s="write" class="on"><b>1</b>Dive</button>
+    <button data-s="idea"><b>2</b>Idea</button>
+    <button data-s="browse"><b>3</b>Browse</button>
+    <button data-s="cut"><b>4</b>Cut</button>
+    <button data-s="rhyme"><b>5</b>Rhymes</button>
+    <button data-s="boxes"><b>6</b>Boxes</button>
+    <button data-s="draft"><b>7</b>Draft</button>
+    <button data-s="audit"><b>8</b>Audit</button>
+  </nav>
+  <div class="savebox">
+    <div class="songwrap">
+      <button class="songbtn" id="songBtn" aria-haspopup="true" aria-expanded="false">
+        <span class="nm" id="songBtnName">Untitled song</span><span class="cv">▾</span>
+      </button>
+      <div class="songmenu" id="songMenu" hidden></div>
+    </div>
+    <span id="saveBadge" class="savebadge">not saved to a file yet</span>
+    <button class="act" id="loadNow" title="Load a .md file exported from this app — adds it as a new song">Load a copy</button>
+    <input type="file" id="loadInput" accept=".md,text/markdown" style="display:none">
+    <button class="act" id="saveNow" title="Downloads a .md file with everything — the real backup, since browser storage can be cleared">Save a copy</button>
+  </div>
+</div></header>
+
+<main>
+
+<!-- ───────────────────────── stage 0 ───────────────────────── -->
+<section class="stage" id="s-ref">
+  <p class="lede">Optional, and worth doing. Paste a lyric you admire and the tool pulls it apart
+  along the same axes you're building along — <em>deconstruct one while you construct yours</em>.
+  Nothing leaves your machine; this is your own copy, analysed locally.</p>
+
+  <div class="cols">
+    <div>
+      <div class="panel">
+        <h2>Reference</h2>
+        <input id="refTitle" type="text" placeholder="song — artist" autocomplete="off">
+        <textarea id="refText" style="min-height:300px;margin-top:10px"
+          placeholder="Paste the lyric. Blank lines between sections; [chorus] labels help but aren't needed."></textarea>
+      </div>
+    </div>
+    <div>
+      <div class="panel">
+        <h2>Side by side</h2>
+        <div id="refCompare"><p class="empty">Paste a reference to compare against your draft.</p></div>
+      </div>
+      <div class="panel">
+        <h2>Its structure</h2>
+        <div id="refStruct"><p class="empty">—</p></div>
+      </div>
+      <div class="panel">
+        <h2>How it rhymes</h2>
+        <div id="refRhyme"><p class="empty">—</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── stage 1 ───────────────────────── -->
+<section class="stage on" id="s-write">
+  <p class="lede">Pick something and dive into it for <em>ten minutes</em>. Stay sense-bound and
+  very specific. No rhyme, no rhythm, no complete sentences — you're looking for what's already
+  in your own sense memory, not writing lines yet.</p>
+  <div class="refbox" data-step="write"></div>
+
+  <div class="cols">
+    <div>
+      <div class="panel">
+        <h2>Timer</h2>
+        <div class="clock" id="clock">10:00</div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="act" id="tStart" style="flex:1">Start</button>
+          <button class="act" id="tReset">Reset</button>
+        </div>
+        <p class="note">He's firm about the ten minutes. Keep the pen moving even when it stalls.</p>
+      </div>
+      <div class="panel">
+        <h2>Seven senses <span class="count"><b id="wc">0</b> words</span></h2>
+        <div id="senseBars"></div>
+        <p class="note">Sight and hearing fill up on their own. <b>Organic</b> (heartbeat, breath,
+        muscle tension) and <b>kinesthetic</b> (your body's relation to the space around it) are
+        the two everyone forgets — and the two that make writing breathe.</p>
+      </div>
+    </div>
+    <div>
+      <div class="panel">
+        <h2>Diving into</h2>
+        <input id="objPrompt" type="text" placeholder="an object, a place, a memory…" autocomplete="off">
+        <div id="rollerPick" class="rollerPick"></div>
+        <button class="act" id="rollBtn" style="margin-top:9px">Give me something to dive into</button>
+        <p class="note">His own exercises never start blank — "pick an object at random," "dive
+        into homelessness for ten minutes." One roll at a time on purpose, not a list to pick
+        your favourite from — the point is diving into something you wouldn't have chosen.</p>
+      </div>
+      <div class="panel">
+        <h2>Object writing</h2>
+        <textarea id="obj" placeholder="Its cold in this house, and the snow's coming down, pulling the sun down with it…"></textarea>
+        <div id="abstractFlags"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── stage 2 ───────────────────────── -->
+<section class="stage" id="s-idea">
+  <p class="lede">Now focus it. A lyric starts from one of three places — an emotion, a calculated
+  idea, or a title — and then the work is <em>finding the angle</em>. Interrogating your own title
+  is what turns a phrase into a song with somewhere to go.</p>
+  <div class="refbox" data-step="idea"></div>
+  <div class="refpaste-host" data-step="idea"></div>
+
+  <div class="cols">
+    <div>
+      <div class="panel">
+        <h2>Starting from</h2>
+        <div class="chips" id="entry">
+          <button class="chip" data-e="emotion">an emotion</button>
+          <button class="chip" data-e="idea">a calculated idea</button>
+          <button class="chip" data-e="title">a title</button>
+        </div>
+        <p class="note" id="entryNote"></p>
+      </div>
+      <div class="panel">
+        <h2>Point of view</h2>
+        <div class="chips" id="pov">
+          <button class="chip" data-p="1">first — I / we</button>
+          <button class="chip" data-p="2">second — you</button>
+          <button class="chip" data-p="3">third — he / she / they</button>
+          <button class="chip" data-p="d">direct address</button>
+        </div>
+        <div class="refslot-host" data-k="pov"></div>
+      </div>
+      <div class="panel">
+        <h2>Carried over from step 1</h2>
+        <div id="carry"></div>
+      </div>
+    </div>
+    <div>
+      <div class="panel">
+        <h2>Working title</h2>
+        <input id="title2" type="text" placeholder="a phrase, not a summary…" autocomplete="off">
+        <div class="refslot-host" data-k="title"></div>
+        <p class="note">If you started <i>from</i> a title you already have it. Otherwise it usually
+        falls out of the object writing or the angle — a phrase you'd want to hear sung, not a
+        description of the subject. From step 4 on, the tool checks your word list carries its vowel.</p>
+      </div>
+      <div class="panel">
+        <h2>The angle</h2>
+        <textarea id="angle" style="min-height:90px"
+          placeholder="Not what it's about — what your way in is. &quot;I accepted I might lose you, and used the time to change.&quot;"></textarea>
+        <div class="refslot-host" data-k="angle"></div>
+      </div>
+      <div class="panel">
+        <h2>Interrogate the title</h2>
+        <label class="qlab">Who feels this most?</label>
+        <textarea class="q" id="q-who" placeholder="young lovers apart; someone withdrawing; a person on autopilot…"></textarea>
+        <div class="refslot-host" data-k="who"></div>
+        <label class="qlab">What can happen?</label>
+        <textarea class="q" id="q-what"></textarea>
+        <div class="refslot-host" data-k="what"></div>
+        <label class="qlab">When does it happen?</label>
+        <textarea class="q" id="q-when"></textarea>
+        <div class="refslot-host" data-k="when"></div>
+        <label class="qlab">Why does it matter?</label>
+        <textarea class="q" id="q-why"></textarea>
+        <div class="refslot-host" data-k="why"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── stage 3 ───────────────────────── -->
+<section class="stage" id="s-browse">
+  <p class="lede">Look up a word that expresses your idea. Roget's returns <em>section numbers</em>,
+  not synonyms — then you read the neighbourhood around it, because the sections either side are
+  conceptual relatives. That browse is where the words you'd never have thought of live.</p>
+  <div class="refbox" data-step="browse"></div>
+
+  <div class="panel">
+    <h2>Start here — where your writing already clusters</h2>
+    <div id="cluster"><p class="empty">Do some object writing in step 1 first.</p></div>
+  </div>
+
+  <div class="cols">
+    <div>
+      <div class="panel">
+        <h2>Or look a word up</h2>
+        <input id="q" type="search" placeholder="e.g. waiting, absence, risk…" autocomplete="off">
+        <div class="hits" id="hits"><p class="empty">Type a theme word above.</p></div>
+      </div>
+    </div>
+    <div>
+      <div class="panel" id="nbrPanel" style="display:none">
+        <h2>Neighbourhood — read the run, not the entry</h2>
+        <p class="note" style="margin:0 0 10px">Roget is ordered by flow of idea, so the sections
+        either side are conceptual relatives. Read them <b>in order</b> — the run often lays out an
+        arc you can build the song on. §505→509 goes Memory, Oblivion, Expectation, Inexpectation,
+        Disappointment, which is a story before you've written a word.</p>
+        <div class="nbr" id="nbr"></div>
+        <h2 id="secHead"></h2>
+        <div class="chips" id="secWords"></div>
+        <p class="note">Click a word to add it to your harvest. Aim for <b>30</b>, then cut.</p>
+      </div>
+      <div class="panel">
+        <h2>Harvest <span class="count"><b id="hCount">0</b> / 30</span></h2>
+        <div class="chips" id="harvest"><p class="empty">Nothing harvested yet.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── stage 4 ───────────────────────── -->
+<section class="stage" id="s-cut">
+  <p class="lede">Now say no. Cut to <em>10–12 words</em>, each on a different stressed vowel —
+  duplicates waste a whole rhyme territory. Most should end on a stressed syllable, and your
+  title's vowel has to be in there.</p>
+  <div class="refbox" data-step="cut"></div>
+
+  <div class="cols">
+    <div>
+      <div class="panel">
+        <h2>Harvest <span class="count"><b id="hCount2">0</b></span></h2>
+        <div class="chips" id="harvest2"></div>
+      </div>
+    </div>
+    <div>
+      <div class="panel">
+        <h2>Keeping <span class="count"><b id="kCount">0</b> / 12</span></h2>
+        <div class="chips" id="keep"><p class="empty">Click harvest words to keep them.</p></div>
+      </div>
+      <div class="panel">
+        <h2>Checks</h2>
+        <div id="checks"></div>
+      </div>
+      <div class="panel">
+        <h2>Vowel spread</h2>
+        <table class="vow"><tbody id="vowtab"></tbody></table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── stage 5 ───────────────────────── -->
+<section class="stage" id="s-rhyme">
+  <p class="lede">Six rhyme types, ordered <em>most stable to least</em> — like chord voicings from
+  root position outward. Reach down the list when you want a line to stay unresolved. Dashed words
+  are on Pattison's cliché list. Click to keep; kept words collect in the palette below.</p>
+  <div class="refbox" data-step="rhyme"></div>
+  <label class="note" style="display:block;margin:-8px 0 2px">
+    <input type="checkbox" id="names"> include names &amp; places (Sean, Vaughan, Saskatchewan…)
+  </label>
+  <label class="note" style="display:block;margin:0 0 14px">
+    <input type="checkbox" id="rare"> include rare words (Pattison's <i>refugee</i>, <i>carousel</i> tier)
+  </label>
+  <div id="rhymes"></div>
+</section>
+
+<!-- ───────────────────────── stage 6 ───────────────────────── -->
+<section class="stage" id="s-boxes">
+  <p class="lede">Boxes are <em>ideas, not lines</em> — Pattison calls them form-neutral: they show
+  how the idea evolves, whatever song form you end up in. Each one should be bigger than the last.
+  If all three are the same size you have a travelogue: verses that share a title but never build,
+  like three separate avalanches a third of the way up the mountain. <b>Write the idea first; the
+  lines come after.</b></p>
+  <div class="refbox" data-step="boxes"></div>
+  <div class="refpaste-host" data-step="boxes"></div>
+
+  <div class="panel">
+    <h2>Chorus / repeated element</h2>
+    <textarea id="chorus" style="min-height:80px" placeholder="Keep it simple to start. Its job is to be set up by the verses — extra ideas can come later, once the verses work."></textarea>
+    <div class="refslot-host" data-k="chorus|chorus_role"></div>
+  </div>
+
+  <div id="boxList"></div>
+
+  <div class="panel">
+    <h2>Travelogue test</h2>
+    <p class="note" style="margin:0 0 10px">Drop the chorus and read the verses back to back. If you
+    can't tell what's happening without the title holding them together, the boxes aren't gaining weight.</p>
+    <button class="act" id="travelBtn">Hide the chorus</button>
+    <div id="travelOut"></div>
+  </div>
+</section>
+
+<!-- ───────────────────────── stage 7 ───────────────────────── -->
+<section class="stage" id="s-draft">
+  <p class="lede">Everything in one place. Pattison never gives a recipe for turning boxes into
+  lines — chapter 24 is him <em>doing it</em>, not a method. What he does give is a handful of moves,
+  and they're on the right. Click any word in the bank to drop it at your cursor.</p>
+  <div class="refbox" data-step="draft"></div>
+  <div class="refpaste-host" data-step="draft"></div>
+
+  <div class="draftGrid">
+    <div>
+      <div class="sbs">
+        <div class="panel">
+          <h2>Your lyric <span class="count"><b id="lyCount">0</b> lines</span></h2>
+          <textarea id="lyric" style="min-height:340px"
+            placeholder="Blank lines separate sections. Start a line with [ to label one — [chorus], [verse 1]…"></textarea>
+        </div>
+        <div class="panel" id="refLyricPanel">
+          <h2>The reference, line by line</h2>
+          <div id="refLineMap"><p class="empty">Paste a reference on step 0.</p></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Your line map</h2>
+        <div id="lineMap"><p class="empty">Write a few lines and their rhymes appear here.</p></div>
+      </div>
+    </div>
+
+    <div class="rail">
+      <div class="panel">
+        <h2>Rhymes for <span id="curWord" style="color:var(--accent)">—</span></h2>
+        <div id="curRhymes"><p class="empty">Put the cursor on a line.</p></div>
+      </div>
+      <div class="panel">
+        <h2>Word bank</h2>
+        <div class="chips" id="bank"></div>
+      </div>
+      <div class="panel">
+        <h2>Your boxes</h2>
+        <div id="railBoxes"></div>
+      </div>
+      <div class="panel">
+        <h2>His moves <span class="count">ch. 24</span></h2>
+        <ul class="moves">
+          <li><b>Work the trigger line.</b> Last line before the chorus — it colours everything the chorus says. Check it early.</li>
+          <li><b>Ground the metaphor.</b> Sea spray on his face fails if they're indoors. It has to have a real place in the scene.</li>
+          <li><b>Pick the rhyme type for the feeling.</b> Want the section closed? Perfect. Want it left hanging? Reach down the scale.</li>
+          <li><b>Get people off stage.</b> He said goodbye three lines ago — don't let him linger.</li>
+          <li><b>Suggest, don't state.</b> "Sand and shifting dunes" carries the sands of time without saying it.</li>
+          <li><b>Check every pronoun.</b> If a listener can't tell who <i>she</i> is, the verse fails.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h2>Angle</h2>
+        <div id="railAngle"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────────────────── stage 8 ───────────────────────── -->
+<section class="stage" id="s-audit">
+  <p class="lede">What actually reached the page. The worksheet is only worth building if you write
+  <em>from</em> it — this checks whether you did, and shows the rhyme profile of the finished draft.</p>
+  <div class="panel"><h2>Worksheet words that made it in</h2><div id="auditWords"></div></div>
+  <div class="panel"><h2>Rhyme profile</h2><div id="auditRhyme"></div></div>
+  <div class="panel"><h2>Power positions</h2>
+    <p class="note" style="margin:0 0 10px">Opening and closing lines are naturally in the spotlight.
+    The last line before a chorus is the trigger — whatever it says colours how the chorus lands.</p>
+    <div id="auditPower"></div></div>
+  <div class="panel"><h2>Export</h2>
+    <p class="note" style="margin:0 0 10px">Writes the whole worksheet to a Markdown file.</p>
+    <button class="act" id="exportBtn">Download worksheet</button></div>
+</section>
+
+</main>
+
+<div class="pal"><div class="inner">
+  <div class="ttl">Palette</div>
+  <div class="chips" id="palette" style="flex:1"><span class="empty">Kept rhymes appear here.</span></div>
+</div></div>
+
+<script src="data/roget.js"></script>
+<script src="data/words.js"></script>
+<script src="data/cliche.js"></script>
+<script src="data/senses.js"></script>
+<script>
+/* ══════════════════════ phonetics — Pattison's six rhyme types ══════════════════════
+   Each WORDS entry is [onset, vowel, coda, zipf, endsStressed].
+   Classification compares the final stressed syllable: its vowel and its coda.        */
+
+const PLOSIVE=new Set(['P','B','T','D','K','G']);
+const FRICATIVE=new Set(['F','V','S','Z','SH','ZH','TH','DH','CH','JH']);
+const NASAL=new Set(['M','N','NG']);
+const FAMILIES=[PLOSIVE,FRICATIVE,NASAL];
+const TYPES=['perfect','family','additive','subtractive','assonance','consonance'];
+/* how resolved each type feels — drives the little strength bar */
+const STABILITY={perfect:1,family:.82,additive:.62,subtractive:.5,assonance:.32,consonance:.16};
+
+const VOWEL_NAME={AA:'ah · father',AE:'a · cat',AH:'u · cup',AO:'aw · dawn',AW:'ow · cow',
+  AY:'i · ride',EH:'e · bed',ER:'er · bird',EY:'ay · days',IH:'i · sit',IY:'ee · see',
+  OW:'oh · road',OY:'oy · void',UH:'oo · book',UW:'oo · blue'};
+
+/* field positions in a WORDS entry */
+const W_VOWEL=1, W_CODA=3, W_ZIPF=4, W_STRESS=5, W_COMMON=6;
+const codaArr=c=>c?c.split(' '):[];
+
+function sameFamily(a,b){
+  if(a.length!==b.length) return false;
+  for(let i=0;i<a.length;i++){
+    if(a[i]===b[i]) continue;
+    if(!FAMILIES.some(f=>f.has(a[i])&&f.has(b[i]))) return false;
+  }
+  return true;
+}
+function prefixFam(short,long){           // long starts with something family-equal to short
+  return sameFamily(short,long.slice(0,short.length));
+}
+
+/* [onset, vowel, mid, coda, zipf, endsStressed, common]
+   `mid` is the syllable material between the stressed vowel and the final
+   consonant run. It must match exactly: that's what stops another/motherly and
+   unguarded/article coming back as rhymes. Only `coda` varies by type. */
+function classify(A,B){
+  if(!A||!B) return null;
+  const [o1,v1,m1,c1raw]=A, [o2,v2,m2,c2raw]=B;
+  if(o1===o2) return null;                // rule 3: sounds before the vowel must differ
+  if(m1!==m2) return null;                // same syllable shape after the stress
+  const c1=codaArr(c1raw), c2=codaArr(c2raw);
+  if(v1===v2){
+    if(c1raw===c2raw) return 'perfect';
+    if(sameFamily(c1,c2)) return 'family';
+    if(c2.length>c1.length&&prefixFam(c1,c2)) return 'additive';
+    if(c1.length>c2.length&&prefixFam(c2,c1)) return 'subtractive';
+    return 'assonance';
+  }
+  if(c1raw===c2raw&&c1raw!=='') return 'consonance';
+  return null;
+}
+
+const WORDLIST=Object.keys(WORDS);
+function findRhymes(word,perType=Infinity){
+  const A=WORDS[word.toLowerCase()];
+  const out={}; TYPES.forEach(t=>out[t]=[]);
+  if(!A) return out;
+  const floor=S.rare?0:2.6;              // display threshold, separate from inclusion
+  for(const w of WORDLIST){
+    if(w===word) continue;
+    const e=WORDS[w];
+    if(!S.names&&!e[W_COMMON]) continue;  // hide proper nouns unless asked
+    if(e[W_ZIPF]<floor) continue;
+    const t=classify(A,e);
+    if(t) out[t].push(w);
+  }
+  for(const t of TYPES)
+    out[t]=out[t].sort((a,b)=>WORDS[b][W_ZIPF]-WORDS[a][W_ZIPF]).slice(0,perType);
+  return out;
+}
+
+/* cliché rhyme families from ch.5 */
+const CLICHE_OF={};
+CLICHE.forEach(g=>g.forEach(w=>{CLICHE_OF[w]=(CLICHE_OF[w]||[]).concat(g.filter(x=>x!==w))}));
+
+/* A word is only worth flagging when the *family* is in play. Two triggers:
+   the base word and the candidate sit in one of his groups, or the column is
+   currently offering two or more members of the same group (song/long/wrong…).
+   Flagging every listed word everywhere would drown the column in warnings. */
+function clicheSet(head,ws){
+  const out=new Set(), have=new Set(ws);
+  for(const w of ws){
+    if((CLICHE_OF[head]||[]).includes(w)){out.add(w);continue}
+    if(CLICHE.some(g=>g.includes(w)&&g.some(s=>s!==w&&have.has(s)))) out.add(w);
+  }
+  return out;
+}
+
+/* ═════════════════════════════ state ═════════════════════════════ */
+const KEY='pattison-worksheet-v1';        // the old single-worksheet store
+const LIB='lyric-studio-library-v1';     // every song, keyed by id
+
+const blank=()=>({title:'',harvest:[],keep:[],kept:[],sec:null,
+       obj:'',objPrompt:'',rolled:null,entry:'',pov:'',angle:'',w5:{who:'',what:'',when:'',why:''},
+       chorus:'',boxes:[{text:'',adds:''},{text:'',adds:''},{text:'',adds:''}],lyric:'',
+       refText:'',refTitle:''});
+
+const uid=()=>'s'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const songName=s=>((s.data&&s.data.title)||'').trim()||s.name||'Untitled song';
+
+function writeLib(L){
+  try{ localStorage.setItem(LIB,JSON.stringify(L)); }
+  catch(e){ alert('Could not save — the browser refused to write to storage.\n\n'+
+                  'Use "Save a copy" now so you do not lose this.'); }
+}
+
+/* First run adopts whatever the single-worksheet version left behind.
+   The old key is READ, never written and never removed — if anything here
+   goes wrong the original worksheet is still sitting where it always was. */
+function readLib(){
+  try{ const L=JSON.parse(localStorage.getItem(LIB)||'null');
+       if(L&&Array.isArray(L.songs)&&L.songs.length) return L; }catch(e){}
+  let first=null;
+  try{ const legacy=localStorage.getItem(KEY); if(legacy) first=JSON.parse(legacy); }catch(e){}
+  const id=uid();
+  const L={current:id,songs:[{id,name:(first&&first.title)||'Untitled song',
+                              updated:Date.now(),data:Object.assign(blank(),first||{})}]};
+  writeLib(L);
+  return L;
+}
+
+let LIBRARY=readLib();
+let curSong=LIBRARY.songs.find(s=>s.id===LIBRARY.current)||LIBRARY.songs[0];
+LIBRARY.current=curSong.id;
+let S=Object.assign(blank(),curSong.data||{});
+
+let dirty=false;   // true once anything changes after the last file export
+const save=()=>{
+  const cur=LIBRARY.songs.find(s=>s.id===LIBRARY.current);
+  if(cur){ cur.data=S; cur.updated=Date.now();
+           const t=(S.title||'').trim(); if(t) cur.name=t; }
+  writeLib(LIBRARY); dirty=true;
+  if(typeof paintSaveBadge==='function') paintSaveBadge();
+  if(typeof paintSongBtn==='function') paintSongBtn();
+};
+const $=id=>document.getElementById(id);
+
+/* ═══════════════ stage 0 · reference deconstruction ═══════════════ */
+const W_SYL=7;
+const sylOf=w=>{const h=headWord(w);return h?WORDS[h][W_SYL]:Math.max(1,(w.match(/[aeiouy]+/g)||[]).length)};
+const lineSyl=l=>tokens(l).reduce((a,w)=>a+sylOf(w),0);
+
+/* Split any lyric into sections, and mark which ones repeat (the chorus). */
+function sections(text){
+  const out=[]; let cur=null;
+  (text||'').split('\n').forEach(l=>{
+    if(isSection(l)){cur={name:l.replace(/[\[\]()]/g,'').trim(),lines:[]};out.push(cur);return}
+    if(!l.trim()){cur=null;return}
+    if(!cur){cur={name:'',lines:[]};out.push(cur)}
+    cur.lines.push(l.trim());
+  });
+  const secs=out.filter(s=>s.lines.length);
+  const norm=s=>s.lines.join('|').toLowerCase().replace(/[^a-z|' ]/g,'');
+  const seen={};
+  secs.forEach(s=>{const k=norm(s);seen[k]=(seen[k]||0)+1});
+  secs.forEach(s=>{s.repeats=seen[norm(s)]});
+  return secs;
+}
+
+/* Rhyme scheme as letters — ABAB, AABB, ABCB. Lines that rhyme by any of the
+   six types (or repeat the same word) share a letter. */
+function scheme(sec){
+  const ends=sec.lines.map(lastWord), groups=[], letters=[];
+  ends.forEach((w,i)=>{
+    let g=-1;
+    for(let k=0;k<groups.length&&g<0;k++){
+      if(groups[k].some(j=>ends[j]===w||(WORDS[w]&&WORDS[ends[j]]&&classify(WORDS[w],WORDS[ends[j]])))) g=k;
+    }
+    if(g<0){groups.push([i]);g=groups.length-1} else groups[g].push(i);
+    letters.push(String.fromCharCode(65+g));
+  });
+  return letters.join('');
+}
+
+/* Rhyme-type distribution across a whole lyric. */
+function rhymeProfile(text){
+  const counts={}, TOT={n:0,rhymed:0}, seen=new Set();
+  sections(text).forEach(sec=>{
+    /* a chorus sung three times shouldn't weight its scheme three times */
+    const key=sec.lines.join('|').toLowerCase();
+    if(seen.has(key)) return;
+    seen.add(key);
+    const ends=sec.lines.map(lastWord);
+    ends.forEach((w,i)=>{
+      TOT.n++;
+      let best=null;
+      for(let j=i-1;j>=0;j--){
+        const t=(WORDS[w]&&WORDS[ends[j]])?classify(WORDS[w],WORDS[ends[j]]):null;
+        if(t&&(!best||STABILITY[t]>STABILITY[best])) best=t;
+      }
+      if(best){counts[best]=(counts[best]||0)+1;TOT.rhymed++}
+    });
+  });
+  return {counts,...TOT};
+}
+
+function metrics(text){
+  const secs=sections(text);
+  const all=secs.flatMap(s=>s.lines);
+  const {rep,abs,total}=senseReport(text);
+  const prof=rhymeProfile(text);
+  const syls=all.map(lineSyl);
+  const perfectish=(prof.counts.perfect||0);
+  return {
+    sections:secs.length, lines:all.length, words:total,
+    chorus:secs.filter(s=>s.repeats>1).length,
+    syl:syls.length?(syls.reduce((a,c)=>a+c,0)/syls.length):0,
+    sylRange:syls.length?Math.min(...syls)+'–'+Math.max(...syls):'—',
+    senses:SENSE_ORDER.map(k=>rep[k].length),
+    sensesMissing:SENSE_ORDER.filter(k=>!rep[k].length),
+    abs:abs.length, absPer100:total?(abs.length/total*100):0,
+    prof, perfectPct:prof.rhymed?perfectish/prof.rhymed*100:0,
+    rhymedPct:prof.n?prof.rhymed/prof.n*100:0
+  };
+}
+
+function renderRef(){
+  const txt=S.refText||'';
+  if(!txt.trim()){
+    $('refCompare').innerHTML='<p class="empty">Paste a reference to compare against your draft.</p>';
+    $('refStruct').innerHTML=$('refRhyme').innerHTML='<p class="empty">—</p>';
+    return;
+  }
+  const R=metrics(txt), Y=(S.lyric||'').trim()?metrics(S.lyric):null;
+  const row=(label,r,y,hint)=>`<tr><td class="v">${label}</td><td>${r}</td>
+    <td style="color:${y==null?'var(--dim)':'var(--ink)'}">${y==null?'—':y}</td></tr>
+    ${hint?`<tr><td></td><td colspan="2" style="color:var(--dim);font-size:12px;padding-top:0">${hint}</td></tr>`:''}`;
+  const pc=n=>n.toFixed(0)+'%';
+  $('refCompare').innerHTML=`<table class="vow"><tbody>
+    <tr><td class="v"></td><td style="font-weight:600">${esc(S.refTitle||'reference')}</td>
+        <td style="font-weight:600">yours</td></tr>
+    ${row('lines',R.lines,Y&&Y.lines)}
+    ${row('sections',R.sections,Y&&Y.sections)}
+    ${row('syllables / line',R.syl.toFixed(1)+' ('+R.sylRange+')',Y&&Y.syl.toFixed(1)+' ('+Y.sylRange+')',
+      'How even the line lengths are is most of what makes a lyric feel sung rather than written.')}
+    ${row('lines that rhyme',pc(R.rhymedPct),Y&&pc(Y.rhymedPct))}
+    ${row('of those, perfect',pc(R.perfectPct),Y&&pc(Y.perfectPct),
+      'The lower this is, the more the writer is reaching into family, additive and assonance rhyme — which is the whole argument of ch.4.')}
+    ${row('abstractions / 100 words',R.absPer100.toFixed(1),Y&&Y.absPer100.toFixed(1),
+      'Words that name a feeling instead of showing it.')}
+    ${row('senses missing',R.sensesMissing.length?R.sensesMissing.join(', '):'none',
+      Y&&(Y.sensesMissing.length?Y.sensesMissing.join(', '):'none'))}
+  </tbody></table>${Y?'':'<p class="note">Write something in step 8 and it fills the right column.</p>'}`;
+
+  const secs=sections(txt);
+  $('refStruct').innerHTML=`<table class="vow"><tbody>${secs.map((s,i)=>{
+    const sy=s.lines.map(lineSyl);
+    return `<tr><td class="v">${esc(s.name||('section '+(i+1)))}${s.repeats>1?' ×'+s.repeats:''}</td>
+      <td>${s.lines.length} lines · ${sy.join(', ')} syllables<br>
+      <span style="color:var(--dim);font-size:12px">opens “${esc(s.lines[0])}”<br>
+      closes “${esc(s.lines[s.lines.length-1])}”</span></td></tr>`;
+  }).join('')}</tbody></table>
+  <p class="note">Sections marked ×2 or more are the repeated element. Read the <b>closing</b> lines
+  in order — those are the triggers, and in a good lyric each one sends you into the chorus differently.</p>`;
+
+  const p=R.prof;
+  $('refRhyme').innerHTML=`<table class="vow"><tbody>${TYPES.filter(t=>p.counts[t]).map(t=>
+    `<tr><td class="v">${t}</td><td>${p.counts[t]} — ${pc(p.counts[t]/p.rhymed*100)}
+      <span class="track" style="display:inline-block;width:90px;height:6px;vertical-align:middle;
+      background:var(--line);border-radius:3px;overflow:hidden;margin-left:8px">
+      <span style="display:block;height:100%;background:var(--accent);
+      width:${Math.round(p.counts[t]/p.rhymed*100)}%"></span></span></td></tr>`).join('')}
+    </tbody></table>
+    <p class="note">${R.perfectPct>75
+      ?'Almost all perfect rhyme — a very resolved, traditional sound.'
+      :R.perfectPct>45?'A mix. The imperfect rhymes are where it stays fresh.'
+      :'Mostly imperfect rhyme — this writer is deliberately avoiding hard resolution.'}</p>`;
+}
+$('refText').addEventListener('input',e=>{S.refText=e.target.value;save();renderRef()});
+$('refTitle').addEventListener('input',e=>{S.refTitle=e.target.value;save();renderRef()});
+
+/* ══════════ per-step reference panels ══════════
+   Each stage gets a collapsible panel showing what the reference does along that
+   stage's own axis. Deterministic ones compute locally; the three interpretive
+   ones call Claude through the local proxy and cache the result. */
+
+/* ── field-level reference slots ──
+   An analysis is pasted once per step as `key: value` lines; it gets split into
+   named fields so each one can sit inline under the matching input rather than
+   in one blob at the top. Values may wrap onto following lines. */
+function parseRefPaste(txt){
+  const out={}; let key=null;
+  (txt||'').split('\n').forEach(l=>{
+    const m=l.match(/^\s*[*_#>\-\s]*([a-z][a-z0-9_ ]{0,24}?)[*_\s]*:\s*(.*)$/i);
+    if(m){ key=m[1].trim().toLowerCase().replace(/\s+/g,'_'); out[key]=m[2].trim(); }
+    else if(key&&l.trim()) out[key]+=' '+l.trim();
+  });
+  return out;
+}
+function refFields(){
+  const p=S.refPaste||{}, out={};
+  ['idea','boxes','draft'].forEach(s=>Object.assign(out,parseRefPaste(p[s])));
+  return out;
+}
+/* one inline reference box, keyed to a field name (accepts aliases) */
+function refSlot(...keys){
+  const f=refFields();
+  const k=keys.find(k=>(f[k]||'').trim());
+  if(!k) return '';
+  return `<div class="refslot"><span class="rl">reference${S.refTitle?' · '+esc(S.refTitle):''}</span>
+    ${esc(f[k])}</div>`;
+}
+
+const AI_STEPS={idea:1,boxes:1,draft:1};
+const AI_PLACEHOLDER={
+  idea:"Who feels this most, what happens, when, why, point of view, the angle…",
+  boxes:"Its bare story, box by box, with the devices stripped off…",
+  draft:"Section-by-section craft notes, and what's worth stealing…",
+};
+const cacheKey=(step,txt)=>'ref-ai:'+step+':'+hash32(txt);
+function hash32(s){let h=0;for(let i=0;i<s.length;i++){h=(h*31+s.charCodeAt(i))|0}return h>>>0}
+
+function refPanel(step){
+  const host=document.querySelector(`.refbox[data-step="${step}"]`);
+  if(!host) return;
+  const txt=(S.refText||'').trim();
+  if(!txt){host.innerHTML='';return}
+  const open=!!(S.refOpen||{})[step];
+  host.innerHTML=`<div class="panel ref">
+    <h2 class="reftog">${open?'▾':'▸'} In the reference${S.refTitle?` — ${esc(S.refTitle)}`:''}
+      ${AI_STEPS[step]?'<span class="count">Claude</span>':'<span class="count">measured</span>'}</h2>
+    ${open?`<div class="refbody">${refBody(step)}</div>`:''}</div>`;
+  host.querySelector('.reftog').onclick=()=>{
+    S.refOpen=S.refOpen||{}; S.refOpen[step]=!open; save(); refPanel(step);
+    if(!open&&AI_STEPS[step]) runAI(step);
+  };
+  if(open&&AI_STEPS[step]) runAI(step);
+}
+
+/* The paste box for a step's reference analysis. Collapsed once filled — the
+   parsed fields show inline beside the user's own inputs instead. */
+function refPasteBox(step){
+  const host=document.querySelector(`.refpaste-host[data-step="${step}"]`);
+  if(!host) return;
+  if(!(S.refText||'').trim()){host.innerHTML='';return}
+  const cur=(S.refPaste||{})[step]||'', n=Object.keys(parseRefPaste(cur)).length;
+  host.innerHTML=`<details class="refpaste"${n?'':' open'}>
+    <summary>${n?`▸ reference analysis — ${n} field${n>1?'s':''} loaded, showing inline below`
+               :'▾ paste the reference analysis for this step'}</summary>
+    <textarea class="refpastebox" data-step="${step}"
+      placeholder="${esc(PASTE_HINT[step]||'')}">${esc(cur)}</textarea>
+    <p class="note">One <code>label: text</code> per line. Each label drops into the matching
+    field below. Unrecognised labels are ignored.</p>
+  </details>`;
+}
+const PASTE_HINT={
+  idea:"title: …\nangle: …\npov: …\nwho: …\nwhat: …\nwhen: …\nwhy: …",
+  boxes:"box1: …\nbox2: …\nbox3: …\nchorus: …\nweight: …",
+  draft:"verse1: …\nchorus: …\nverse2: …\narc: …\nsteal: …",
+};
+
+function refBody(step){
+  const txt=S.refText||'';
+  if(AI_STEPS[step]){
+    const c=aiCache[step];
+    if(c===undefined) return '<p class="empty">Reading the reference…</p>';
+    if(c&&c.__error) return '';   // paste box + inline slots carry it instead
+    return aiRender(step,c);
+  }
+  if(step==='write'){
+    const {rep,abs,total}=senseReport(txt);
+    return `<table class="vow"><tbody>${SENSE_ORDER.map(k=>
+      `<tr${rep[k].length?'':' class="clash"'}><td class="v">${k}</td>
+       <td>${rep[k].length}${rep[k].length?' — '+esc(rep[k].slice(0,10).join(', ')):' — none'}</td></tr>`).join('')}
+      </tbody></table>
+      <p class="note">${abs.length?`It uses ${abs.length} abstraction${abs.length>1?'s':''} (${esc(abs.join(', '))}).`
+        :'It uses no abstractions at all — every feeling is carried by an image.'}
+        Compare with your own counts on the left.</p>`;
+  }
+  if(step==='browse'){
+    const cl=clusters(txt,10);
+    return `<p class="note" style="margin:0 0 8px">The reference's own sections, ranked — this is
+      the <b>story arc</b> in Roget's terms. Click any to browse it.</p>
+      ${cl.map(([n,sc])=>`<div class="cl" data-n="${n}"><span class="n">${n}</span>
+        <span>${ROGET[n].h}</span><span class="sc">${sc.toFixed(1)}</span></div>`).join('')}`;
+  }
+  if(step==='cut'){
+    const by={}, seen=new Set();
+    tokens(txt).forEach(w=>{
+      if(w.length<4||seen.has(w)||ABSTRACT.has(w)||WEAK.has(w)) return;
+      const e=WORDS[w]; if(!e||e[W_ZIPF]>5.2) return;   // drop very common words
+      seen.add(w); (by[e[W_VOWEL]]=by[e[W_VOWEL]]||[]).push(w);
+    });
+    const rows=Object.entries(by).sort((a,b)=>b[1].length-a[1].length).slice(0,12);
+    return `<p class="note" style="margin:0 0 8px">Its content words by stressed vowel — the
+      writer's actual palette.</p>
+      <table class="vow"><tbody>${rows.map(([v,ws])=>
+        `<tr><td class="v">${v} · ${VOWEL_NAME[v]||''}</td><td>${esc(ws.slice(0,8).join(', '))}</td></tr>`).join('')}
+      </tbody></table>`;
+  }
+  if(step==='rhyme'){
+    const p=rhymeProfile(txt), pc=n=>(n/p.rhymed*100).toFixed(0)+'%';
+    return `<table class="vow"><tbody>${TYPES.filter(t=>p.counts[t]).map(t=>
+      `<tr><td class="v">${t}</td><td>${p.counts[t]} — ${pc(p.counts[t])}</td></tr>`).join('')}
+      </tbody></table>
+      <p class="note">${((p.counts.perfect||0)/p.rhymed*100)<50
+        ?'Under half its rhymes are perfect — it is deliberately reaching down the scale.'
+        :'Mostly perfect rhyme — a resolved, traditional sound.'}</p>
+      ${sections(txt).map((s,i)=>`<div style="font-size:13px;padding:2px 0">
+        <b style="font:600 11px/1.6 var(--mono);color:var(--accent)">${scheme(s)}</b>
+        <span style="color:var(--dim)"> ${esc(s.name||('section '+(i+1)))}</span></div>`).join('')}`;
+  }
+  return '';
+}
+
+/* ── AI panels ── */
+const aiCache={};
+async function runAI(step){
+  const txt=(S.refText||'').trim(); if(!txt) return;
+  const key=cacheKey(step,txt);
+  if(aiCache[step]!==undefined&&aiCache[step].__key===key) return;
+  try{
+    const stored=JSON.parse(localStorage.getItem(key)||'null');
+    if(stored){aiCache[step]={...stored,__key:key};refPanel(step);return}
+  }catch(e){}
+  aiCache[step]=undefined; refPanel(step);
+  /* The Claude reference analysis is served by serve.py, which keeps the API key
+     out of the page. There is no server behind the installed app, so say so
+     plainly instead of firing a request that can only 404. */
+  if(!['localhost','127.0.0.1','[::1]'].includes(location.hostname)){
+    aiCache[step]={__key:key,__error:'Claude reference analysis only runs in the local version — open the lyric-app folder with start.command for that. Everything else here works normally.'};
+    refPanel(step); return;
+  }
+  try{
+    const r=await fetch('/api/analyze',{method:'POST',headers:{'content-type':'application/json'},
+      body:JSON.stringify({step,refText:txt,refTitle:S.refTitle||''})});
+    const j=await r.json();
+    if(j.error){
+      aiCache[step]={__key:key,__error:j.error==='no_key'
+        ? 'Claude analysis is off. Put your Anthropic API key in a file called .anthropic-key inside the lyric-app folder (or set ANTHROPIC_API_KEY), then restart the server.'
+        : j.error};
+    }else{
+      aiCache[step]={...j.ok,__key:key};
+      localStorage.setItem(key,JSON.stringify(j.ok));
+    }
+  }catch(e){
+    aiCache[step]={__key:key,__error:'Could not reach the local server — is it still running?'};
+  }
+  refPanel(step);
+}
+
+function aiRender(step,d){
+  const row=(k,v)=>`<tr><td class="v">${k}</td><td>${esc(v||'—')}</td></tr>`;
+  if(step==='idea') return `<table class="vow"><tbody>
+    ${row('point of view',d.pov)}${row('who',d.who)}${row('what',d.what)}
+    ${row('when',d.when)}${row('why',d.why)}${row('the angle',d.angle)}
+    </tbody></table><p class="note">Answer the same six on the right for your own song — the
+    point isn't to match it, it's to have answers at all.</p>`;
+  if(step==='boxes') return `${(d.boxes||[]).map((b,i)=>
+    `<div class="railBox"><b>BOX ${i+1}</b> ${esc(b.label)}<br>
+     <span>${esc(b.idea)}</span><br>
+     <span style="color:var(--dim)">adds: ${esc(b.adds)}</span></div>`).join('')}
+    <p class="note"><b>The repeated element:</b> ${esc(d.chorus_role)}</p>
+    <p class="note"><b>Do the boxes gain weight?</b> ${esc(d.gains_weight)}</p>`;
+  if(step==='draft') return `<table class="vow"><tbody>${(d.sections||[]).map(s=>
+    `<tr><td class="v">${esc(s.name)}</td><td>${esc(s.move)}
+     ${s.trigger?`<br><span style="color:var(--dim)">closing line: ${esc(s.trigger)}</span>`:''}</td></tr>`).join('')}
+    </tbody></table>
+    <p class="note"><b>Arc:</b> ${esc(d.arc)}</p>
+    <p class="note"><b>Worth stealing:</b> ${esc(d.steal_this)}</p>`;
+  return '';
+}
+
+/* keep pasted reference analysis (delegated — panels re-render constantly) */
+document.addEventListener('input',e=>{
+  const ta=e.target.closest('.refpastebox'); if(!ta) return;
+  const step=ta.dataset.step;
+  S.refPaste=S.refPaste||{}; S.refPaste[step]=ta.value; save();
+  fillSlots();                       // re-render every inline slot on the page
+  if(step==='boxes') renderBoxes();
+  if(step==='draft') renderDraft();
+});
+
+/* paint every .refslot-host on the page from the parsed fields */
+function fillSlots(){
+  document.querySelectorAll('.refslot-host').forEach(h=>{
+    h.innerHTML=refSlot(...h.dataset.k.split('|'));
+  });
+}
+
+document.addEventListener('click',e=>{
+  const el=e.target.closest('.refbox .cl'); if(!el) return;
+  S.sec=+el.dataset.n; save(); renderSection();
+  document.querySelector('nav button[data-s="browse"]').click();
+});
+
+/* ═════════════════ stage 1 · object writing ═════════════════ */
+const SENSE_SETS={}; for(const k in SENSES.senses) SENSE_SETS[k]=new Set(SENSES.senses[k]);
+const ABSTRACT=new Set(SENSES.abstract);
+const SENSE_ORDER=['sight','hearing','smell','taste','touch','organic','kinesthetic'];
+
+/* Pattison's two starting-point types (Ch.1 Ex.1 "pick an object at random";
+   Ex.9 "dive into homelessness for ten minutes") — concrete objects with real
+   sensory texture, and abstract-but-diveable themes. Not generic ("a chair"),
+   specific enough to have a smell and a temperature. */
+const ROLL_OBJECTS=["a screen door","a gas station receipt","a wet dog","a kitchen junk drawer",
+  "a pickup truck bed","a church pew","a motel room key","a broken umbrella","a childhood bike",
+  "a jukebox","a porch swing","a gravel driveway","a cassette tape","a fishing tackle box",
+  "a screened-in porch in summer","an empty parking lot at night","a photo in a wallet",
+  "a pair of work boots","a rearview mirror","a dying campfire","a payphone","a church bulletin",
+  "a tailgate","an old record player","a kitchen table after everyone's left","a spare key",
+  "a high school locker","a glovebox full of receipts","a diner booth","a screen porch after rain",
+  // relationship / domestic / loss — broadening past road & small-town
+  "a laundromat at midnight","a mixtape with no label","a hospital waiting room chair",
+  "a childhood bedroom half packed into boxes","a shared umbrella","a wedding ring in a drawer",
+  "a voicemail you never deleted","a school photo from third grade",
+  "a diner menu with a coffee ring on it","a suitcase by the front door",
+  "a half-eaten birthday cake","a broken guitar string","a text message you never sent",
+  "a parking ticket on the windshield","a spare toothbrush still in the cabinet",
+  "a key that doesn't open anything anymore","a Christmas ornament from a place you don't go anymore",
+  "a bus station bench","a borrowed jacket you never gave back","an answering machine tape",
+  "a receipt from a first date","a hand-me-down guitar","a funeral program","a hospital bracelet"];
+
+/* Mined from Roget's own §820-975 — literally headed "Affections" — the moral
+   and emotional-sentiment cluster, before it turns legal/religious at §963+.
+   Filtered by hand for real emotional charge; dropped the archaic person-nouns
+   (Fop, Knave, Blusterer) and the institutional tail (Tribunal, Lawyer, Canonicals). */
+const ROLL_THEMES=["waiting","leaving","coming home","jealousy","forgiveness","loneliness",
+  "homesickness","betrayal","first love","growing up too fast","losing someone","starting over",
+  "regret","freedom","being forgotten","small-town boredom","chasing something","letting go",
+  "being someone's second choice","coming clean","the last time","getting caught",
+  "running out of time","being far from home","almost saying it","the morning after",
+  "outgrowing a place","holding on too long","a promise you didn't keep","the version of you nobody sees",
+  "dejection","penitence","ingratitude","lamentation","endearment","weariness","gluttony",
+  "aggravation","hopelessness","seclusion","vindication","drunkenness","rejoicing","ugliness",
+  "enmity","flattery","cowardice","atonement","modesty","selfishness","sobriety","ridicule",
+  "indifference","boasting","discontent","condemnation","humility","resentment","disrespect",
+  "accusation","amusement","vanity","exclusion","contempt","purity","simplicity","envy",
+  "innocence","gratitude","caution","pity","guilt","courage","celebration","revenge",
+  "punishment","reward","friendship","divorce","relief","pride","pleasure","desire","threat",
+  "enemy","duty","vice","beauty","fashion","wonder","marriage","pain","content","fear",
+  "respect","hate","hope","friend","wrong","love","right"];
+
+function rollPrompt(){
+  const obj=ROLL_OBJECTS[Math.floor(Math.random()*ROLL_OBJECTS.length)];
+  const theme=ROLL_THEMES[Math.floor(Math.random()*ROLL_THEMES.length)];
+  S.rolled={obj,theme}; save(); renderRoller();
+}
+function renderRoller(){
+  const host=$('rollerPick'); if(!host) return;
+  const r=S.rolled;
+  if(!r){host.innerHTML='';return}
+  host.innerHTML=`<div class="chips">
+    <button class="chip" data-v="${esc(r.obj)}">object: ${esc(r.obj)}</button>
+    <button class="chip" data-v="${esc(r.theme)}">theme: ${esc(r.theme)}</button>
+  </div>`;
+}
+$('rollBtn').addEventListener('click',rollPrompt);
+$('rollerPick').addEventListener('click',e=>{
+  const c=e.target.closest('.chip'); if(!c) return;
+  $('objPrompt').value=c.dataset.v; S.objPrompt=c.dataset.v; save();
+});
+
+
+/* CMU has base forms; writing has inflections. Cheap suffix stripping so
+   "yelling" and "crackling" reach "yell" and "crackle". */
+function stems(w){
+  const out=new Set([w]);
+  const add=s=>{if(s.length>=3)out.add(s)};
+  if(w.endsWith('ing')){add(w.slice(0,-3));add(w.slice(0,-3)+'e')}
+  if(w.endsWith('ed')){add(w.slice(0,-2));add(w.slice(0,-2)+'e')}
+  if(w.endsWith('ies'))add(w.slice(0,-3)+'y');
+  if(w.endsWith('es'))add(w.slice(0,-2));
+  if(w.endsWith('s'))add(w.slice(0,-1));
+  if(w.endsWith('ly'))add(w.slice(0,-2));
+  if(w.length>4&&w[w.length-1]===w[w.length-2])add(w.slice(0,-1));
+  return out;
+}
+/* Section labels like [chorus] are structure, not content — drop them before any
+   word analysis, or "chorus" gets counted as a sound word. */
+const stripLabels=t=>(t||'').split('\n').filter(l=>!/^\s*[\[(]/.test(l)).join('\n');
+const tokens=t=>(stripLabels(t).toLowerCase().match(/[a-z']+/g)||[]);
+
+function senseReport(text){
+  const ws=tokens(text), rep={}, seen={};
+  SENSE_ORDER.forEach(k=>{rep[k]=[]; seen[k]=new Set()});
+  for(const w of ws){
+    const st=stems(w);
+    for(const k of SENSE_ORDER){
+      if(seen[k].has(w)) continue;
+      for(const s of st) if(SENSE_SETS[k].has(s)){rep[k].push(w);seen[k].add(w);break}
+    }
+  }
+  const abs=[...new Set(ws.filter(w=>ABSTRACT.has(w)))];
+  return {rep, abs, total:ws.length};
+}
+
+function renderWrite(){
+  const {rep,abs,total}=senseReport(S.obj||'');
+  $('wc').textContent=total;
+  const max=Math.max(1,...SENSE_ORDER.map(k=>rep[k].length));
+  $('senseBars').innerHTML=SENSE_ORDER.map(k=>{
+    const n=rep[k].length;
+    return `<div class="sb${n===0?' zero':''}" title="${rep[k].slice(0,24).join(', ')}">
+      <span class="name">${k}</span>
+      <span class="track"><span class="fill" style="width:${Math.round(n/max*100)}%"></span></span>
+      <span class="num">${n}</span></div>`;
+  }).join('');
+  const missing=SENSE_ORDER.filter(k=>!rep[k].length);
+  let out='';
+  if(total>40&&missing.length)
+    out+=flag('warn','!',`Nothing yet for <b>${missing.join(', ')}</b>. Go back in and find one of each.`);
+  if(abs.length)
+    out+=flag('warn','!',`Telling rather than showing: <b>${abs.join(', ')}</b>. These name a feeling instead of putting it in front of us — swap each for something you could photograph.`);
+  if(total>40&&!missing.length&&!abs.length)
+    out+=flag('ok','✓','All seven senses in play, no abstractions. This is the good stuff.');
+  $('abstractFlags').innerHTML=out;
+}
+
+/* timer */
+let tLeft=600,tInt=null;
+const paint=()=>{
+  const m=Math.floor(tLeft/60),s=tLeft%60;
+  const c=$('clock'); c.textContent=`${m}:${String(s).padStart(2,'0')}`;
+  c.className='clock'+(tInt?' run':'')+(tLeft===0?' done':'');
+};
+$('tStart').addEventListener('click',()=>{
+  if(tInt){clearInterval(tInt);tInt=null;$('tStart').textContent='Resume';paint();return}
+  if(tLeft===0)tLeft=600;
+  tInt=setInterval(()=>{tLeft--;paint();if(tLeft<=0){clearInterval(tInt);tInt=null;$('tStart').textContent='Start'}},1000);
+  $('tStart').textContent='Pause'; paint(); $('obj').focus();
+});
+$('tReset').addEventListener('click',()=>{
+  if(tInt)clearInterval(tInt); tInt=null; tLeft=600; $('tStart').textContent='Start'; paint();
+});
+$('obj').addEventListener('input',e=>{S.obj=e.target.value;save();renderWrite()});
+$('objPrompt').addEventListener('input',e=>{S.objPrompt=e.target.value;save()});
+
+/* ═════════════════════ stage 2 · the idea ═════════════════════ */
+const ENTRY_NOTE={
+  emotion:'Something touched you. The job is to find the image that carries it — the thing anyone could see or touch that correlates with what you felt.',
+  idea:'You picked the subject on purpose. Watch for a travelogue: verses that share a topic but never build on each other.',
+  title:'You have the phrase. Now find the angle — the interesting way in, not the obvious reading of the words.'
+};
+function renderIdea(){
+  document.querySelectorAll('#entry .chip').forEach(c=>c.classList.toggle('on',c.dataset.e===S.entry));
+  document.querySelectorAll('#pov .chip').forEach(c=>c.classList.toggle('on',c.dataset.p===S.pov));
+  $('entryNote').innerHTML=ENTRY_NOTE[S.entry]||'';
+  /* continuity: is the angle actually using the sense material? */
+  const {rep}=senseReport(S.obj||'');
+  const imgs=new Set(); SENSE_ORDER.forEach(k=>rep[k].forEach(w=>imgs.add(w)));
+  /* Match on stems both ways -- the writing says "snows", the angle says
+     "snow", and a raw token compare would call that a miss. */
+  const laterStems=new Set();
+  tokens((S.angle||'')+' '+Object.values(S.w5||{}).join(' '))
+    .forEach(w=>stems(w).forEach(s=>laterStems.add(s)));
+  const used=[...imgs].filter(w=>[...stems(w)].some(s=>laterStems.has(s)));
+  if(!imgs.size){$('carry').innerHTML='<p class="empty">No object writing yet.</p>';return}
+  /* One incidental overlap isn't the angle growing out of the writing -- it's a
+     coincidence. Only tick at two or more. */
+  $('carry').innerHTML= used.length>=2
+    ? flag('ok','✓',`Your angle carries <b>${used.join(', ')}</b> over from step 1.`)
+    : used.length===1
+    ? flag('warn','!',`Only <b>${used[0]}</b> carries over. One word is a coincidence — pull more of the writing through: ${[...imgs].filter(w=>w!==used[0]).slice(0,10).join(', ')}…`)
+    : flag('warn','!',`None of your sense images (<b>${[...imgs].slice(0,10).join(', ')}…</b>) appear in the angle yet. The angle should grow out of the writing, not sit beside it.`);
+}
+$('entry').addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;
+  S.entry=S.entry===c.dataset.e?'':c.dataset.e;save();renderIdea()});
+$('pov').addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;
+  S.pov=S.pov===c.dataset.p?'':c.dataset.p;save();renderIdea()});
+$('angle').addEventListener('input',e=>{S.angle=e.target.value;save();renderIdea()});
+['who','what','when','why'].forEach(k=>{
+  $('q-'+k).addEventListener('input',e=>{S.w5[k]=e.target.value;save();renderIdea()});
+});
+
+/* ═════════════════════ stage 3 · browse ═════════════════════ */
+const SECS=Object.keys(ROGET).map(Number).sort((a,b)=>a-b);
+
+/* Which Roget sections does the object writing land in? Built once, lazily --
+   this is the "your writing is about X" read, done by lookup rather than by a
+   model: it reports where the words actually live, not an opinion. */
+let INV=null;
+function invIndex(){
+  if(INV) return INV;
+  INV=new Map();
+  for(const n of SECS){
+    for(const w of new Set(tokens(ROGET[n].t))){
+      if(w.length<4) continue;
+      let a=INV.get(w); if(!a){a=[];INV.set(w,a)}
+      a.push(n);
+    }
+  }
+  return INV;
+}
+function clusters(text,top=8){
+  const inv=invIndex(), score=new Map();
+  const ws=new Set(tokens(text).filter(w=>w.length>3&&!ABSTRACT.has(w)));
+  for(const w of ws){
+    for(const s of stems(w)){
+      const hit=inv.get(s);
+      if(!hit||hit.length>40) continue;      // ignore words that are everywhere
+      hit.forEach(n=>score.set(n,(score.get(n)||0)+1/Math.sqrt(hit.length)));
+      break;
+    }
+  }
+  return [...score.entries()].sort((a,b)=>b[1]-a[1]).slice(0,top);
+}
+function renderCluster(){
+  if(!(S.obj||'').trim()){
+    $('cluster').innerHTML='<p class="empty">Do some object writing in step 1 first.</p>';return;
+  }
+  const cl=clusters(S.obj);
+  $('cluster').innerHTML= cl.length
+    ? `<p class="note" style="margin:0 0 8px">Your sense writing keeps landing in these sections —
+        each is a live entry point for the lookup.</p>`+
+      cl.map(([n,sc])=>`<div class="cl" data-n="${n}"><span class="n">${n}</span>
+        <span>${ROGET[n].h}</span><span class="sc">${sc.toFixed(1)}</span></div>`).join('')
+    : '<p class="empty">Nothing clustered strongly — try writing more.</p>';
+}
+$('cluster').addEventListener('click',e=>{
+  const el=e.target.closest('[data-n]'); if(!el) return;
+  S.sec=+el.dataset.n; save(); renderSection();
+});
+
+function indexLookup(q){
+  const re=new RegExp('\\b'+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','i');
+  const hits=[];
+  for(const n of SECS){
+    const s=ROGET[n];
+    if(re.test(s.h)) hits.push([n,s.h,'headword']);
+    else if(re.test(s.t)) hits.push([n,s.h,'entry']);
+  }
+  return hits;
+}
+
+let searchT;
+$('q').addEventListener('input',e=>{
+  clearTimeout(searchT);
+  const q=e.target.value.trim();
+  searchT=setTimeout(()=>{
+    if(q.length<2){$('hits').innerHTML='<p class="empty">Type a theme word above.</p>';return}
+    const hits=indexLookup(q);
+    if(!hits.length){$('hits').innerHTML='<p class="empty">No sections found.</p>';return}
+    $('hits').innerHTML=hits.slice(0,60).map(([n,h,p])=>
+      `<div class="hit${S.sec===n?' sel':''}" data-n="${n}">
+         <span class="n">${n}</span><span class="h">${h}</span><span class="p">${p}</span></div>`).join('');
+  },140);
+});
+$('hits').addEventListener('click',e=>{
+  const el=e.target.closest('.hit'); if(!el) return;
+  S.sec=+el.dataset.n; save(); renderSection();
+  document.querySelectorAll('.hit').forEach(h=>h.classList.toggle('sel',+h.dataset.n===S.sec));
+});
+
+/* pull singable candidates out of a section body */
+function sectionWords(n){
+  let t=ROGET[n].t.replace(/\b\d+\b/g,' ').replace(/\([^)]*\)/g,' ');
+  const seen=new Set(),out=[];
+  for(let chunk of t.split(/[;,.]/)){
+    let w=chunk.trim().toLowerCase().replace(/\s+/g,' ').replace(/^[-–—\[\]|]+|[-–—\[\]|]+$/g,'').trim();
+    // Roget marks cross-references with a trailing part-of-speech tag
+    // ("expecting &c. v.", "be sensible &c. adj."). Strip those, and drop the
+    // bare tags that survive splitting on the section's own "— N." headers.
+    w=w.replace(/\s+(adj|adv|vb?|n|phr|int)$/,'').trim();
+    if(/^(adj|adv|vb?|n|phr|int)$/.test(w)) continue;
+    if(w.length<3||w.split(' ').length>3||!/^[a-z' -]+$/.test(w)||seen.has(w)) continue;
+    seen.add(w); out.push(w);
+  }
+  return out;
+}
+
+function renderSection(){
+  const n=S.sec; if(n==null) return;
+  $('nbrPanel').style.display='';
+  const near=SECS.filter(x=>Math.abs(x-n)<=5);
+  $('nbr').innerHTML=near.map(x=>
+    `<div class="${x===n?'focus':''}" data-n="${x}">
+       <span class="n">${x}</span><span>${ROGET[x].h}</span>
+       ${ROGET[x].g?`<span class="g">${ROGET[x].g}</span>`:''}</div>`).join('');
+  $('secHead').textContent=`§${n} · ${ROGET[n].h}`;
+  $('secWords').innerHTML=sectionWords(n).map(w=>
+    `<button class="chip${S.harvest.includes(w)?' has':''}" data-w="${w}">${w}</button>`).join('')
+    ||'<p class="empty">No usable entries.</p>';
+}
+$('nbr').addEventListener('click',e=>{
+  const el=e.target.closest('[data-n]'); if(!el) return;
+  S.sec=+el.dataset.n; save(); renderSection();
+});
+$('secWords').addEventListener('click',e=>{
+  const el=e.target.closest('.chip'); if(!el) return;
+  const w=el.dataset.w;
+  S.harvest.includes(w)? S.harvest=S.harvest.filter(x=>x!==w) : S.harvest.push(w);
+  save(); renderSection(); renderHarvest();
+});
+
+function renderHarvest(){
+  const html=S.harvest.map(w=>`<button class="chip has" data-w="${w}">${w}<span class="x">×</span></button>`).join('');
+  $('harvest').innerHTML=html||'<p class="empty">Nothing harvested yet.</p>';
+  $('hCount').textContent=S.harvest.length;
+  $('hCount2').textContent=S.harvest.length;
+  $('harvest2').innerHTML=S.harvest.map(w=>{
+    const known=!!WORDS[w.replace(/ /g,'')];
+    return `<button class="chip${S.keep.includes(w)?' kept':''}" data-w="${w}"
+      title="${known?'':'not in pronunciation dictionary'}">${w}${known?'':' ·'}</button>`;
+  }).join('')||'<p class="empty">Harvest some words in step 3 first.</p>';
+}
+$('harvest').addEventListener('click',e=>{
+  const el=e.target.closest('.chip'); if(!el) return;
+  S.harvest=S.harvest.filter(x=>x!==el.dataset.w);
+  S.keep=S.keep.filter(x=>x!==el.dataset.w);
+  save(); renderHarvest(); renderCut(); renderSection();
+});
+
+/* ═════════════════════ stage 4 · the cut ═════════════════════ */
+$('harvest2').addEventListener('click',e=>{
+  const el=e.target.closest('.chip'); if(!el) return;
+  const w=el.dataset.w;
+  S.keep.includes(w)? S.keep=S.keep.filter(x=>x!==w) : S.keep.push(w);
+  save(); renderHarvest(); renderCut();
+});
+
+/* Worksheet entries are often phrases ("days gone by") or hyphenated
+   ("half-blind"). Rhyme sits on the final word, so fall back to it. */
+function headWord(w){
+  const s=(w||'').toLowerCase().trim();
+  if(WORDS[s]) return s;
+  if(WORDS[s.replace(/[\s-]/g,'')]) return s.replace(/[\s-]/g,'');
+  const parts=s.split(/[\s-]+/).filter(Boolean);
+  for(let i=parts.length-1;i>=0;i--) if(WORDS[parts[i]]) return parts[i];
+  return null;
+}
+const lookupW=w=>{const h=headWord(w);return h?WORDS[h]:null};
+
+function renderCut(){
+  $('kCount').textContent=S.keep.length;
+  $('keep').innerHTML=S.keep.map(w=>
+    `<button class="chip kept" data-w="${w}">${w}<span class="x">×</span></button>`).join('')
+    ||'<p class="empty">Click harvest words to keep them.</p>';
+
+  /* vowel spread */
+  const by={};
+  S.keep.forEach(w=>{const e=lookupW(w); if(!e)return; (by[e[1]]=by[e[1]]||[]).push(w)});
+  const rows=Object.entries(by).sort();
+  $('vowtab').innerHTML=rows.map(([v,ws])=>
+    `<tr class="${ws.length>1?'clash':''}"><td class="v">${v} · ${VOWEL_NAME[v]||''}</td>
+     <td>${ws.join(', ')}${ws.length>1?' — collision':''}</td></tr>`).join('')
+    ||'<tr><td class="empty">Nothing kept yet.</td></tr>';
+
+  /* checks */
+  const out=[];
+  const clashes=rows.filter(([,ws])=>ws.length>1);
+  const n=S.keep.length;
+  out.push(n>=10&&n<=12
+    ? flag('ok','✓',`${n} words — in Pattison's 10–12 range.`)
+    : flag('warn','!',`${n} words. He asks for 10–12 — ${n<10?'keep going':'cut further'}.`));
+  out.push(clashes.length
+    ? flag('warn','!',`${clashes.length} vowel collision${clashes.length>1?'s':''}: `+
+        clashes.map(([v,ws])=>`<b>${ws.join('/')}</b> all on ${v}`).join('; ')+
+        `. Each duplicate costs you a whole rhyme territory.`)
+    : flag('ok','✓',`${rows.length} distinct stressed vowels, no collisions.`));
+  const unstressed=S.keep.filter(w=>{const e=lookupW(w);return e&&!e[W_STRESS]});
+  out.push(unstressed.length>S.keep.length/2
+    ? flag('warn','!',`Most words end unstressed (${unstressed.join(', ')}). He wants most ending on a stressed syllable — they sit better in rhyming position.`)
+    : flag('ok','✓',`${S.keep.length-unstressed.length} of ${S.keep.length} end on a stressed syllable.`));
+  const te=S.title?lookupW(S.title.split(/\s+/).pop()):null;
+  if(S.title&&te){
+    const has=S.keep.some(w=>{const e=lookupW(w);return e&&e[1]===te[1]});
+    out.push(has
+      ? flag('ok','✓',`Title vowel <b>${te[1]}</b> (${VOWEL_NAME[te[1]]||''}) is covered.`)
+      : flag('warn','!',`Your title ends on <b>${te[1]}</b> (${VOWEL_NAME[te[1]]||''}) and nothing in the list carries it. He treats that as required.`));
+  } else if(!S.title){
+    out.push(flag('warn','!','Set a song title up top — its vowel has to be in the list.'));
+  }
+  $('checks').innerHTML=out.join('');
+}
+const flag=(k,ic,txt)=>`<div class="flag ${k}"><span class="ic">${ic}</span><span>${txt}</span></div>`;
+$('keep').addEventListener('click',e=>{
+  const el=e.target.closest('.chip'); if(!el) return;
+  S.keep=S.keep.filter(x=>x!==el.dataset.w);
+  save(); renderHarvest(); renderCut();
+});
+
+/* ═════════════════════ stage 5 · rhyme columns ═════════════════════ */
+const CAP=28;                    // chips shown per type before "+N more"
+const EXPANDED=new Set();
+function renderRhymes(){
+  if(!S.keep.length){
+    $('rhymes').innerHTML='<div class="panel"><p class="empty">Cut down to your 10–12 words in step 4 first.</p></div>';
+    return;
+  }
+  $('rhymes').innerHTML=S.keep.map(w=>{
+    const head=headWord(w);
+    if(!head) return `<div class="panel rw"><h3>${w}</h3>
+      <p class="empty">No pronunciation found for this — rhyme sits on the last word, so try a
+      single word here rather than a phrase.</p></div>`;
+    const R=findRhymes(head);
+    const body=TYPES.map(t=>{
+      const full=R[t]; if(!full.length) return '';
+      const key=head+'|'+t, open=EXPANDED.has(key);
+      const ws=open?full:full.slice(0,CAP);
+      const cli=clicheSet(head,ws);
+      const more=full.length-ws.length;
+      return `<div class="rtype">
+        <div class="lbl"><b>${t}</b>${t==='perfect'?'most stable':t==='consonance'?'least stable':''}
+          <div class="bar" style="width:${Math.round(STABILITY[t]*100)}%"></div></div>
+        <div class="chips">${ws.map(x=>{
+          const cl=cli.has(x), on=S.kept.includes(x);
+          return `<button class="chip${cl?' cliche':''}${on?' kept':''}" data-w="${x}"
+            title="${cl?'cliché rhyme — Pattison ch.5':''}">${x}</button>`;
+        }).join('')}${more>0?`<button class="chip more" data-k="${key}">+${more} more</button>`:''}${
+          open&&full.length>CAP?`<button class="chip more" data-k="${key}">show fewer</button>`:''}
+        </div></div>`;
+    }).join('');
+    const e=WORDS[head];
+    const total=TYPES.reduce((a,t)=>a+R[t].length,0);
+    /* A thin column is usually structural, not a gap in the dictionary: a word
+       ending on an unstressed syllable has almost nowhere to go. Say why. */
+    let why='';
+    if(total<25&&!e[W_STRESS])
+      why=flag('warn','!',`Only ${total} rhymes, because <b>${head}</b> ends on an unstressed
+        syllable — everything after the stress has to match, so family and assonance are closed off.
+        This is why he asks for words that end stressed. Consider swapping it.`);
+    else if(total<12)
+      why=flag('warn','!',`Only ${total} rhymes — <b>${head}</b> is a sonic dead end. Worth swapping
+        for something in the same idea with more places to go.`);
+    return `<div class="panel rw"><h3>${w}
+      <span class="meta">${head!==w.toLowerCase()?`rhyming on “${head}” · `:''}${e[W_VOWEL]} · ${VOWEL_NAME[e[W_VOWEL]]||''}${e[W_CODA]?' + '+e[W_CODA]:''} · ${total} found</span></h3>${why}${body}</div>`;
+  }).join('');
+}
+$('rhymes').addEventListener('click',e=>{
+  const el=e.target.closest('.chip'); if(!el) return;
+  if(el.classList.contains('more')){
+    const k=el.dataset.k;
+    EXPANDED.has(k)?EXPANDED.delete(k):EXPANDED.add(k);
+    renderRhymes(); return;
+  }
+  const w=el.dataset.w;
+  S.kept.includes(w)? S.kept=S.kept.filter(x=>x!==w) : S.kept.push(w);
+  save(); renderRhymes(); renderPalette();
+});
+function renderPalette(){
+  $('palette').innerHTML=S.kept.length
+    ? S.kept.map(w=>`<button class="chip kept" data-w="${w}">${w}<span class="x">×</span></button>`).join('')
+    : '<span class="empty">Kept rhymes appear here.</span>';
+}
+$('palette').addEventListener('click',e=>{
+  const el=e.target.closest('.chip'); if(!el) return;
+  S.kept=S.kept.filter(x=>x!==el.dataset.w);
+  save(); renderRhymes(); renderPalette();
+});
+
+/* ═════════════════════ stage 6 · boxes ═════════════════════ */
+const lines=t=>(t||'').split('\n').map(l=>l.trim()).filter(Boolean);
+
+/* Rhyme sits on the last *stressed* word, not on a trailing function word:
+   "come to claim it" rhymes on claim, not on it. Skip up to two weak
+   monosyllables off the end, but never return nothing. */
+const WEAK=new Set(`it a an the of to in on at is was be am are were do does did
+  me you he she we they him her us them my your his its our their this that
+  and or but if so as for nor yet too now then there here what who i`.split(/\s+/));
+function lastWord(l){
+  const m=(l||'').toLowerCase().match(/[a-z']+/g);
+  if(!m) return null;
+  let i=m.length-1, skipped=0;
+  while(i>0&&WEAK.has(m[i])&&skipped<2){i--;skipped++}
+  return WEAK.has(m[i])&&skipped>=2 ? m[m.length-1] : m[i];
+}
+
+function renderBoxes(){
+  $('boxList').innerHTML=S.boxes.map((b,i)=>{
+    const ls=lines(b.text);
+    const prev=S.boxes.slice(0,i).map(x=>lines(x.text).length).reduce((a,c)=>a+c,0);
+    return `<div class="panel">
+      <h2>Box ${i+1}${ls.length?` <span class="count"><b>${ls.length}</b> draft lines</span>`:''}</h2>
+      <label class="qlab">The idea — what this box does${i>0?', and what it adds that the last one didn\'t':''}</label>
+      <textarea class="boxA q" data-i="${i}" style="min-height:70px"
+        placeholder="${i===0?'sets the ground: everything felt right, I thought I could fly':i===1?'adds the family history — why flying mattered':'resolution: what he does with it now'}"></textarea>
+      <div class="refslot-host" data-k="box${i+1}|box_${i+1}"></div>
+      <label class="qlab">Lines <span style="font-weight:400">— optional, once the ideas hold up</span></label>
+      <textarea class="boxT" data-i="${i}" style="min-height:90px"
+        placeholder="leave this until the three ideas above actually build on each other"></textarea>
+    </div>`;
+  }).join('');
+  S.boxes.forEach((b,i)=>{
+    document.querySelector(`.boxT[data-i="${i}"]`).value=b.text||'';
+    document.querySelector(`.boxA[data-i="${i}"]`).value=b.adds||'';
+  });
+  fillSlots();
+  const written=S.boxes.filter(b=>b.adds.trim()).length;
+  const linesFirst=S.boxes.filter(b=>lines(b.text).length&&!b.adds.trim()).length;
+  let msg='';
+  if(linesFirst)
+    msg=flag('warn','!',`${linesFirst} box${linesFirst>1?'es have':' has'} lines but no idea stated. The idea is the box — if you can't name what it adds, the lines are decoration.`);
+  else if(written===3)
+    msg=flag('ok','✓','Three ideas stated. Read them in order — does each one genuinely need the one before it?');
+  if(msg) $('boxList').insertAdjacentHTML('beforeend',msg);
+}
+
+$('boxList').addEventListener('input',e=>{
+  const i=+e.target.dataset.i;
+  if(e.target.classList.contains('boxT')) S.boxes[i].text=e.target.value;
+  else if(e.target.classList.contains('boxA')) S.boxes[i].adds=e.target.value;
+  else return;
+  save();
+});
+$('chorus').addEventListener('input',e=>{S.chorus=e.target.value;save()});
+
+let travelOn=false;
+$('travelBtn').addEventListener('click',()=>{
+  travelOn=!travelOn;
+  $('travelBtn').textContent=travelOn?'Show the chorus again':'Hide the chorus';
+  if(!travelOn){$('travelOut').innerHTML='';return}
+  const verses=S.boxes.map((b,i)=>lines(b.text).length
+    ? `<b>Box ${i+1}</b>\n`+lines(b.text).join('\n') : null).filter(Boolean);
+  $('travelOut').innerHTML= verses.length
+    ? `<pre style="white-space:pre-wrap;font:inherit;background:var(--bg);padding:14px;
+        border-radius:7px;border:1px solid var(--line);margin:12px 0 0">${verses.join('\n\n')}</pre>
+       <p class="note">Read that straight through. Does it hold together on its own?</p>`
+    : '<p class="empty">No verse lines yet.</p>';
+});
+
+/* ═════════════════════ stage 7 · draft ═════════════════════ */
+const isSection=l=>/^\s*[\[(]/.test(l);
+
+/* The reference, line by line: scheme letter, syllable count, and how each line
+   answers an earlier one. All computed — nothing here is pasted or guessed. */
+function renderRefLineMap(){
+  const host=$('refLineMap'); if(!host) return;
+  const secs=sections(S.refText||'');
+  if(!secs.length){host.innerHTML='<p class="empty">Paste a reference on step 0.</p>';return}
+  const f=refFields();
+  let n=0, out=[];
+  secs.forEach((sec,si)=>{
+    const name=sec.name||('section '+(si+1)), letters=scheme(sec), ends=sec.lines.map(lastWord);
+    out.push(`<div class="rlm hd"><span class="tx">${esc(name)} · ${letters}</span></div>`);
+    /* a pasted craft note for this section, if there is one */
+    const note=f[name.replace(/\s+/g,'')]||f[name.replace(/\s+/g,'_')];
+    if(note) out.push(`<div class="refslot" style="margin:4px 0 8px">${esc(note)}</div>`);
+    sec.lines.forEach((l,i)=>{
+      n++;
+      let hit=null;
+      for(let j=i-1;j>=0;j--){
+        const t=(WORDS[ends[i]]&&WORDS[ends[j]])?classify(WORDS[ends[i]],WORDS[ends[j]]):null;
+        if(t&&(!hit||STABILITY[t]>STABILITY[hit.t])) hit={t,j};
+        else if(!hit&&ends[i]&&ends[i]===ends[j]) hit={t:'same word',j};
+      }
+      const pp=i===0||i===sec.lines.length-1;
+      out.push(`<div class="rlm"${pp?' style="font-weight:600"':''}>
+        <span class="sy">${lineSyl(l)}</span>
+        <span class="lt">${letters[i]}</span>
+        <span class="tx">${esc(l)}</span>
+        ${hit?`<span class="rt">${hit.t} with L${j2(sec,hit.j)} · ${esc(ends[hit.j])}</span>`:''}</div>`);
+    });
+  });
+  host.innerHTML=`<p class="note" style="margin:0 0 8px">Left column is syllables, then the rhyme
+    letter. Bold lines are power positions — each section's opening and its trigger.</p>
+    ${out.join('')}
+    ${f.arc?`<div class="refslot" style="margin-top:12px"><span class="rl">arc</span>${esc(f.arc)}</div>`:''}
+    ${f.steal||f.steal_this?`<div class="refslot"><span class="rl">worth stealing</span>${esc(f.steal||f.steal_this)}</div>`:''}`;
+}
+const j2=(sec,j)=>j+1;   // line number within its section
+
+function renderDraft(){
+  renderRefLineMap();
+  const raw=(S.lyric||'').split('\n');
+  $('lyCount').textContent=raw.filter(l=>l.trim()&&!isSection(l)).length;
+
+  /* line map: rhyme back-reference within the current section */
+  let sect=[], out=[], n=0;
+  const flush=()=>{
+    const ends=sect.map(x=>lastWord(x.t));
+    sect.forEach((x,i)=>{
+      let hit=null, same=-1;
+      for(let j=i-1;j>=0;j--){
+        /* identical end-words classify as null (same onset), so they'd read as
+           "no rhyme" -- but repeating the rhyme word is usually an accident */
+        if(ends[i]&&ends[i]===ends[j]&&same<0) same=j;
+        const t=(WORDS[ends[i]]&&WORDS[ends[j]])?classify(WORDS[ends[i]],WORDS[ends[j]]):null;
+        if(t&&(!hit||STABILITY[t]>STABILITY[hit.t])) hit={t,j,with:ends[j]};
+      }
+      if(same>=0&&!hit) hit={t:'same word as',j:same,with:'L'+sect[same].n};
+      const cli=hit&&CLICHE.some(g=>g.includes(ends[i])&&g.includes(hit.with));
+      const pp=i===0||i===sect.length-1;      // power positions
+      out.push(`<div class="lm${pp?' pp':''}${cli?' cli':''}">
+        <span class="ln">${x.n}</span><span class="tx">${esc(x.t)}</span>
+        <span class="rh">${hit?`${hit.t} ${hit.t==='same word as'?'':'· '}${esc(hit.with)}`:ends[i]?'—':''}${cli?' cliché':''}</span></div>`);
+    });
+    sect=[];
+  };
+  raw.forEach(l=>{
+    if(l.trim()) n++;
+    if(isSection(l)){flush();out.push(`<div class="lm sect"><span class="ln"></span>
+      <span class="tx">${esc(l.replace(/[\[\]()]/g,''))}</span><span class="rh"></span></div>`);return}
+    if(!l.trim()){flush();return}
+    sect.push({t:l,n});
+  });
+  flush();
+  $('lineMap').innerHTML=out.length?out.join(''):'<p class="empty">Write a few lines and their rhymes appear here.</p>';
+
+  /* word bank — the cut plus everything kept in step 5 */
+  const bank=[...new Set([...(S.keep||[]),...(S.kept||[])])];
+  $('bank').innerHTML=bank.length
+    ? bank.map(w=>`<button class="chip" data-w="${esc(w)}">${esc(w)}</button>`).join('')
+    : '<p class="empty">Nothing kept in steps 4–5 yet.</p>';
+
+  $('railBoxes').innerHTML=S.boxes.some(b=>b.adds.trim())
+    ? S.boxes.map((b,i)=>b.adds.trim()
+        ? `<div class="railBox"><b>BOX ${i+1}</b> ${esc(b.adds)}</div>`:'').join('')
+    : '<p class="empty">No box ideas yet — step 6.</p>';
+  $('railAngle').innerHTML=(S.angle||'').trim()
+    ? `<p class="note" style="margin:0">${esc(S.angle)}</p>` : '<p class="empty">No angle set — step 2.</p>';
+}
+const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* rhymes for whatever line the cursor is on */
+function cursorRhymes(){
+  const ta=$('lyric'), pos=ta.selectionStart;
+  const line=ta.value.slice(0,pos).split('\n').pop()+ta.value.slice(pos).split('\n')[0];
+  const w=isSection(line)?null:lastWord(line);
+  const head=w?headWord(w):null;
+  $('curWord').textContent=head||'—';
+  if(!head){$('curRhymes').innerHTML='<p class="empty">Put the cursor on a line.</p>';return}
+  const R=findRhymes(head);
+  const body=TYPES.map(t=>{
+    if(!R[t].length) return '';
+    return `<div style="margin-bottom:7px"><div style="font-size:11px;color:var(--dim);
+      text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px">${t}</div>
+      <div class="chips">${R[t].slice(0,14).map(x=>
+        `<button class="chip" data-w="${x}">${x}</button>`).join('')}</div></div>`;
+  }).join('');
+  $('curRhymes').innerHTML=body||'<p class="empty">No rhymes found.</p>';
+}
+
+function insertAtCursor(text){
+  const ta=$('lyric'), s=ta.selectionStart, e=ta.selectionEnd;
+  const before=ta.value[s-1], after=ta.value[e];
+  const ins=(s>0&&!/[\s\n]/.test(before)?' ':'')+text+(after&&!/[\s\n]/.test(after)?' ':'');
+  ta.value=ta.value.slice(0,s)+ins+ta.value.slice(e);
+  ta.selectionStart=ta.selectionEnd=s+ins.length;
+  S.lyric=ta.value; save(); ta.focus(); renderDraft(); cursorRhymes();
+}
+$('lyric').addEventListener('input',()=>{S.lyric=$('lyric').value;save();renderDraft();cursorRhymes()});
+['click','keyup'].forEach(ev=>$('lyric').addEventListener(ev,cursorRhymes));
+$('bank').addEventListener('click',e=>{
+  const c=e.target.closest('.chip'); if(c) insertAtCursor(c.dataset.w);
+});
+$('curRhymes').addEventListener('click',e=>{
+  const c=e.target.closest('.chip'); if(c) insertAtCursor(c.dataset.w);
+});
+
+/* ═════════════════════ stage 8 · audit ═════════════════════ */
+function draftText(){return (S.lyric||'')||S.boxes.map(b=>b.text).join('\n')}
+
+const lyricSections=()=>sections(draftText());
+
+function renderAudit(){
+  const draft=draftText(), all=draft+'\n'+(S.chorus||'');
+  const dStems=new Set(); tokens(all).forEach(w=>stems(w).forEach(s=>dStems.add(s)));
+
+  /* did the worksheet reach the page? */
+  const pool=[...new Set([...S.keep,...S.kept])];
+  if(!pool.length) $('auditWords').innerHTML='<p class="empty">Nothing kept in steps 4–5 yet.</p>';
+  else{
+    const used=pool.filter(w=>[...stems(w.toLowerCase())].some(s=>dStems.has(s)));
+    const unused=pool.filter(w=>!used.includes(w));
+    $('auditWords').innerHTML=
+      (used.length?flag('ok','✓',`<b>${used.join(', ')}</b> — ${used.length} of ${pool.length} reached the draft.`):'')+
+      (unused.length?flag('warn','!',`Still on the shelf: <b>${unused.join(', ')}</b>. Not a failure — but if almost none of it lands, you built the worksheet and then wrote without it.`):'');
+  }
+
+  /* rhyme profile of the actual line endings */
+  const rows=[];
+  lyricSections().forEach((sec,bi)=>{
+    const ls=sec.lines; if(!ls.length) return;
+    const ends=ls.map(lastWord);
+    ends.forEach((w,i)=>{
+      /* report the strongest relationship back, not the first one found --
+         "stays" answers "days" (perfect) even though "claim" sits between them */
+      let hit=null;
+      for(let j=i-1;j>=0;j--){
+        const t=WORDS[w]&&WORDS[ends[j]]?classify(WORDS[w],WORDS[ends[j]]):null;
+        if(t&&(!hit||STABILITY[t]>STABILITY[hit.t])) hit={t,j,with:ends[j]};
+      }
+      rows.push({box:sec.name||('section '+(bi+1)),line:i+1,w,hit,
+        cliche:hit?CLICHE.some(g=>g.includes(w)&&g.includes(hit.with)):false});
+    });
+  });
+  if(!rows.length) $('auditRhyme').innerHTML='<p class="empty">No verse lines yet.</p>';
+  else{
+    const counts={}; rows.forEach(r=>{if(r.hit)counts[r.hit.t]=(counts[r.hit.t]||0)+1});
+    const cl=rows.filter(r=>r.cliche);
+    $('auditRhyme').innerHTML=
+      `<table class="vow"><tbody>${rows.map(r=>
+        `<tr${r.cliche?' class="clash"':''}><td class="v">${esc(r.box)} · L${r.line}</td>
+         <td><b>${r.w||'—'}</b>${r.hit?` <span style="color:var(--dim)">${r.hit.t} with ${r.hit.with} (L${r.hit.j+1})</span>`:
+         ' <span style="color:var(--dim)">— no rhyme back</span>'}${r.cliche?' — cliché pair':''}</td></tr>`).join('')}
+       </tbody></table>`+
+      (Object.keys(counts).length?`<p class="note">Profile: ${TYPES.filter(t=>counts[t]).map(t=>`${t} ×${counts[t]}`).join(', ')}.
+        ${(counts.perfect||0)>=rows.length*0.6?'<b>Heavily perfect</b> — that resolves every line hard. Reach down the scale where you want a line unsettled.':''}</p>`:'')+
+      (cl.length?flag('warn','!',`Cliché pairs in the draft: <b>${cl.map(r=>r.w+'/'+r.hit.with).join(', ')}</b>.`):'');
+  }
+
+  /* power positions */
+  const pp=[];
+  lyricSections().forEach((sec,i)=>{
+    const ls=sec.lines; if(!ls.length) return;
+    const nm=sec.name||('section '+(i+1));
+    pp.push(`<tr><td class="v">${esc(nm)} opens</td><td>${esc(ls[0])}</td></tr>`);
+    if(ls.length>1) pp.push(`<tr><td class="v">${esc(nm)} closes</td><td><b>${esc(ls[ls.length-1])}</b></td></tr>`);
+  });
+  $('auditPower').innerHTML=pp.length
+    ? `<table class="vow"><tbody>${pp.join('')}</tbody></table>
+       <p class="note">Read the trigger lines in order. Each one should send you into the same chorus
+       differently — that's the boxes gaining weight.</p>`
+    : '<p class="empty">No verse lines yet.</p>';
+}
+
+/* ═════════════════════════ export ═════════════════════════ */
+function exportMarkdown(){
+  const {rep}=senseReport(S.obj||'');
+  const L=[];
+  L.push(`# ${S.title||'Untitled'}`,'');
+  L.push('## 1 · Object writing',`*Diving into: ${S.objPrompt||'—'}*`,'',S.obj||'_(empty)_','');
+  L.push('Senses: '+SENSE_ORDER.map(k=>`${k} ${rep[k].length}`).join(', '),'');
+  L.push('## 2 · Idea',`- Starting from: ${S.entry||'—'}`,`- Point of view: ${S.pov||'—'}`,
+    '',`**Angle:** ${S.angle||'—'}`,'');
+  ['who','what','when','why'].forEach(k=>L.push(`**${k}:** ${(S.w5||{})[k]||'—'}`));
+  L.push('','## 3 · Harvest',S.harvest.join(', ')||'—','');
+  L.push('## 4 · The cut',S.keep.map((w,i)=>{
+    const e=lookupW(w); return `${i+1}. ${w}${e?`  _(${e[1]})_`:''}`}).join('\n')||'—','');
+  L.push('## 5 · Kept rhymes',S.kept.join(', ')||'—','');
+  L.push('## 6 · Boxes','',`**Chorus**\n\n${S.chorus||'—'}`,'');
+  S.boxes.forEach((b,i)=>L.push(`**Box ${i+1}** — ${b.adds||'_(idea not stated)_'}`,'',b.text||'',''));
+  L.push('## 7 · Draft','',S.lyric||'_(empty)_','');
+  const rp=S.refPaste||{};
+  if(S.refTitle||(S.refText||'').trim()||Object.values(rp).some(v=>(v||'').trim())){
+    L.push('## Reference',`*${S.refTitle||'untitled'}*`,'');
+    if((S.refText||'').trim()) L.push('```',S.refText.trim(),'```','');
+    ['idea','boxes','draft'].forEach(k=>{
+      if((rp[k]||'').trim()) L.push(`**${k}:**`,rp[k].trim(),'');
+    });
+  }
+  const blob=new Blob([L.join('\n')],{type:'text/markdown'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=(S.title||'worksheet').replace(/[^a-z0-9]+/gi,'-').toLowerCase()+'.md';
+  a.click(); URL.revokeObjectURL(a.href);
+  S.lastSaved=Date.now(); save(); dirty=false; paintSaveBadge();
+}
+$('exportBtn').addEventListener('click',exportMarkdown);
+$('saveNow').addEventListener('click',exportMarkdown);
+
+/* ═════════════════════ import a saved .md ═════════════════════
+   Mirrors exportMarkdown's layout exactly. Splits on top-level `#`/`##`
+   headers into sections, then pulls each field out of its section by the same
+   literal markers the exporter wrote. Placeholders ('—', '_(empty)_',
+   '_(idea not stated)_') round-trip back to empty strings. */
+function parseWorksheetMarkdown(text){
+  const clean=v=>{
+    v=(v==null?'':v).trim();
+    return (v==='—'||v==='_(empty)_'||v==='_(idea not stated)_')?'':v;
+  };
+  const lines=text.replace(/\r\n/g,'\n').split('\n');
+  const sections=[]; let cur=null;
+  lines.forEach(l=>{
+    const h1=l.match(/^#\s+(.*)$/), h2=l.match(/^##\s+(.*)$/);
+    if(h1){sections.push(cur={name:'__title',title:h1[1].trim(),body:[]});return}
+    if(h2){sections.push(cur={name:h2[1].trim(),body:[]});return}
+    if(cur) cur.body.push(l);
+  });
+  const find=prefix=>sections.find(s=>s.name.startsWith(prefix));
+  const O={};
+
+  const t=sections.find(s=>s.name==='__title');
+  if(t) O.title=t.title==='Untitled'?'':t.title;
+
+  const s1=find('1 ·');
+  if(s1){
+    const block=s1.body.join('\n');
+    const pm=block.match(/\*Diving into:\s*([^*]*)\*/);
+    O.objPrompt=pm?clean(pm[1]):'';
+    const rest=block.split(/\*Diving into:[^*]*\*/)[1]||'';
+    O.obj=clean(rest.split(/\nSenses:/)[0]);
+  }
+
+  const s2=find('2 ·');
+  if(s2){
+    const block=s2.body.join('\n');
+    const g=(re)=>{const m=block.match(re);return m?clean(m[1]):''};
+    O.entry=g(/-\s*Starting from:\s*(.*)/);
+    O.pov=g(/-\s*Point of view:\s*(.*)/);
+    O.angle=g(/\*\*Angle:\*\*\s*(.*)/);
+    O.w5={
+      who:g(/\*\*who:\*\*\s*(.*)/), what:g(/\*\*what:\*\*\s*(.*)/),
+      when:g(/\*\*when:\*\*\s*(.*)/), why:g(/\*\*why:\*\*\s*(.*)/)
+    };
+  }
+
+  const s3=find('3 ·');
+  if(s3){const v=clean(s3.body.join('\n'));O.harvest=v?v.split(/,\s*/):[]}
+
+  const s4=find('4 ·');
+  if(s4){
+    O.keep=s4.body.join('\n').split('\n')
+      .map(l=>l.match(/^\d+\.\s*(.+?)(\s+_\([^)]*\)_)?\s*$/))
+      .filter(Boolean).map(m=>m[1].trim());
+  }
+
+  const s5=find('5 ·');
+  if(s5){const v=clean(s5.body.join('\n'));O.kept=v?v.split(/,\s*/):[]}
+
+  const s6=find('6 ·');
+  if(s6){
+    const block=s6.body.join('\n');
+    const cm=block.match(/\*\*Chorus\*\*\n+([\s\S]*?)(?=\n\*\*Box 1\*\*|$)/);
+    O.chorus=cm?clean(cm[1]):'';
+    O.boxes=[1,2,3].map((n,i)=>{
+      const re=new RegExp(`\\*\\*Box ${n}\\*\\*\\s*—\\s*(.*)\\n+([\\s\\S]*?)(?=\\n\\*\\*Box ${n+1}\\*\\*|$)`);
+      const m=block.match(re);
+      return m?{adds:clean(m[1]),text:clean(m[2])}:{adds:'',text:''};
+    });
+  }
+
+  const s7=find('7 ·');
+  if(s7) O.lyric=clean(s7.body.join('\n'));
+
+  const sr=find('Reference');
+  if(sr){
+    const block=sr.body.join('\n');
+    const tm=block.match(/^\*(.*)\*/);
+    O.refTitle=(tm&&tm[1]!=='untitled')?tm[1].trim():'';
+    const fm=block.match(/```\n([\s\S]*?)\n```/);
+    O.refText=fm?fm[1]:'';
+    O.refPaste={};
+    ['idea','boxes','draft'].forEach(k=>{
+      const m=block.match(new RegExp(`\\*\\*${k}:\\*\\*\\s*\\n([\\s\\S]*?)(?=\\n\\*\\*(?:idea|boxes|draft):\\*\\*|$)`));
+      if(m) O.refPaste[k]=clean(m[1]);
+    });
+  }
+  return O;
+}
+
+function importMarkdown(text){
+  let parsed;
+  try{ parsed=parseWorksheetMarkdown(text); }
+  catch(e){ alert('Could not read that file — is it a worksheet export?'); return; }
+  /* Loading now ADDS a song rather than replacing the open one, so a file can
+     never overwrite work that is already in the library. */
+  addSongFrom(parsed,(parsed.title||'').trim()||'Loaded song');
+}
+$('loadInput').addEventListener('change',e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>importMarkdown(r.result);
+  r.readAsText(f);
+  e.target.value='';   // allow re-selecting the same file later
+});
+$('loadNow').addEventListener('click',()=>$('loadInput').click());
+
+function paintSaveBadge(){
+  const el=$('saveBadge'); if(!el) return;
+  if(!S.lastSaved){el.textContent='not saved to a file yet';return}
+  const mins=Math.round((Date.now()-S.lastSaved)/60000);
+  const when=mins<1?'just now':mins===1?'1 min ago':`${mins} min ago`;
+  el.textContent=dirty?`unsaved changes — last file ${when}`:`saved ${when}`;
+}
+setInterval(paintSaveBadge,30000);
+
+/* ═════════════════════════ chrome ═════════════════════════ */
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.stage').forEach(s=>s.classList.toggle('on',s.id==='s-'+b.dataset.s));
+  if(b.dataset.s==='rhyme') renderRhymes();
+  if(b.dataset.s==='cut') renderCut();
+  if(b.dataset.s==='idea') renderIdea();
+  if(b.dataset.s==='browse') renderCluster();
+  if(b.dataset.s==='boxes') renderBoxes();
+  if(b.dataset.s==='ref') renderRef();
+  refPanel(b.dataset.s); refPasteBox(b.dataset.s); fillSlots();
+  if(b.dataset.s==='draft'){renderDraft();cursorRhymes()}
+  if(b.dataset.s==='audit') renderAudit();
+  showPalette(b.dataset.s);
+}));
+/* the rhyme palette is only meaningful once there are rhymes */
+const showPalette=s=>{
+  /* step 7 has its own bank in the rail, so the floating one is redundant there */
+  document.querySelector('.pal').style.display=
+    (s==='ref'||s==='write'||s==='idea'||s==='draft')?'none':'';
+};
+$('names').checked=!!S.names;
+$('names').addEventListener('change',e=>{S.names=e.target.checked;save();renderRhymes()});
+$('rare').checked=!!S.rare;
+$('rare').addEventListener('change',e=>{S.rare=e.target.checked;save();renderRhymes()});
+/* the header field and the step-2 field are the same title */
+const setTitle=v=>{
+  S.title=v; save();
+  if($('title').value!==v) $('title').value=v;
+  if($('title2').value!==v) $('title2').value=v;
+  renderCut();
+};
+$('title').value=$('title2').value=S.title||'';
+$('title').addEventListener('input',e=>setTitle(e.target.value));
+$('title2').addEventListener('input',e=>setTitle(e.target.value));
+
+$('obj').value=S.obj||'';
+$('objPrompt').value=S.objPrompt||'';
+$('angle').value=S.angle||'';
+['who','what','when','why'].forEach(k=>$('q-'+k).value=(S.w5||{})[k]||'');
+$('chorus').value=S.chorus||'';
+$('lyric').value=S.lyric||'';
+$('refText').value=S.refText||'';
+$('refTitle').value=S.refTitle||'';
+if(!S.boxes||S.boxes.length!==3) S.boxes=[{text:'',adds:''},{text:'',adds:''},{text:'',adds:''}];
+paint(); renderBoxes();
+/* Browser storage survives normal use, but it's not a durable backup — warn
+   before closing the tab if there's real content and it's never been exported. */
+window.addEventListener('beforeunload',e=>{
+  const hasContent=(S.obj||S.lyric||S.harvest.length||S.title);
+  if(hasContent&&dirty){
+    e.preventDefault(); e.returnValue='';
+  }
+});
+
+if(S.sec!=null) renderSection();
+renderWrite(); renderIdea(); renderHarvest(); renderCut(); renderPalette(); paintSaveBadge(); renderRoller();
+showPalette(document.querySelector('nav button.on').dataset.s);
+
+/* ---- song library ------------------------------------------------------ */
+function paintSongBtn(){
+  const cur=LIBRARY.songs.find(s=>s.id===LIBRARY.current);
+  const el=$('songBtnName');
+  if(el&&cur) el.textContent=songName(cur);
+}
+function closeSongMenu(){
+  const m=$('songMenu'); if(m) m.hidden=true;
+  const b=$('songBtn'); if(b) b.setAttribute('aria-expanded','false');
+}
+function ago(ts){
+  if(!ts) return 'never opened';
+  const d=Math.floor((Date.now()-ts)/864e5);
+  return d<=0?'today':d===1?'yesterday':d<7?d+' days ago':new Date(ts).toLocaleDateString();
+}
+function renderSongMenu(){
+  const m=$('songMenu'); if(!m) return;
+  m.textContent='';
+  const hd=document.createElement('div');
+  hd.className='hd'; hd.textContent=`Your songs (${LIBRARY.songs.length})`;
+  m.appendChild(hd);
+
+  LIBRARY.songs.slice().sort((a,b)=>(b.updated||0)-(a.updated||0)).forEach(s=>{
+    const lines=((s.data&&s.data.lyric)||'').split('\n').filter(l=>l.trim()).length;
+    const row=document.createElement('div');
+    row.className='songrow'+(s.id===LIBRARY.current?' on':'');
+    row.dataset.id=s.id;
+    const t=document.createElement('div'); t.className='t';
+    const b=document.createElement('b'); b.textContent=songName(s);       // textContent: a title can't inject markup
+    const i=document.createElement('i');
+    i.textContent=ago(s.updated)+(lines?` · ${lines} line${lines===1?'':'s'}`:'');
+    t.append(b,i);
+    const act=document.createElement('div'); act.className='act';
+    [['rename','✎','Rename'],['dup','⧉','Duplicate'],['del','✕','Delete']].forEach(([a,g,ttl])=>{
+      const btn=document.createElement('button');
+      btn.dataset.act=a; btn.textContent=g; btn.title=ttl;
+      if(a==='del') btn.className='del';
+      act.appendChild(btn);
+    });
+    row.append(t,act); m.appendChild(row);
+  });
+
+  const sep=document.createElement('div'); sep.className='sep'; m.appendChild(sep);
+  const add=document.createElement('button');
+  add.className='add'; add.dataset.act='new'; add.textContent='+ New song';
+  m.appendChild(add);
+}
+function openSong(id){
+  if(id===LIBRARY.current){ closeSongMenu(); return; }
+  save();                                   // flush what's on screen before leaving it
+  LIBRARY.current=id; writeLib(LIBRARY);
+  location.reload();                        // cleanest way to repaint all nine stages
+}
+function newSong(){
+  save();
+  const id=uid();
+  LIBRARY.songs.push({id,name:'Untitled song',updated:Date.now(),data:blank()});
+  LIBRARY.current=id; writeLib(LIBRARY); location.reload();
+}
+function addSongFrom(data,name){        // used by "Load a copy"
+  save();
+  const id=uid();
+  LIBRARY.songs.push({id,name:name||'Untitled song',updated:Date.now(),
+                      data:Object.assign(blank(),data||{})});
+  LIBRARY.current=id; writeLib(LIBRARY); location.reload();
+}
+$('songBtn').addEventListener('click',e=>{
+  e.stopPropagation();
+  const m=$('songMenu');
+  if(m.hidden){ renderSongMenu(); m.hidden=false; $('songBtn').setAttribute('aria-expanded','true'); }
+  else closeSongMenu();
+});
+$('songMenu').addEventListener('click',e=>{
+  e.stopPropagation();
+  const btn=e.target.closest('button[data-act]');
+  const row=e.target.closest('.songrow');
+  const act=btn&&btn.dataset.act;
+
+  if(act==='new'){ newSong(); return; }
+  if(!row) return;
+  const s=LIBRARY.songs.find(x=>x.id===row.dataset.id); if(!s) return;
+
+  if(act==='rename'){
+    const n=prompt('Name this song',songName(s)); if(n===null) return;
+    s.name=n.trim()||s.name;
+    if(s.id===LIBRARY.current){ S.title=s.name; const t=$('title'); if(t) t.value=s.name; }
+    else if(s.data) s.data.title=s.name;
+    writeLib(LIBRARY); renderSongMenu(); paintSongBtn(); return;
+  }
+  if(act==='dup'){
+    const id=uid();
+    LIBRARY.songs.push({id,name:songName(s)+' (copy)',updated:Date.now(),
+                        data:JSON.parse(JSON.stringify(s.data||blank()))});
+    writeLib(LIBRARY); renderSongMenu(); return;
+  }
+  if(act==='del'){
+    if(LIBRARY.songs.length===1){
+      alert('This is your only song, so there is nothing to switch back to.\n\n'+
+            'Make a new song first if you want this one gone.'); return;
+    }
+    if(!confirm(`Delete "${songName(s)}"?\n\nThis cannot be undone. `+
+                `If you are not certain, close this and use "Save a copy" first.`)) return;
+    LIBRARY.songs=LIBRARY.songs.filter(x=>x.id!==s.id);
+    if(LIBRARY.current===s.id){ LIBRARY.current=LIBRARY.songs[0].id; writeLib(LIBRARY); location.reload(); return; }
+    writeLib(LIBRARY); renderSongMenu(); return;
+  }
+  openSong(row.dataset.id);
+});
+document.addEventListener('click',closeSongMenu);
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeSongMenu(); });
+paintSongBtn();
+
+/* ---- installable app shell -------------------------------------------- */
+if("serviceWorker" in navigator && location.protocol.indexOf("http")===0){
+  navigator.serviceWorker.register("sw.js").catch(()=>{});
+}
+
+/* Your worksheet lives in localStorage. Ask the browser not to evict it when
+   it is short of room — Chrome decides silently on engagement, Safari and
+   Firefox may prompt. Harmless if refused, and it never touches what is
+   already stored. */
+if(navigator.storage && navigator.storage.persist){
+  navigator.storage.persisted().then(ok=>{ if(!ok) navigator.storage.persist().catch(()=>{}); }).catch(()=>{});
+}
+</script>
+</body>
+</html>
