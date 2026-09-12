@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="robots" content="noindex, nofollow" />
-<title>Goal Studio | General Disability Support</title>
+<title>Moon Studio | General Disability Support</title>
 <meta name="description" content="Goal setting, activity breakdown, estimation, timeline and calendar in one place." />
 <link rel="manifest" href="manifest.json" />
 <meta name="theme-color" content="#0a0d10" />
@@ -14,7 +14,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-<meta name="apple-mobile-web-app-title" content="Goal Studio" />
+<meta name="apple-mobile-web-app-title" content="Moon Studio" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -535,6 +535,9 @@ ul.tight li{margin-bottom:5px;color:var(--ink-2)}
 .addpillar{padding:13px;border-radius:3px;border:1px dashed rgba(199,154,95,.4);background:none;
   color:var(--muted);cursor:pointer;font:500 10.5px/1 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase}
 .addpillar:hover{border-color:#c79a5f;color:#e0bb87}
+.epigraph{margin:24px 2px 0;padding-top:17px;border-top:1px solid rgba(199,154,95,.16);
+  font:italic 400 14.5px/1.5 'Cormorant Garamond',Georgia,serif;
+  color:rgba(224,187,135,.6);letter-spacing:.015em}
 
 .pillar-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:24px}
 .pillar-none{padding:40px;text-align:center;border:1px dashed var(--line);border-radius:4px}
@@ -593,7 +596,7 @@ body.carrying .pillar{border-color:rgba(199,154,95,.55)}
   <div class="topbar-in">
     <div class="brand">
       <div class="mark"></div>
-      <div class="brand-title"><strong>GOAL STUDIO</strong><span>General Disability Support</span></div>
+      <div class="brand-title"><strong>MOON STUDIO</strong><span>General Disability Support</span></div>
     </div>
     <div class="navwrap" id="navwrap">
       <button class="navbtn" id="navbtn" aria-haspopup="true" aria-expanded="false" aria-controls="tabs">
@@ -623,7 +626,7 @@ body.carrying .pillar{border-color:rgba(199,154,95,.55)}
 "use strict";
 
 /* =====================================================================
-   Goal Studio — one connected chain:
+   Moon Studio — one connected chain:
    Goal → SMART framing → Activities → Wave breakdown → Estimates
         → Auto-schedule → Timeline (Gantt) → Calendar (.ics)
    All data lives in this browser (localStorage). No server, no account.
@@ -1082,6 +1085,10 @@ function viewPillars(){
   return '<div class="pillars-page">' +
     '<aside class="bay">' + bay +
       '<button class="addpillar" data-act="pillar-new">＋ Pillar</button>' +
+      /* Sits at the foot of the bay, under the harvest it describes. Low in the
+         column so nothing above the fold moves, and quiet enough to read as a
+         signature rather than an instruction. */
+      '<p class="epigraph">What happens in the dark<br>will come to light</p>' +
     '</aside>' +
     '<div class="pillars-main">' +
       (P.length ? '<div class="pillar-grid">' + cards + '</div>'
@@ -2135,8 +2142,8 @@ function buildICS(){
   const now = new Date();
   const dtstamp = "" + now.getUTCFullYear() + pad(now.getUTCMonth()+1) + pad(now.getUTCDate()) + "T" +
                   pad(now.getUTCHours()) + pad(now.getUTCMinutes()) + pad(now.getUTCSeconds()) + "Z";
-  const L = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//General Disability Support//Goal Studio//EN",
-             "CALSCALE:GREGORIAN","METHOD:PUBLISH","X-WR-CALNAME:Goal Studio"];
+  const L = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//General Disability Support//Moon Studio//EN",
+             "CALSCALE:GREGORIAN","METHOD:PUBLISH","X-WR-CALNAME:Moon Studio"];
   const events = [];
   /* Only your own task time goes out. Shifts already live in the roster —
      exporting them would double them up in your calendar. */
@@ -2198,7 +2205,7 @@ async function sharePlan(){
   const file = new File([text], name, { type: "application/json" });
   if(navigator.canShare && navigator.canShare({ files: [file] })){
     try{
-      await navigator.share({ files: [file], title: "Goal Studio plan" });
+      await navigator.share({ files: [file], title: "Moon Studio plan" });
       toast("Sent. Open it on the other device and tap Bring in a plan.");
       return;
     }catch(e){
@@ -2283,7 +2290,7 @@ function installSection(){
     (installed
       ? '<p class="note"><span class="chip ok">Installed</span> Running as an app' +
         (offline ? ' — and the offline copy is ready, so it opens with no signal.' : '.') + '</p>'
-      : '<p class="note">Add Goal Studio to your home screen and it opens like any other app: its own icon, no browser bars, ' +
+      : '<p class="note">Add Moon Studio to your home screen and it opens like any other app: its own icon, no browser bars, ' +
         'and it works with no signal — on the train, in someone\'s lounge room, anywhere.</p>' +
         '<ol class="tight" style="margin-top:10px">' + steps.map(x => '<li>' + x + '</li>').join("") + '</ol>' +
         (installPrompt ? '<div class="btnrow" style="margin-top:12px"><button class="btn primary" data-act="install">Install now</button></div>' : "") +
@@ -2727,10 +2734,10 @@ function importBackup(input){
   rd.onload = () => {
     try{
       const d = JSON.parse(rd.result);
-      if(!d || !Array.isArray(d.goals)) throw new Error("not a Goal Studio plan");
+      if(!d || !Array.isArray(d.goals)) throw new Error("not a Moon Studio plan");
       askBeforeImport(d);
     }catch(err){
-      toast("That file is not a Goal Studio plan.");
+      toast("That file is not a Moon Studio plan.");
     }
   };
   rd.onerror = () => toast("That file could not be read.");
@@ -2946,7 +2953,7 @@ window.addEventListener("beforeinstallprompt", e => {
 });
 window.addEventListener("appinstalled", () => {
   installPrompt = null;
-  toast("Installed. Look for Goal Studio on your home screen.");
+  toast("Installed. Look for Moon Studio on your home screen.");
   if(S.ui.tab === "data") render();
 });
 

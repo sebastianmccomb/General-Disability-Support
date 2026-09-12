@@ -1,8 +1,8 @@
-/* Goal Studio offline shell.
+/* Moon Studio offline shell.
    Scope is /goal-studio/ only — this worker never sees the main site.
    Navigations go network-first so a redeploy is picked up as soon as you
    are online; everything else is served from cache and refreshed behind you. */
-const CACHE = "goal-studio-v1";
+const CACHE = "moon-studio-v1";
 const ASSETS = ["./", "./index.html", "./manifest.json",
                 "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
 
