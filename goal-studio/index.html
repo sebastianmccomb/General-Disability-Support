@@ -853,6 +853,7 @@ function save(){
       S.meta.device = S.meta.device || deviceLabel();
       localStorage.setItem(KEY, JSON.stringify(S));
       keepData();
+      autoBackup();                 // writes to the chosen folder; no-op if none
       const n = new Date();
       $("#savechip").textContent = "Saved " + pad(n.getHours()) + ":" + pad(n.getMinutes());
     }catch(e){
@@ -2242,6 +2243,7 @@ function viewData(){
       '<button class="btn ghost" data-act="ics">Download .ics</button>' +
       '<button class="btn ghost" data-act="print">Print / PDF</button>' +
     '</div>' +
+    backupPanel() +
     '<input type="file" id="importfile" accept="application/json,.json" style="display:none">' +
     '<div class="divider"></div>' +
     '<h2 class="section-title">Preferences</h2>' +
@@ -2539,7 +2541,13 @@ function doAction(act, el){
     }
     case "export":
       download("goal-studio-backup-" + todayISO() + ".json", JSON.stringify(S, null, 2), "application/json");
+      try{ localStorage.setItem(BK_LAST, String(Date.now())); }catch(e){}
+      paintBackupChip();
       toast("Backup downloaded.");
+      return;
+    case "bkfolder": chooseBackupFolder(); return;
+    case "bkstop":
+      if(confirm("Stop writing backups to that folder?\n\nFiles already written stay where they are.")) forgetBackupFolder();
       return;
     case "import": {
       const f = $("#importfile");
@@ -2991,6 +2999,188 @@ function keepData(){
   navigator.storage.persist().catch(() => {});
 }
 
+/* ═══════════════════════════ automatic backup ═══════════════════════════
+   Browser storage is not a backup — clearing site data empties it, and the
+   plan is gone with no warning. So the app writes a copy into a real folder
+   you choose, as ordinary files. Those are not site data, so nothing the
+   browser clears can touch them.
+
+   Two files, both rewritten as you work:
+     goal-studio-latest.json      always the current plan
+     goal-studio-YYYY-MM-DD.json  one per day, so there is history to go back to
+
+   Where the browser can't do this (Safari, iPhone), the app falls back to
+   telling you how long it has been and asking for a manual download. */
+
+const BK_LAST = KEY + ".lastbackup";
+const BK_DB = "gds-backup", BK_STORE = "handles";
+let bkAt = 0, bkBusy = false;
+let bkName = null;        // cached folder name; views are synchronous, this is not
+
+function bkIdb(){
+  return new Promise((res, rej) => {
+    const r = indexedDB.open(BK_DB, 1);
+    r.onupgradeneeded = () => r.result.createObjectStore(BK_STORE);
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  });
+}
+function bkIdbGet(k){
+  return bkIdb().then(db => new Promise((res, rej) => {
+    const q = db.transaction(BK_STORE, "readonly").objectStore(BK_STORE).get(k);
+    q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error);
+  }));
+}
+function bkIdbSet(k, v){
+  return bkIdb().then(db => new Promise((res, rej) => {
+    const q = db.transaction(BK_STORE, "readwrite").objectStore(BK_STORE).put(v, k);
+    q.onsuccess = () => res(); q.onerror = () => rej(q.error);
+  }));
+}
+
+const bkSupported = () => typeof window.showDirectoryPicker === "function";
+
+/* The handle is only usable while permission stands. Never prompt from here —
+   re-granting needs a click, and a permission dialog on load is the fastest
+   way to train someone to dismiss it. */
+async function bkFolder(){
+  if(!bkSupported()) return null;
+  let h = null;
+  try{ h = await bkIdbGet("dir"); }catch(e){ return null; }
+  if(!h) return null;
+  try{ return (await h.queryPermission({ mode: "readwrite" })) === "granted" ? h : null; }
+  catch(e){ return null; }
+}
+
+async function bkWrite(dir, name, text){
+  const fh = await dir.getFileHandle(name, { create: true });
+  const w = await fh.createWritable();
+  await w.write(text);
+  await w.close();
+}
+
+async function autoBackup(force){
+  if(bkBusy || loadError) return;
+  const now = Date.now();
+  if(!force && now - bkAt < 20000) return;      // at most every 20s while working
+  const dir = await bkFolder();
+  if(!dir) return;
+  bkBusy = true; bkAt = now;
+  try{
+    const json = JSON.stringify(S, null, 2);
+    await bkWrite(dir, "goal-studio-latest.json", json);
+    await bkWrite(dir, "goal-studio-" + todayISO() + ".json", json);
+    try{ localStorage.setItem(BK_LAST, String(now)); }catch(e){}
+    paintBackupChip();
+  }catch(e){
+    /* folder moved, renamed, or permission withdrawn — fall back to nagging */
+  }finally{ bkBusy = false; }
+}
+
+async function chooseBackupFolder(){
+  if(!bkSupported()){
+    toast("This browser can't write to a folder. Use Download a backup instead.");
+    return false;
+  }
+  let h;
+  try{
+    h = await window.showDirectoryPicker({ id: "gds-backup", mode: "readwrite", startIn: "documents" });
+  }catch(e){ return false; }                     // cancelled
+  try{ await bkIdbSet("dir", h); }catch(e){}
+  await autoBackup(true);
+  await bkRefresh();
+  toast("Backing up to that folder from now on.");
+  return true;
+}
+
+async function forgetBackupFolder(){
+  try{ await bkIdbSet("dir", null); }catch(e){}
+  await bkRefresh();
+  toast("Stopped. Download a backup by hand from now on.");
+}
+
+/* Views are built as strings, so the folder name has to be known before one
+   renders. Called at startup and whenever the folder changes — never from
+   render() itself. */
+async function bkRefresh(){
+  const d = await bkFolder();
+  bkName = d ? (d.name || "chosen folder") : null;
+  paintBackupChip();
+  if(S.ui && S.ui.tab === "data") render();
+}
+
+function bkLastAt(){
+  const v = Number(localStorage.getItem(BK_LAST) || 0);
+  return isFinite(v) && v > 0 ? v : 0;
+}
+function bkAgeDays(){
+  const t = bkLastAt();
+  return t ? (Date.now() - t) / 864e5 : Infinity;
+}
+
+/* The panel on the Data tab. Built as a string like every other view. */
+function backupPanel(){
+  const age = bkAgeDays();
+  const when = age === Infinity ? "never"
+             : age < 1 ? "today"
+             : Math.floor(age) === 1 ? "yesterday"
+             : Math.floor(age) + " days ago";
+
+  if(!bkSupported()){
+    return '<div class="divider"></div>' +
+      '<h2 class="section-title">Automatic backup</h2>' +
+      '<p class="note">This browser can\'t write to a folder on its own — that needs Chrome or Edge on a computer. ' +
+      'Here, use <b>Download a backup</b> above, and do it after every real planning session. ' +
+      'Last backup: <b>' + h(when) + '</b>.</p>';
+  }
+  if(!bkName){
+    return '<div class="divider"></div>' +
+      '<h2 class="section-title">Automatic backup</h2>' +
+      '<p class="note">Pick a folder and the app writes a copy into it every time you save — ' +
+      '<b>goal-studio-latest.json</b> plus one file per day. They are ordinary files, so clearing ' +
+      'site data can\'t reach them. Last backup: <b>' + h(when) + '</b>.</p>' +
+      '<div class="btnrow" style="margin-top:13px">' +
+        '<button class="btn" data-act="bkfolder">Back up to a folder</button>' +
+      '</div>';
+  }
+  return '<div class="divider"></div>' +
+    '<h2 class="section-title">Automatic backup</h2>' +
+    '<p class="note"><span class="chip ok">On</span> Writing to <b>' + h(bkName) + '</b> every time you save — ' +
+    'the current plan, and one file per day. Last written <b>' + h(when) + '</b>.</p>' +
+    '<div class="btnrow" style="margin-top:13px">' +
+      '<button class="btn ghost" data-act="bkfolder">Change folder</button>' +
+      '<button class="btn ghost" data-act="bkstop">Stop</button>' +
+    '</div>';
+}
+
+/* One chip beside the save chip. Silent while it is working, loud when it
+   is not — the whole point is that a stale backup has to be visible. */
+function paintBackupChip(){
+  const host = $("#savechip");
+  if(!host || !host.parentNode) return;
+  let el = $("#backupchip");
+  if(!el){
+    el = document.createElement("span");
+    el.id = "backupchip";
+    el.style.cssText = "margin-left:10px;font-size:11px;letter-spacing:.12em;" +
+                       "text-transform:uppercase;cursor:pointer";
+    el.addEventListener("click", () => { S.ui.tab = "data"; save(); render(); window.scrollTo(0,0); });
+    host.parentNode.insertBefore(el, host.nextSibling);
+  }
+  const age = bkAgeDays();
+  if(age === Infinity){
+    el.textContent = S.goals && S.goals.length ? "No backup" : "";
+    el.style.color = "var(--stop)";
+  }else if(age < 1){
+    el.textContent = "Backed up";
+    el.style.color = "var(--muted)";
+  }else{
+    const d = Math.floor(age);
+    el.textContent = "Backup " + d + "d old";
+    el.style.color = d >= 7 ? "var(--stop)" : "var(--warn)";
+  }
+}
+
 /* Home-screen shortcuts land here: ?tab=schedule */
 function applyLaunchParams(){
   try{
@@ -3006,6 +3196,15 @@ applyLaunchParams();
 render();
 registerSW();
 $("#savechip").textContent = S.goals.length ? "Saved locally" : "Ready";
+
+/* Backup: find out whether a folder is still granted, then show where we
+   stand. A last write on the way out catches the edits made inside the 20s
+   throttle — pagehide is the one event that reliably fires on a closing tab. */
+bkRefresh();
+addEventListener("pagehide", () => { autoBackup(true); });
+document.addEventListener("visibilitychange", () => {
+  if(document.visibilityState === "hidden") autoBackup(true);
+});
 </script>
 </body>
 </html>
