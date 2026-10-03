@@ -2767,11 +2767,13 @@ function askBeforeImport(d){
     '<h3>Bring in this plan?</h3>' +
     '<div class="swap">' +
       '<div class="swap-side"><span>Coming in</span><b>' + plural((d.goals || []).length, "goal") + ' · ' +
-        plural(count(d.goals), "task") + '</b><i>' + h(inMeta.device || "another device") + ', ' +
+        plural(count(d.goals), "task") + ' · ' + plural((d.pillars || []).length, "pillar") +
+        '</b><i>' + h(inMeta.device || "another device") + ', ' +
         h(whenText(theirs)) + '</i></div>' +
       '<div class="swap-arrow">replaces</div>' +
       '<div class="swap-side here"><span>On this device</span><b>' + plural(S.goals.length, "goal") + ' · ' +
-        plural(S.goals.reduce((n,g) => n + countLeaves(g), 0), "task") + '</b><i>' +
+        plural(S.goals.reduce((n,g) => n + countLeaves(g), 0), "task") + ' · ' +
+        plural((S.pillars || []).length, "pillar") + '</b><i>' +
         h((S.meta || {}).device || deviceLabel()) + ', ' + h(whenText(mine)) + '</i></div>' +
     '</div>' +
     (older
@@ -2788,6 +2790,15 @@ function applyImport(){
   if(!d) return;
   try{ localStorage.setItem(KEY + ".undo", JSON.stringify(S)); }catch(e){}
   S.goals = d.goals; S.goals.forEach(normaliseGoal);
+  /* Pillars travel with the plan. A plan saved before pillars existed has none. */
+  S.pillars = Array.isArray(d.pillars) ? d.pillars : [];
+  S.pillars.forEach(normalisePillar);
+  /* A goal filed against a pillar that is not in the file would sit on no
+     pillar and in no waiting area — invisible. Send it back to waiting, the
+     same as deleting a pillar does. */
+  const known = {}; S.pillars.forEach(p => { known[p.id] = 1; });
+  let orphaned = 0;
+  S.goals.forEach(g => { if(g.pillarId && !known[g.pillarId]){ delete g.pillarId; delete g.filedAt; orphaned++; } });
   S.blocks = Array.isArray(d.blocks) ? d.blocks : [];
   S.settings = Object.assign({}, DEFAULT_SETTINGS, migrateSettings(d.settings || {}));
   if(!(d.version >= 2)) S.blocks = S.blocks.concat(migrateSchedule(S.goals));
@@ -2796,6 +2807,8 @@ function applyImport(){
   pendingImport = null;
   closeModal(); save(); render();
   toast("Plan brought in — " + S.goals.length + (S.goals.length === 1 ? " goal" : " goals") +
+        (S.pillars.length ? ", " + S.pillars.length + (S.pillars.length === 1 ? " pillar" : " pillars") : "") +
+        (orphaned ? ". " + orphaned + (orphaned === 1 ? " goal" : " goals") + " pointed at a missing pillar and went back to the waiting area" : "") +
         ". Undo is on the Data tab.");
 }
 function undoImport(){
@@ -2806,6 +2819,7 @@ function undoImport(){
     const d = JSON.parse(raw);
     localStorage.removeItem(KEY + ".undo");
     S.goals = d.goals || []; S.goals.forEach(normaliseGoal);
+    S.pillars = Array.isArray(d.pillars) ? d.pillars : []; S.pillars.forEach(normalisePillar);
     S.blocks = Array.isArray(d.blocks) ? d.blocks : [];
     S.settings = Object.assign({}, DEFAULT_SETTINGS, d.settings || {});
     S.meta = d.meta || S.meta;
